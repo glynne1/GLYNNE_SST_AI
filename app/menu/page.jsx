@@ -9,6 +9,8 @@ export default function Page() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let intervalId;
+
     const wakeUpServers = async () => {
       try {
         await Promise.all([
@@ -18,8 +20,9 @@ export default function Page() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ texto: 'ping' })
           }),
-          fetch('https://gly-csv-service-3.onrender.com', { method: 'GET' }) // nueva llamada
+          fetch('https://gly-csv-service-3.onrender.com', { method: 'GET' })
         ]);
+        console.log('Servicios despertados correctamente');
       } catch (error) {
         console.error('Error al despertar los servicios:', error);
       } finally {
@@ -30,7 +33,15 @@ export default function Page() {
     // Primera activación al cargar
     wakeUpServers();
 
-   
+    // Configurar intervalo para enviar peticiones cada 7 minutos
+    intervalId = setInterval(() => {
+      wakeUpServers();
+    }, 7 * 60 * 1000); // 7 minutos en ms
+
+    // Limpiar intervalo al cerrar o desmontar componente
+    return () => {
+      clearInterval(intervalId);
+    };
   }, []);
 
   return (

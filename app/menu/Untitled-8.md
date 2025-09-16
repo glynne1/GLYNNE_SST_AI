@@ -1,0 +1,36 @@
+```
+└── 📁app
+    └── 📁api
+        └── 📁execute-python
+            ├── route.js
+    └── 📁components
+        ├── header.jsx
+        ├── LoginPopup.jsx
+        ├── main1.jsx
+    └── 📁GLY_SALES_AGENTS
+        └── 📁components
+            ├── alertSalirChaarla.jsx
+            ├── auditoria.jsx
+            ├── bloqeNoCrome.jsx
+            ├── cargando.jsx
+            ├── ChatLLM.jsx
+            ├── header.jsx
+            ├── madalInicio.jsx
+            ├── menuLateral.jsx
+            ├── perfil.jsx
+            ├── preguntasPredefinidas.jsx
+            ├── saveChat.jsx
+        ├── global.css
+        ├── page.jsx
+    └── 📁lib
+        ├── supabaseClient.js
+        ├── supabaseClient2.js
+    └── 📁menu
+        └── 📁components
+            ├── menu.jsx
+        ├── page.jsx
+    ├── favicon.ico
+    ├── globals.css
+    ├── layout.tsx
+    └── page.tsx
+```
