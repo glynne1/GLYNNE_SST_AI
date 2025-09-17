@@ -14,17 +14,21 @@ export default function Main1() {
 
   return (
     <main className="relative w-full h-screen overflow-hidden font-inter">
-      {/* Video de fondo */}
-      <video
-        className="absolute top-0 left-0 w-full h-full object-cover"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-      >
-        <source src="/presentacion.mp4" type="video/mp4" />
-      </video>
+      {/* Video de fondo desde Cloudinary */}
+      <div className="absolute top-0 left-0 w-full h-full">
+        <video
+          src="https://res.cloudinary.com/dpdyco5po/video/upload/f_auto,q_auto/Generated_File_September_17_2025_-_12_29PM_bj00ma.mp4"
+          poster="https://res.cloudinary.com/dpdyco5po/video/upload/Generated_File_September_17_2025_-_12_29PM_bj00ma.jpg"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          className="w-full h-full object-cover"
+        >
+          Tu navegador no soporta videos HTML5.
+        </video>
+      </div>
 
       {/* Capa oscura */}
       <div className="absolute inset-0 bg-black/60 z-10" />
