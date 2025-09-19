@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '../../lib/supabaseClient';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaTimes } from 'react-icons/fa';
-import MenuLateral from '../components/menuLateral'
+
+
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -32,25 +33,24 @@ export default function Header() {
     <>
       <header
         className={`fixed top-0 left-0 w-full z-50 px-4 md:px-6 py-2 flex items-center justify-between transition-all duration-300 ${
-          isScrolled ? 'bg-white shadow-md' : 'bg-white'
+          isScrolled ? 'bg-black shadow-md' : 'bg-black'
         }`}
       >
         {/* Logo */}
         <img
           src="/logo2.png"
           alt="Logo"
-          className="h-6 sm:h-7 md:h-8 cursor-pointer"
-          
+          className="h-6 sm:h-7 md:h-8 cursor-pointer invert"
+          // 👆 invert para que se vea blanco si tu logo es negro
         />
 
         {/* Botón cerrar sesión */}
         <button
           onClick={() => setShowLogoutModal(true)}
-          className="text-xs sm:text-sm text-black border border-black px-3 py-1 rounded-md hover:bg-black hover:text-white transition"
+          className="text-xs sm:text-sm text-white border border-white px-3 py-1 rounded-md hover:bg-white hover:text-black transition"
         >
           Cerrar sesión
         </button>
-        
       </header>
 
       {/* Modal de confirmación de logout */}
@@ -94,7 +94,6 @@ export default function Header() {
           </div>
         )}
       </AnimatePresence>
-      
     </>
   );
 }
