@@ -308,7 +308,7 @@ export default function AuditAlert({ onClose, userId }) {
               <div className="mt-8 flex justify-center">
                 <AuditPDF userId={userId} />
               </div>
-              <SaveAudit userId={userId} tempJson={showAuditAlert ? null : null} /> 
+              <SaveAudit userId={userId} tempJson={tempJson} />
             </div>
           </motion.div>
         </div>
