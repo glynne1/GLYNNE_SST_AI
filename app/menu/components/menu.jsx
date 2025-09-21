@@ -37,7 +37,7 @@ export default function Sections() {
       title: 'Tu auditor digital',
       subtitle:
         'Un chat diseñado para conocerte: te hará preguntas clave sobre tu negocio y, con tus respuestas, construirá una auditoría que revela cuellos de botella y oportunidades reales.',
-      link: '/chat',
+      link: '/chat2',
       bgImageMobile: 'https://i.pinimg.com/1200x/ba/a4/83/baa483acf883ba698c679c96238b9978.jpg',
       bgImageDesktop: '/eart.jpg',
     },

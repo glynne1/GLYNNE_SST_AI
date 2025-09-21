@@ -25,7 +25,7 @@ export default function ChatConConfiguracion() {
   const [showMobileAudits, setShowMobileAudits] = useState(false); // 📱 Control del menú móvil
   const messagesEndRef = useRef(null);
   const isMobile = windowWidth < 640;
-  const API_URL = 'https://gly-ai-brain.onrender.com';
+  const API_URL = 'http://localhost:8000';
   const REQUEST_TIMEOUT = 40000;
   const MAX_TOKENS = 120;
   const TOKEN_WARNING_THRESHOLD = MAX_TOKENS * 0.7;
