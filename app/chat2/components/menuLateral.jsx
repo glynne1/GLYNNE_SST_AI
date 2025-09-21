@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { FaBars, FaTimes } from 'react-icons/fa'
 import Perfil from '../components/perfil'
 import Recomendaciones from './preguntasPredefinidas'
-
+import ListaAur from './ListaAuditorias'
 
 const SideMenu = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -30,11 +30,12 @@ const SideMenu = () => {
         className={`fixed top-0 left-0 h-full z-40 bg-white transition-all duration-500 ease-in-out overflow-hidden
           ${isOpen ? 'block' : 'hidden'} 
           w-full sm:w-[30vw] sm:max-w-[400px] sm:min-w-[240px]`}
-      >
+      > 
+      <ListaAur />
         {/* Contenido con scroll */}
         <div className="h-full p-6 overflow-y-auto text-black flex flex-col gap-6 mt-[20px]">
           <Perfil />
-    
+    s
           <Recomendaciones />
 
           {/* Footer */}
