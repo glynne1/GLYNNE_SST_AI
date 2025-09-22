@@ -17,8 +17,8 @@ export default function Main1() {
       {/* Video de fondo desde Cloudinary */}
       <div className="absolute top-0 left-0 w-full h-full">
         <video
-          src="https://res.cloudinary.com/dpdyco5po/video/upload/f_auto,q_auto/f_auto,q_auto/Hailuo_Video_quiero_que_a_esta_iimagen_le_c_404445423176769539_row0fw.mp4"
-          poster="https://res.cloudinary.com/dpdyco5po/video/upload/f_auto,q_auto/Hailuo_Video_quiero_que_a_esta_iimagen_le_c_404445423176769539_row0fw.jpg"
+          src="https://res.cloudinary.com/dpdyco5po/video/upload/f_auto,q_auto/f_auto,q_auto/Generated_File_September_21_2025_-_10_15PM_t91zai.mp4"
+          poster="https://res.cloudinary.com/dpdyco5po/video/upload/f_auto,q_auto/Generated_File_September_21_2025_-_10_15PM_t91zai.jpg"
           autoPlay
           muted
           loop
