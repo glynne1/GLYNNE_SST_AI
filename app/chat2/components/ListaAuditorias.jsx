@@ -69,7 +69,7 @@ export default function AuditoriasFullScreen() {
 
       {/* 🎯 Contenedor principal */}
       <div className="flex-1 flex flex-row relative z-10">
-        {/* Sidebar de auditorías (pantalla completa) */}
+        {/* Sidebar de auditorías */}
         <AnimatePresence>
           {showSidebar && (
             <motion.div
@@ -102,13 +102,12 @@ export default function AuditoriasFullScreen() {
                         <p className="text-xs font-medium text-gray-700">
                           {new Date(a.created_at).toLocaleString()}
                         </p>
-                        {/* ✅ Respetar párrafos y saltos */}
-                        <pre className="text-xs text-gray-500 whitespace-pre-wrap leading-relaxed">
+                        <p className="text-xs text-gray-500 line-clamp-2">
                           {typeof a.audit_content === 'string'
-                            ? a.audit_content.slice(0, 200) // recortar para no saturar lista
-                            : JSON.stringify(a.audit_content, null, 2).slice(0, 200)}
+                            ? a.audit_content.slice(0, 100)
+                            : JSON.stringify(a.audit_content).slice(0, 100)}
                           ...
-                        </pre>
+                        </p>
                       </div>
                       <button
                         onClick={(e) => {
@@ -128,11 +127,11 @@ export default function AuditoriasFullScreen() {
         </AnimatePresence>
 
         {/* Contenido principal */}
-        <div className="flex-1 h-full  transition-all duration-300 p-6">
+        <div className="flex-1 h-full overflow-y-auto transition-all duration-300 p-6 ml-0">
           {/* 🟠 Botón para abrir/cerrar panel de auditorías */}
           <button
             onClick={toggleSidebar}
-            className="fixed top-[120px]  z-40 bg-black text-white p-3 rounded-full shadow-lg hover:bg-gray-900 transition"
+            className="fixed top-[120px] left-[18px] z-40 bg-black text-white p-3 shadow-lg hover:bg-gray-900 transition rounded-md"
           >
             <FaListUl size={18} />
           </button>
@@ -185,7 +184,6 @@ export default function AuditoriasFullScreen() {
                 Auditoría del {new Date(selectedAudit.created_at).toLocaleString()}
               </h3>
 
-              {/* ✅ Aquí ya lo tenías correcto */}
               <pre className="whitespace-pre-wrap text-sm text-gray-700 leading-relaxed">
                 {typeof selectedAudit.audit_content === 'string'
                   ? selectedAudit.audit_content
