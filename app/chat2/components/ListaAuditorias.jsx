@@ -69,7 +69,7 @@ export default function AuditoriasFullScreen() {
 
       {/* 🎯 Contenedor principal */}
       <div className="flex-1 flex flex-row relative z-10">
-        {/* Sidebar de auditorías */}
+        {/* Sidebar de auditorías (pantalla completa) */}
         <AnimatePresence>
           {showSidebar && (
             <motion.div
@@ -77,7 +77,7 @@ export default function AuditoriasFullScreen() {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ duration: 0.3 }}
-              className="absolute top-0 left-0 h-full w-[320px] bg-white border-r border-gray-200 shadow-lg z-30 overflow-y-auto"
+              className="absolute top-0 left-0 h-full w-full bg-white border-r border-gray-200 shadow-lg z-30 overflow-y-auto"
             >
               <div className="p-5 flex justify-between items-center border-b border-gray-200">
                 <h2 className="text-lg font-semibold">Mis Auditorías</h2>
@@ -102,12 +102,13 @@ export default function AuditoriasFullScreen() {
                         <p className="text-xs font-medium text-gray-700">
                           {new Date(a.created_at).toLocaleString()}
                         </p>
-                        <p className="text-xs text-gray-500 line-clamp-2">
+                        {/* ✅ Respetar párrafos y saltos */}
+                        <pre className="text-xs text-gray-500 whitespace-pre-wrap leading-relaxed">
                           {typeof a.audit_content === 'string'
-                            ? a.audit_content.slice(0, 100)
-                            : JSON.stringify(a.audit_content).slice(0, 100)}
+                            ? a.audit_content.slice(0, 200) // recortar para no saturar lista
+                            : JSON.stringify(a.audit_content, null, 2).slice(0, 200)}
                           ...
-                        </p>
+                        </pre>
                       </div>
                       <button
                         onClick={(e) => {
@@ -127,15 +128,11 @@ export default function AuditoriasFullScreen() {
         </AnimatePresence>
 
         {/* Contenido principal */}
-        <div
-          className={`flex-1 h-full overflow-y-auto transition-all duration-300 p-6 ${
-            showSidebar ? 'ml-[320px]' : 'ml-0'
-          }`}
-        >
+        <div className="flex-1 h-full  transition-all duration-300 p-6">
           {/* 🟠 Botón para abrir/cerrar panel de auditorías */}
           <button
             onClick={toggleSidebar}
-            className="fixed top-[50px] left-5 z-40 bg-black text-white p-3 rounded-full shadow-lg hover:bg-gray-900 transition"
+            className="fixed top-[120px]  z-40 bg-black text-white p-3 rounded-full shadow-lg hover:bg-gray-900 transition"
           >
             <FaListUl size={18} />
           </button>
@@ -188,6 +185,7 @@ export default function AuditoriasFullScreen() {
                 Auditoría del {new Date(selectedAudit.created_at).toLocaleString()}
               </h3>
 
+              {/* ✅ Aquí ya lo tenías correcto */}
               <pre className="whitespace-pre-wrap text-sm text-gray-700 leading-relaxed">
                 {typeof selectedAudit.audit_content === 'string'
                   ? selectedAudit.audit_content
