@@ -6,6 +6,7 @@ import { Send } from 'lucide-react';
 import { supabase } from '../../lib/supabaseClient';
 import AlertUpgrade from './alertPlanes';
 import AuditAlert from '../components/alertGenerarAuditoria';   // 👈 nuevo import
+import DiscoverG from './TTSinvoke'
 
 export default function ChatSimple() {
   const [input, setInput] = useState('');
@@ -147,6 +148,10 @@ export default function ChatSimple() {
               }
             `}</style>
           </div>
+            {/* Visible solo en >= md (768px) */}
+<div className="hidden md:block">
+  <DiscoverG />
+</div>
 
           <AlertUpgrade />
         </div>
@@ -195,7 +200,13 @@ export default function ChatSimple() {
                 <Send size={18} className="sm:w-4 sm:h-4 xs:w-3 xs:h-3" />
               </motion.button>
             </div>
+            
           </div>
+          <div className="hidden md:flex justify-center items-center w-full">
+  <DiscoverG />
+</div>
+
+
         </>
       )}
     </div>
