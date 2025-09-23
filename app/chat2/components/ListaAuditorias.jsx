@@ -7,6 +7,7 @@ import { X } from 'lucide-react';
 import { FaTrash, FaListUl } from 'react-icons/fa';
 import PreguntasSugeridas from '../components/preguntasPredefinidas';
 import Perfil from '../components/perfil';
+import ReactMarkdown from 'react-markdown';
 
 export default function AuditoriasFullScreen() {
   const [user, setUser] = useState(null);
@@ -184,11 +185,13 @@ export default function AuditoriasFullScreen() {
                 Auditoría del {new Date(selectedAudit.created_at).toLocaleString()}
               </h3>
 
-              <pre className="whitespace-pre-wrap text-sm text-gray-700 leading-relaxed">
-                {typeof selectedAudit.audit_content === 'string'
-                  ? selectedAudit.audit_content
-                  : JSON.stringify(selectedAudit.audit_content, null, 2)}
-              </pre>
+              <div className="prose prose-gray max-w-none text-sm leading-relaxed">
+                <ReactMarkdown>
+                  {typeof selectedAudit.audit_content === 'string'
+                    ? selectedAudit.audit_content
+                    : JSON.stringify(selectedAudit.audit_content, null, 2)}
+                </ReactMarkdown>
+              </div>
             </motion.div>
           </motion.div>
         )}
