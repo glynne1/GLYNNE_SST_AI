@@ -35,7 +35,6 @@ export default function DiscoverGlyAI() {
     setOpen(false);
     setMinimized(false);
     // 👉 Aquí mandamos señal a ChatTTS para detener todo
-    // Ejemplo: detener audio, desconectar modelo, etc.
   };
 
   return (
@@ -51,35 +50,30 @@ export default function DiscoverGlyAI() {
         descubre ideas con GLYai
       </button>
 
-      {/* Popup */}
+      {/* Popup tipo panel deslizante */}
       <AnimatePresence>
         {open && !minimized && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center"
-            aria-modal="true"
-            role="dialog"
-          >
+          <>
             {/* Fondo oscuro */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.6 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="absolute inset-0 bg-black"
-              onClick={() => setMinimized(true)} // 👈 click afuera minimiza, NO cierra
+              className="fixed inset-0 z-40 bg-black"
+              onClick={() => setMinimized(true)} // 👈 click afuera minimiza
               aria-hidden="true"
             />
 
-            {/* Contenedor animado */}
+            {/* Panel que ocupa toda la pantalla */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.8, y: 50 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.8, y: 50 }}
-              transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-              className="relative z-10 w-full h-full bg-white dark:bg-gray-900 shadow-2xl rounded-xl"
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'tween', ease: 'easeInOut', duration: 0.4 }}
+              className="fixed top-0 right-0 z-50 w-screen h-screen bg-white dark:bg-gray-900 shadow-2xl"
+              role="dialog"
+              aria-modal="true"
             >
               {/* Botones */}
               <div className="absolute top-4 right-4 z-20 flex gap-3">
@@ -110,7 +104,7 @@ export default function DiscoverGlyAI() {
               {/* Contenido */}
               <ChatTTS onStop={handleClose} />
             </motion.div>
-          </motion.div>
+          </>
         )}
       </AnimatePresence>
 
