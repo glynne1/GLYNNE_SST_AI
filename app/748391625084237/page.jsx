@@ -40,21 +40,21 @@ export default function Diagnostico() {
   }, []);
 
   return (
-    <div className="relative h-screen bg-white flex ">
-      {/* Loader animado */}
+    <div className="relative h-screen bg-white flex">
+      {/* Overlay Loader */}
       <AnimatePresence>
         {loading && (
           <motion.div
             className="fixed inset-0 flex items-center justify-center z-50 p-4 bg-cover bg-center"
             style={{
-              backgroundImage: "url('https://i.pinimg.com/1200x/86/e6/3b/86e63b7ecc219abdb316f02dce2af3ac.jpg')",
+              backgroundImage:
+                "url('https://i.pinimg.com/1200x/86/e6/3b/86e63b7ecc219abdb316f02dce2af3ac.jpg')",
             }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
             <div className="absolute inset-0 bg-black/80" />
-
             <motion.div
               className="relative bg-black/40 rounded-3xl shadow-2xl w-[80vw] max-w-4xl px-[4vw] py-[5vh] flex flex-col items-center z-10"
               initial={{ scale: 0.95, y: 30 }}
