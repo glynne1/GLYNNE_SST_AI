@@ -10,13 +10,14 @@ import Image from 'next/image';
 
 export default function Diagnostico() {
   const [datosEmpresa, setDatosEmpresa] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // inicia en true = popup visible
 
   useEffect(() => {
     let intervalId;
 
     const wakeUpServers = async () => {
       try {
+        // No bloqueamos la UI, el popup ya está activo
         await Promise.all([
           fetch('https://gly-ai-brain.onrender.com', { method: 'GET' }),
           fetch('https://gly-tts-back.onrender.com/conversar', {
@@ -26,15 +27,19 @@ export default function Diagnostico() {
           }),
           fetch('https://gly-csv-service-3.onrender.com', { method: 'GET' })
         ]);
-        console.log('Servicios despertados correctamente');
+        console.log('✅ Servicios despertados correctamente');
       } catch (error) {
-        console.error('Error al despertar los servicios:', error);
+        console.error('❌ Error al despertar los servicios:', error);
       } finally {
+        // Quitamos el popup una vez terminen los intentos iniciales
         setLoading(false);
       }
     };
 
+    // Disparamos el popup desde el inicio y arrancamos los fetch en paralelo
     wakeUpServers();
+
+    // Refresco cada 7 min
     intervalId = setInterval(() => wakeUpServers(), 7 * 60 * 1000);
     return () => clearInterval(intervalId);
   }, []);
@@ -48,7 +53,7 @@ export default function Diagnostico() {
             className="fixed inset-0 flex items-center justify-center z-50 p-4 bg-cover bg-center"
             style={{
               backgroundImage:
-                "url('https://i.pinimg.com/1200x/86/e6/3b/86e63b7ecc219abdb316f02dce2af3ac.jpg')",
+                "url('/Csala.png')",
             }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
