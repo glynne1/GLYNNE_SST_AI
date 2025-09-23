@@ -1,8 +1,9 @@
 'use client';
-import { useState } from 'react';
-import { saveAuditToSupabase } from '../../lib/supabaseClient';
 
-export default function SaveAudit({ userId, tempJson }) {
+import { useState } from 'react';
+import { saveAuditToSupabase, getCurrentUser } from '../../lib/supabaseClient';
+
+export default function SaveAudit({ tempJson }) {
   const [loading, setLoading] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
@@ -18,10 +19,16 @@ export default function SaveAudit({ userId, tempJson }) {
     setErrorMsg('');
 
     try {
-      // Guardar en Supabase usando userId y tempJson pasados desde AuditAlert
+      // 1. Obtener usuario autenticado desde Supabase
+      const user = await getCurrentUser();
+      if (!user) {
+        throw new Error('Usuario no autenticado. Inicia sesión para guardar auditorías.');
+      }
+
+      // 2. Guardar en Supabase con el user.id correcto
       const { data: savedData, error } = await saveAuditToSupabase({
         audit_content: tempJson,
-        user_id: userId,
+        user_id: user.id, // ⚡ viene de auth.uid()
       });
 
       if (error) throw new Error(error.message);
