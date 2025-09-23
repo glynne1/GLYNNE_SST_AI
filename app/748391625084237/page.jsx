@@ -19,7 +19,7 @@ export default function Diagnostico() {
       try {
         // No bloqueamos la UI, el popup ya está activo
         await Promise.all([
-          fetch('https://gly-ai-brain.onrender.com', { method: 'GET' }),
+          fetch('https://gly-chat-v1-2.onrender.com', { method: 'GET' }),
           fetch('https://gly-tts-back.onrender.com/conversar', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
