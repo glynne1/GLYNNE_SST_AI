@@ -229,8 +229,9 @@ const VoiceChatFlame = () => {
         <div
           className="relative rounded-full px-4 py-3 shadow-lg w-[250px] h-[250px] bg-cover bg-center flex items-center justify-center"
           style={{
-            backgroundImage:
-              "url('https://i.pinimg.com/originals/dd/44/f6/dd44f644c063876949b1d96efd6b7442.gif')"
+            backgroundImage: activo
+              ? "url('https://i.pinimg.com/originals/24/e1/b5/24e1b51dcfaf8b9d7aeb5d49e91be623.gif')" // 🔄 Fondo cuando está conversando
+              : "url('https://i.pinimg.com/736x/34/f9/01/34f901fcd85db5b27ce90afa35be7077.jpg')" // 💤 Fondo inicial
           }}
         >
           <div className="rounded-full overflow-hidden w-[200px] h-[200px] backdrop-blur-md relative">
@@ -241,7 +242,7 @@ const VoiceChatFlame = () => {
                 iconVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-90 pointer-events-none'
               }`}
             >
-              <img src="/logo.png" alt="Logo Glynne" className="w-12 h-12 object-contain" />
+              <img src="/logo.png" alt="Logo Glynne" className="w-20 h-20 object-contain" />
             </div>
           </div>
         </div>

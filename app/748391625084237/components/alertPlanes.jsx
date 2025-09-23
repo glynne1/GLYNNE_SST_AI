@@ -8,7 +8,7 @@ export default function AlertUpgrade() {
         <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-black/5 to-transparent animate-shine" />
 
         <p className="relative z-10">
-          Para que podamos conocer más a fondo tus necesidades y ofrecerte soluciones personalizadas, te invitamos a <strong>comunicarte con GLYNNE y agendar una cita</strong>.
+          Para soluciones personalizadas, te invitamos a <strong>comunicarte con GLYNNE </strong>.
         </p>
 
         <a
