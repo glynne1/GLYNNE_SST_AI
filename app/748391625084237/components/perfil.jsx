@@ -58,7 +58,7 @@ export default function PerfilUsuario() {
           ¡Bienvenido a <span className="font-bold text-black">GLY_SALES_AGENTS</span>!
         </p>
         <p className="text-xs text-gray-400 mt-1">
-          Tu espacio para automatizar, escalar y cerrar más ventas.
+          Tu espacio para conocer como integramos ia a tus procesos empresariales
         </p>
       </div>
     </div>

@@ -5,8 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { getCurrentUser, supabase, subscribeToAuthState } from '../../lib/supabaseClient';
 import { X } from 'lucide-react';
 import { FaTrash, FaListUl } from 'react-icons/fa';
-import PreguntasSugeridas from '../components/preguntasPredefinidas';
-import Perfil from '../components/perfil';
+import PreguntasSugeridas from './preguntasPredefinidas';
+import Perfil from './perfil';
 import ReactMarkdown from 'react-markdown';
 
 export default function AuditoriasFullScreen() {
