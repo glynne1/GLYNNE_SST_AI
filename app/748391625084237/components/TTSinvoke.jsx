@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaTimes, FaMinus } from 'react-icons/fa';
-import ChatTTS from '../../GLY_SALES_AGENTS/components/ChatLLM';
+import ChatTTS from './LLM';
 
 export default function DiscoverGlyAI() {
   const [open, setOpen] = useState(false);
@@ -109,17 +109,19 @@ export default function DiscoverGlyAI() {
       </AnimatePresence>
 
       {/* 🔹 Popup minimizado (botón flotante) */}
-      {open && minimized && (
-        <motion.div
-          initial={{ opacity: 0, y: 100 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 100 }}
-          className="fixed bottom-4 right-4 z-50 bg-black text-white px-4 py-2 rounded-full shadow-lg cursor-pointer"
-          onClick={() => setMinimized(false)} // restaurar
-        >
-          Reabrir GLYai
-        </motion.div>
-      )}
+      <AnimatePresence>
+        {open && minimized && (
+          <motion.div
+            initial={{ opacity: 0, y: 100 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 100 }}
+            className="fixed bottom-4 right-4 z-50 bg-black text-white px-4 py-2 rounded-full shadow-lg cursor-pointer"
+            onClick={() => setMinimized(false)} // restaurar
+          >
+            Reabrir GLYai
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
