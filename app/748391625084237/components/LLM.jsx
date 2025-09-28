@@ -20,7 +20,7 @@ export default function ChatSimple() {
   const animationIdRef = useRef(null);
   const audioCtxRef = useRef(null);
 
-  const API_URL = 'http://localhost:8000';
+  const API_URL = 'https://gly-tts-v1.onrender.com';
 
   // 🔊 Reproducir audio y alimentar el AnalyserNode (del segundo código)
   const reproducirAudio = (audioBase64) => {
