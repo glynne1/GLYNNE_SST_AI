@@ -60,6 +60,7 @@ export default function PerfilUsuario() {
         <p className="text-xs text-gray-400 mt-1">
           Tu espacio para conocer como integramos ia a tus procesos empresariales
         </p>
+
       </div>
     </div>
   );
