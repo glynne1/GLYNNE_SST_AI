@@ -4,8 +4,8 @@ import ModalIicio from './components/madalInicio'
 export default function Page() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center bg-white p-6">
-      <Header />
-      <ModalIicio />
+
+
       <CsvUploader />
     </main>
   );

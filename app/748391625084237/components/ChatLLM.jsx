@@ -7,6 +7,7 @@ import { supabase } from '../../lib/supabaseClient';
 import AlertUpgrade from './alertPlanes';
 import AuditAlert from './alertGenerarAuditoria';
 import DiscoverG from './TTSinvoke';
+import PlusMenu from './masContenido'; // 👈 importamos tu botón +
 
 export default function ChatSimple() {
   const [input, setInput] = useState('');
@@ -133,58 +134,63 @@ export default function ChatSimple() {
           </p>
 
           {/* Input centrado con borde animado */}
-          <div className="w-full max-w-2xl relative">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-              placeholder="Pregunta lo que quieras"
-              disabled={isLoading}
-              className="w-full px-4 py-4 rounded-full text-lg bg-white outline-none relative z-10"
-              style={{
-                border: '2px solid transparent',
-                backgroundClip: 'padding-box',
-              }}
-            />
-            <span
-              className="absolute inset-0 rounded-full pointer-events-none"
-              style={{
-                background: 'linear-gradient(90deg, #4ade80, #3b82f6, #facc15, #ec4899)',
-                backgroundSize: '300% 300%',
-                animation: 'shine 2.5s linear infinite',
-                borderRadius: '9999px',
-                padding: '2px',
-                zIndex: 0,
-                maskImage: 'linear-gradient(#fff 0 0)',
-                WebkitMaskImage: 'linear-gradient(#fff 0 0)',
-              }}
-            />
-            {/* 👇 Botón toggle */}
-            {input.trim() ? (
-              <motion.button
-                whileTap={{ scale: 0.9 }}
-                whileHover={{ scale: 1.05 }}
-                onClick={sendMessage}
+          <div className="w-full max-w-2xl relative flex items-center gap-2">
+            {/* 👈 Botón + */}
+            <PlusMenu />
+
+            <div className="relative flex-1">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+                placeholder="Pregunta lo que quieras"
                 disabled={isLoading}
-                className="absolute right-2 top-1/2 -translate-y-1/2 bg-black text-white rounded-full 
-                  w-10 h-10 flex items-center justify-center shadow-md z-20"
-              >
-                <Send size={18} />
-              </motion.button>
-            ) : (
-              <motion.button
-                whileTap={{ scale: 0.9 }}
-                whileHover={{ scale: 1.05 }}
-                onClick={toggleRecording}
-                disabled={isLoading}
-                className={`absolute right-2 top-1/2 -translate-y-1/2 rounded-full 
-                  w-10 h-10 flex items-center justify-center shadow-md z-20 
-                  ${isRecording ? 'bg-red-600 text-white' : 'bg-black text-white'}`}
-              >
-                <Mic size={18} />
-              </motion.button>
-            )}
+                className="w-full px-4 py-4 rounded-full text-lg bg-white outline-none relative z-10"
+                style={{
+                  border: '2px solid transparent',
+                  backgroundClip: 'padding-box',
+                }}
+              />
+              <span
+                className="absolute inset-0 rounded-full pointer-events-none"
+                style={{
+                  background: 'linear-gradient(90deg, #4ade80, #3b82f6, #facc15, #ec4899)',
+                  backgroundSize: '300% 300%',
+                  animation: 'shine 2.5s linear infinite',
+                  borderRadius: '9999px',
+                  padding: '2px',
+                  zIndex: 0,
+                  maskImage: 'linear-gradient(#fff 0 0)',
+                  WebkitMaskImage: 'linear-gradient(#fff 0 0)',
+                }}
+              />
+              {/* 👇 Botón toggle */}
+              {input.trim() ? (
+                <motion.button
+                  whileTap={{ scale: 0.9 }}
+                  whileHover={{ scale: 1.05 }}
+                  onClick={sendMessage}
+                  disabled={isLoading}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-black text-white rounded-full 
+                    w-10 h-10 flex items-center justify-center shadow-md z-20"
+                >
+                  <Send size={18} />
+                </motion.button>
+              ) : (
+                <motion.button
+                  whileTap={{ scale: 0.9 }}
+                  whileHover={{ scale: 1.05 }}
+                  onClick={toggleRecording}
+                  disabled={isLoading}
+                  className={`absolute right-2 top-1/2 -translate-y-1/2 rounded-full 
+                    w-10 h-10 flex items-center justify-center shadow-md z-20 
+                    ${isRecording ? 'bg-red-600 text-white' : 'bg-black text-white'}`}
+                >
+                  <Mic size={18} />
+                </motion.button>
+              )}
+            </div>
 
             <style jsx>{`
               @keyframes shine {
@@ -219,66 +225,72 @@ export default function ChatSimple() {
 
           {/* Input flotante */}
           <div className="w-full px-4 py-4 flex justify-center">
-            <div className="flex w-[70%] relative">
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-                placeholder="Escribe tu mensaje..."
-                className="w-full px-4 py-4 rounded-full text-lg bg-white outline-none relative z-10 pr-14"
-                style={{
-                  border: '2px solid transparent',
-                  backgroundClip: 'padding-box',
-                }}
-                disabled={isLoading}
-              />
-              <span
-                className="absolute inset-0 rounded-full pointer-events-none"
-                style={{
-                  background: 'linear-gradient(90deg, #4ade80, #3b82f6, #facc15, #ec4899)',
-                  backgroundSize: '300% 300%',
-                  animation: 'shine 2.5s linear infinite',
-                  borderRadius: '9999px',
-                  padding: '2px',
-                  zIndex: 0,
-                  maskImage: 'linear-gradient(#fff 0 0)',
-                  WebkitMaskImage: 'linear-gradient(#fff 0 0)',
-                }}
-              />
-              {/* 👇 Toggle también aquí */}
-              {input.trim() ? (
-                <motion.button
-                  whileTap={{ scale: 0.9 }}
-                  whileHover={{ scale: 1.05 }}
-                  onClick={sendMessage}
+            <div className="flex w-[70%] relative items-center gap-2">
+              {/* 👈 Botón + */}
+              <PlusMenu />
+
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+                  placeholder="Escribe tu mensaje..."
+                  className="w-full px-4 py-4 rounded-full text-lg bg-white outline-none relative z-10 pr-14"
+                  style={{
+                    border: '2px solid transparent',
+                    backgroundClip: 'padding-box',
+                  }}
                   disabled={isLoading}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 
-                    bg-black text-white rounded-full w-10 h-10 flex items-center justify-center shadow-md z-20"
-                >
-                  <Send size={18} />
-                </motion.button>
-              ) : (
-                <motion.button
-                  whileTap={{ scale: 0.9 }}
-                  whileHover={{ scale: 1.05 }}
-                  onClick={toggleRecording}
-                  disabled={isLoading}
-                  className={`absolute right-3 top-1/2 -translate-y-1/2 rounded-full 
-                    w-10 h-10 flex items-center justify-center shadow-md z-20
-                    ${isRecording ? 'bg-red-600 text-white' : 'bg-black text-white'}`}
-                >
-                  <Mic size={18} />
-                </motion.button>
-              )}
-              <style jsx>{`
-                @keyframes shine {
-                  0% { background-position: 0% 50%; }
-                  50% { background-position: 100% 50%; }
-                  100% { background-position: 0% 50%; }
-                }
-              `}</style>
+                />
+                <span
+                  className="absolute inset-0 rounded-full pointer-events-none"
+                  style={{
+                    background: 'linear-gradient(90deg, #4ade80, #3b82f6, #facc15, #ec4899)',
+                    backgroundSize: '300% 300%',
+                    animation: 'shine 2.5s linear infinite',
+                    borderRadius: '9999px',
+                    padding: '2px',
+                    zIndex: 0,
+                    maskImage: 'linear-gradient(#fff 0 0)',
+                    WebkitMaskImage: 'linear-gradient(#fff 0 0)',
+                  }}
+                />
+                {/* 👇 Toggle también aquí */}
+                {input.trim() ? (
+                  <motion.button
+                    whileTap={{ scale: 0.9 }}
+                    whileHover={{ scale: 1.05 }}
+                    onClick={sendMessage}
+                    disabled={isLoading}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 
+                      bg-black text-white rounded-full w-10 h-10 flex items-center justify-center shadow-md z-20"
+                  >
+                    <Send size={18} />
+                  </motion.button>
+                ) : (
+                  <motion.button
+                    whileTap={{ scale: 0.9 }}
+                    whileHover={{ scale: 1.05 }}
+                    onClick={toggleRecording}
+                    disabled={isLoading}
+                    className={`absolute right-3 top-1/2 -translate-y-1/2 rounded-full 
+                      w-10 h-10 flex items-center justify-center shadow-md z-20
+                      ${isRecording ? 'bg-red-600 text-white' : 'bg-black text-white'}`}
+                  >
+                    <Mic size={18} />
+                  </motion.button>
+                )}
+              </div>
             </div>
+
+            <style jsx>{`
+              @keyframes shine {
+                0% { background-position: 0% 50%; }
+                50% { background-position: 100% 50%; }
+                100% { background-position: 0% 50%; }
+              }
+            `}</style>
           </div>
 
           <div className="hidden md:flex justify-center items-center w-full">
