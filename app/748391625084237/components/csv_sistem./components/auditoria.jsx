@@ -41,7 +41,7 @@ export default function BienvenidaUsuario() {
   }
 
   const handleRedirect = () => {
-    window.location.href = 'http://0.0.0.0:8000';
+    window.location.href = 'https://glynne-sst-ai-hsiy.vercel.app/chat';
   };
 
   return (

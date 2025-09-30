@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaTimes, FaMinus } from 'react-icons/fa';
 import ChatTTS from './LLM'; // ejemplo de componente importado
+import DB from '../../CSVanaliza/components/panel';
 
 export default function PlusMenu() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -65,21 +66,26 @@ export default function PlusMenu() {
             animate={{ opacity: 1, y: -5 }}
             exit={{ opacity: 0, y: 10 }}
             transition={{ duration: 0.2 }}
-            className="absolute bottom-full mb-2 left-0 w-56 bg-white shadow-lg rounded-xl border border-gray-200 z-50"
+            className="absolute bottom-full mb-2 left-0 w-56 bg-white shadow-lg rounded-xl border border-gray-200 z-50
+                       max-h-[60vh] overflow-y-auto"
           >
             <button
               onClick={() => handleOpenPopup(<ChatTTS onStop={handleClosePopup} />)}
               className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-t-xl"
             >
-              Analiza tus bases de datos
+              Charla conmigo y descubre ideas 
             </button>
             <button
               onClick={() =>
-                handleOpenPopup(<div className="text-xl font-bold">🚀 Ajusta tu modelo aquí</div>)
+                handleOpenPopup(
+                  <div className="w-full h-[100vh] overflow-y-auto">
+                    <DB />
+                  </div>
+                )
               }
               className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-b-xl"
             >
-              Ajustar tu modelo
+              Analiza tu base de datos
             </button>
           </motion.div>
         )}
@@ -106,7 +112,7 @@ export default function PlusMenu() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'tween', ease: 'easeInOut', duration: 0.4 }}
-              className="fixed inset-0 z-50 flex items-center justify-center bg-white dark:bg-gray-900"
+              className="fixed inset-0 z-50 bg-white  overflow-y-auto w-screen h-screen"
               role="dialog"
               aria-modal="true"
             >
@@ -134,8 +140,8 @@ export default function PlusMenu() {
                 </motion.button>
               </div>
 
-              {/* Contenido centrado */}
-              <div className="w-full h-full flex items-center justify-center">
+              {/* Contenido */}
+              <div className="w-full h-full p-4">
                 {popupContent}
               </div>
             </motion.div>
