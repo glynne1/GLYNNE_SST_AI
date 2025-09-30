@@ -11,7 +11,7 @@ export default function AuditoriaModal({ userId }) {
   const generarAuditoria = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`http://localhost:8000/generar_auditoria?user_id=${userId}`, {
+      const res = await fetch(` https://gly-csv-v2.onrender.com/generar_auditoria?user_id=${userId}`, {
         method: "POST",
       });
 

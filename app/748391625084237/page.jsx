@@ -25,7 +25,7 @@ export default function Diagnostico() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ texto: 'ping' })
           }),
-          fetch('https://gly-tts-v1.onrender.com', { method: 'GET' })
+          fetch(' https://gly-csv-v2.onrender.com', { method: 'GET' })
         ]);
         console.log('✅ Servicios despertados correctamente');
       } catch (error) {
