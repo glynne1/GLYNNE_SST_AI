@@ -53,7 +53,7 @@ export default function Diagnostico() {
             className="fixed inset-0 flex items-center justify-center z-50 p-4 bg-cover bg-center"
             style={{
               backgroundImage:
-                "url('/Csala.png')",
+                "url('/fort.png')",
             }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
