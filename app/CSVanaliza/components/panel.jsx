@@ -31,6 +31,7 @@ ChartJS.register(
 
 export default function CSVAnalyzer() {
   const [file, setFile] = useState(null);
+  const [descripcion, setDescripcion] = useState("");
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
@@ -38,19 +39,34 @@ export default function CSVAnalyzer() {
   const [selectedChart, setSelectedChart] = useState("bubble");
 
   const handleFileChange = (e) => setFile(e.target.files[0]);
+  const handleDescripcionChange = (e) => setDescripcion(e.target.value);
 
   const handleAnalyze = async () => {
-    if (!file) return;
+    if (!file) {
+      setError("Debes seleccionar un archivo CSV.");
+      return;
+    }
+
+    if (!descripcion.trim()) {
+      setError("Debes ingresar una descripción del dataset.");
+      return;
+    }
+
     setLoading(true);
     setError(null);
+
     try {
       const formData = new FormData();
       formData.append("file", file);
-      const response = await fetch("https://gly-csv-v2.onrender.com/procesar-csv", {
+      formData.append("descripcion", descripcion);
+
+      const response = await fetch("http://0.0.0.0:8000/procesar-csv", {
         method: "POST",
         body: formData,
       });
+
       if (!response.ok) throw new Error("Error en la respuesta del servidor");
+
       const result = await response.json();
       setData(result);
     } catch (err) {
@@ -205,118 +221,91 @@ export default function CSVAnalyzer() {
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-black mb-3 lg:mb-2">
             Analiza tus Datos
           </h1>
-          {/* Logo debajo del título */}
           <div className="mb-3">
             <img src="/logo2.png" alt="Logo" className="mx-auto w-12 h-auto" />
           </div>
           <p className="text-gray-700 text-sm sm:text-base lg:text-lg max-w-2xl mx-auto">
-            Sube tu archivo CSV y obtén análisis detallados, visualizaciones interactivas y reportes ejecutivos
+            Sube tu archivo CSV, agrega una descripción y obtén análisis detallados y reportes ejecutivos
           </p>
         </div>
 
-       {/* Upload */}
+        {/* Inputs: descripción arriba, CSV debajo */}
 <div className="relative rounded-2xl p-4 sm:p-6 lg:p-8 mb-6 lg:mb-8">
-  {/* Borde animado de 2px con colores cambiando */}
-  <div className="absolute inset-0 rounded-2xl pointer-events-none">
-    <div
-      className="w-full h-full rounded-2xl border border-transparent"
-      style={{
-        borderWidth: '2px',
-        borderStyle: 'solid',
-        borderRadius: '1rem', // igual que rounded-2xl
-        borderImage: 'linear-gradient(90deg, #f97316, #facc15, #4ade80, #3b82f6, #9333ea, #f97316) 1',
-        animation: 'borderColors 4s linear infinite',
-      }}
-    />
-  </div>
-
-  {/* Contenido */}
-  <div className="relative bg-white rounded-2xl shadow-xl h-full">
-    <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-      <div className="flex-1 w-full">
-        <label className="block text-sm font-medium text-gray-900 mb-2">
-          Selecciona tu archivo CSV
-        </label>
+  <div className="flex flex-col gap-4">
+    {/* Input de descripción con gradiente animado */}
+    <div className="w-full max-w-2xl relative flex items-center gap-2 mx-auto">
+      {/* 👈 Aquí podrías agregar un botón o icono tipo PlusMenu si quieres */}
+      <div className="relative flex-1">
         <input
-          type="file"
-          accept=".csv"
-          onChange={handleFileChange}
-          className="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl focus:border-gray-500 focus:ring-2 focus:ring-gray-200 transition-all duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:text-sm file:font-semibold file:bg-gray-50 file:text-gray-900 hover:file:bg-gray-100"
+          type="text"
+          value={descripcion}
+          onChange={handleDescripcionChange}
+          placeholder="Ej. Datos de accidentes de tránsito 2024"
+          className="w-full px-4 py-4 rounded-full text-lg bg-white outline-none relative z-10"
+          style={{
+            border: '2px solid transparent',
+            backgroundClip: 'padding-box',
+          }}
+        />
+        <span
+          className="absolute inset-0 rounded-full pointer-events-none"
+          style={{
+            background: 'linear-gradient(90deg, #4ade80, #3b82f6, #facc15, #ec4899)',
+            backgroundSize: '300% 300%',
+            animation: 'shine 2.5s linear infinite',
+            borderRadius: '9999px',
+            padding: '2px',
+            zIndex: 0,
+            maskImage: 'linear-gradient(#fff 0 0)',
+            WebkitMaskImage: 'linear-gradient(#fff 0 0)',
+          }}
         />
       </div>
-      <button
-        onClick={handleAnalyze}
-        disabled={!file || loading}
-        className="w-full sm:w-auto px-6 lg:px-8 py-3 lg:py-4 bg-black text-white font-semibold rounded-xl hover:bg-gray-900 disabled:bg-gray-400 disabled:cursor-not-allowed transform hover:scale-105 disabled:scale-100 transition-all duration-200 shadow-lg"
-      >
-        {loading ? (
-          <div className="flex items-center justify-center">
-            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-            Analizando...
-          </div>
-        ) : "Analizar CSV"}
-      </button>
     </div>
-    {file && (
-      <div className="mt-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
-        <p className="text-gray-700 font-medium flex items-center">
-          <span className="text-lg mr-2">✅</span> Archivo seleccionado:{" "}
-          <span className="font-bold ml-1">{file.name}</span>
-        </p>
-      </div>
-    )}
-    {error && (
-      <div className="mt-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
-        <p className="text-orange-700 font-medium flex items-center">
-          <span className="text-lg mr-2">❌</span> {error}
-        </p>
-      </div>
-    )}
-  </div>
-</div>
 
-{/* Animación CSS */}
-<style jsx>{`
-  @keyframes borderColors {
-    0% { border-image: linear-gradient(90deg, #f97316, #facc15, #4ade80, #3b82f6, #9333ea, #f97316) 1; }
-    25% { border-image: linear-gradient(90deg, #4ade80, #3b82f6, #facc15, #f97316, #9333ea, #4ade80) 1; }
-    50% { border-image: linear-gradient(90deg, #3b82f6, #facc15, #f97316, #4ade80, #9333ea, #3b82f6) 1; }
-    75% { border-image: linear-gradient(90deg, #facc15, #4ade80, #3b82f6, #f97316, #9333ea, #facc15) 1; }
-    100% { border-image: linear-gradient(90deg, #f97316, #facc15, #4ade80, #3b82f6, #9333ea, #f97316) 1; }
-  }
-`}</style>
+    {/* Selector de CSV */}
+    <div className="w-full">
+      <label className="block text-sm font-medium text-gray-900 mb-2">Selecciona tu archivo CSV</label>
+      <input
+        type="file"
+        accept=".csv"
+        onChange={handleFileChange}
+        className="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl focus:border-gray-500 focus:ring-2 focus:ring-gray-200 transition-all duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:text-sm file:font-semibold file:bg-gray-50 file:text-gray-900 hover:file:bg-gray-100"
+      />
+    </div>
+
+    {/* Botón de analizar */}
+    <button
+      onClick={handleAnalyze}
+      disabled={!file || !descripcion || loading}
+      className="w-full sm:w-auto px-6 lg:px-8 py-3 lg:py-4 bg-black text-white font-semibold rounded-xl hover:bg-gray-900 disabled:bg-gray-400 disabled:cursor-not-allowed transform hover:scale-105 disabled:scale-100 transition-all duration-200 shadow-lg"
+    >
+      {loading ? "Analizando..." : "Analizar CSV"}
+    </button>
+  </div>
+
+  {file && <p className="mt-2 text-gray-700">Archivo seleccionado: <b>{file.name}</b></p>}
+  {error && <p className="mt-2 text-orange-700 font-medium">❌ {error}</p>}
+</div>
 
 
         {/* Results */}
         {data && (
           <div className="flex-1 bg-white rounded-2xl shadow-xl border border-gray-300 overflow-hidden">
-            {/* Main Tabs */}
+            {/* Tabs */}
             <div className="border-b border-gray-300">
               <div className="flex flex-wrap gap-2 p-4 lg:p-6">
-                <button
-                  onClick={() => setView("informe")}
-                  className={`flex-1 sm:flex-none px-4 lg:px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center ${
-                    view === "informe" ? "bg-black text-white shadow-lg transform scale-105" : "bg-gray-50 text-gray-900 hover:bg-gray-100 hover:scale-105"
-                  }`}
-                >
-                  Informe
-                </button>
-                <button
-                  onClick={() => setView("tablas")}
-                  className={`flex-1 sm:flex-none px-4 lg:px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center ${
-                    view === "tablas" ? "bg-black text-white shadow-lg transform scale-105" : "bg-gray-50 text-gray-900 hover:bg-gray-100 hover:scale-105"
-                  }`}
-                >
-                  Tablas
-                </button>
-                <button
-                  onClick={() => setView("graficas")}
-                  className={`flex-1 sm:flex-none px-4 lg:px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center ${
-                    view === "graficas" ? "bg-black text-white shadow-lg transform scale-105" : "bg-gray-50 text-gray-900 hover:bg-gray-100 hover:scale-105"
-                  }`}
-                >
-                  Gráficas
-                </button>
+                {["informe","tablas","graficas"].map((v) => (
+                  <button
+                    key={v}
+                    onClick={() => setView(v)}
+                    className={`flex-1 sm:flex-none px-4 lg:px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center ${
+                      view === v ? "bg-black text-white shadow-lg transform scale-105" : "bg-gray-50 text-gray-900 hover:bg-gray-100 hover:scale-105"
+                    }`}
+                  >
+                    {v.charAt(0).toUpperCase() + v.slice(1)}
+                  </button>
+                ))}
               </div>
             </div>
 
@@ -337,7 +326,6 @@ export default function CSVAnalyzer() {
               )}
               {view === "graficas" && (
                 <div className="flex flex-col h-full">
-                  {/* Chart selector */}
                   <div className="flex flex-wrap gap-2 mb-4">
                     {["bubble","doughnut","pie","line","mixed","polar","radar","scatter"].map((c) => (
                       <button

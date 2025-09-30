@@ -11,9 +11,17 @@ export default function PlusMenu() {
   const [popupOpen, setPopupOpen] = useState(false);
   const [minimized, setMinimized] = useState(false);
   const [popupContent, setPopupContent] = useState(null);
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 0);
 
   const menuRef = useRef(null);
   const closeButtonRef = useRef(null);
+
+  // 🔹 Detectar tamaño de ventana
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // 🔹 Cerrar menú si clic fuera
   useEffect(() => {
@@ -47,6 +55,9 @@ export default function PlusMenu() {
     setMinimized(false);
     setPopupContent(null);
   };
+
+  // 🔹 Si la ventana es menor a 500px, no renderizamos nada
+  if (windowWidth < 500) return null;
 
   return (
     <div ref={menuRef} className="relative flex items-center">
@@ -112,7 +123,7 @@ export default function PlusMenu() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'tween', ease: 'easeInOut', duration: 0.4 }}
-              className="fixed inset-0 z-50 bg-white  overflow-y-auto w-screen h-screen"
+              className="fixed inset-0 z-50 bg-white overflow-y-auto w-screen h-screen"
               role="dialog"
               aria-modal="true"
             >
