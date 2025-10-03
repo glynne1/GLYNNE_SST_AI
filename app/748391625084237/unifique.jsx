@@ -1,6 +1,7 @@
 'use client';
 
 import ChatSimple from './components/ChatLLM'; // 👈 Importamos el chat
+import AlertRotator from './components/alert'; // 👈 Importamos el alerta
 
 export default function MainApp() {
   return (
@@ -9,6 +10,9 @@ export default function MainApp() {
       <div className="w-full max-w-4xl h-screen">
         <ChatSimple />
       </div>
+      
+      {/* Componente de alerta rotatorio */}
+      <AlertRotator />
     </div>
   );
 }

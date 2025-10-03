@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Send, Mic } from 'lucide-react';  // 👈 Mic
 import { supabase } from '../../lib/supabaseClient';
 import AlertUpgrade from './alertPlanes';
-import AuditAlert from './alertGenerarAuditoria';
+import AuditAlert from './ecosistemaMapa';
 import DiscoverG from './TTSinvoke';
 import PlusMenu from './masContenido'; // 👈 importamos tu botón +
 
@@ -86,7 +86,7 @@ export default function ChatSimple() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     const userMessages = messages.filter((m) => m.from === 'user').length;
-    if (userMessages >= 7 && userMessages <= 10 && !showAuditAlert) {
+    if (userMessages >= 5 && userMessages <= 5 && !showAuditAlert) {
       setShowAuditAlert(true);
     }
   }, [messages]);

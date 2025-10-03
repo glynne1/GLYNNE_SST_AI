@@ -22,7 +22,7 @@ export default function ChatSimple() {
 
   const API_URL = 'https://gly-tts-v1.onrender.com';
 
-  // 🔊 Reproducir audio y alimentar el AnalyserNode (del segundo código)
+  // 🔊 Reproducir audio y controlar micrófono
   const reproducirAudio = (audioBase64) => {
     return new Promise((resolve) => {
       if (!audioCtxRef.current) {
@@ -32,7 +32,10 @@ export default function ChatSimple() {
         frequencyData.current = new Uint8Array(analyserRef.current.frequencyBinCount);
       }
 
-      const audioBlob = new Blob([Uint8Array.from(atob(audioBase64), c => c.charCodeAt(0))], { type: 'audio/mp3' });
+      const audioBlob = new Blob(
+        [Uint8Array.from(atob(audioBase64), (c) => c.charCodeAt(0))],
+        { type: 'audio/mp3' }
+      );
       const url = URL.createObjectURL(audioBlob);
       const audio = new Audio(url);
       audio.crossOrigin = 'anonymous';
@@ -42,10 +45,26 @@ export default function ChatSimple() {
       source.connect(analyserRef.current);
       analyserRef.current.connect(audioCtxRef.current.destination);
 
+      // 🔴 Bloquear micrófono antes de reproducir
+      if (recognitionRef.current && isRecording) {
+        recognitionRef.current.stop();
+        setIsRecording(false);
+        setIconVisible(true);
+      }
+
       audio.onended = () => {
         URL.revokeObjectURL(url);
+
+        // 🟢 Reactivar micrófono automáticamente al terminar la voz de la IA
+        if (recognitionRef.current) {
+          recognitionRef.current.start();
+          setIsRecording(true);
+          setIconVisible(false);
+        }
+
         resolve();
       };
+
       audio.onerror = () => {
         URL.revokeObjectURL(url);
         resolve();
@@ -55,7 +74,7 @@ export default function ChatSimple() {
     });
   };
 
-  // 🎨 Animación del canvas (manteniendo del primer código)
+  // 🎨 Animación del canvas
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -114,7 +133,7 @@ export default function ChatSimple() {
     };
   }, []);
 
-  // 🎙️ Configurar SpeechRecognition (manteniendo del primer código)
+  // 🎙️ Configurar SpeechRecognition
   useEffect(() => {
     const id = `user_${Math.floor(Math.random() * 90000) + 10000}`;
     setUserId(id);
@@ -170,7 +189,7 @@ export default function ChatSimple() {
     const words = cleanText.split(' ');
     let currentIndex = 0;
 
-    // 🔊 Reproducir el audio usando la función del segundo código
+    // 🔊 Reproducir el audio con control de micrófono
     if (audioBase64) {
       reproducirAudio(audioBase64);
     }
@@ -237,7 +256,6 @@ export default function ChatSimple() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* ✅ Contenido ajustado al contenedor (manteniendo estilos exactos del primer código) */}
       <div className="w-full h-full flex flex-col items-center justify-center px-4">
         <div className="flex flex-col items-center justify-center">
           <div
@@ -280,7 +298,7 @@ export default function ChatSimple() {
           </div>
         </div>
 
-        {/* 🎬 Subtítulos (manteniendo estilos exactos) */}
+        {/* 🎬 Subtítulos */}
         {showCaptions && displayedMessage.length > 0 && (
           <div className="mt-4 w-full flex justify-center">
             <div className="bg-white/90 p-8 rounded-2xl shadow-lg max-w-[50vw] text-center">
