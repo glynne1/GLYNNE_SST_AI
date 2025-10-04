@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Send, Mic } from 'lucide-react';  // 👈 Mic
 import { supabase } from '../../lib/supabaseClient';
 import AlertUpgrade from './alertPlanes';
-import AuditAlert from './ecosistemaMapa';
+import AuditAlert from './alertGenerarAuditoria';
 import DiscoverG from './TTSinvoke';
 import PlusMenu from './masContenido'; // 👈 importamos tu botón +
 
