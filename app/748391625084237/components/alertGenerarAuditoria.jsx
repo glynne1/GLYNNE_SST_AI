@@ -219,7 +219,7 @@ export default function AuditAlert({ onClose, userId }) {
             Es momento de realizar la auditoría
           </h2>
           <p className="text-gray-600 mb-6">
-            Has llegado al número ideal de interacciones (12 - 15).  
+            GLYai ya cuenta con informacion clave para auditarte  
             ¿Quieres generar la auditoría ahora o continuar chateando?
           </p>
           <div className="flex justify-center gap-4">
