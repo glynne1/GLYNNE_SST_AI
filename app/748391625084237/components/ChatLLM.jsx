@@ -9,6 +9,7 @@ import AuditAlert from './alertGenerarAuditoria';
 import DiscoverG from './TTSinvoke';
 import PlusMenu from './masContenido'; // 👈 importamos tu botón +
 
+
 export default function ChatSimple() {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState([]);
@@ -86,7 +87,7 @@ export default function ChatSimple() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     const userMessages = messages.filter((m) => m.from === 'user').length;
-    if (userMessages >= 12 && userMessages <= 15 && !showAuditAlert) {
+    if (userMessages >= 3 && userMessages <= 5 && !showAuditAlert) {
       setShowAuditAlert(true);
     }
   }, [messages]);
@@ -144,7 +145,7 @@ export default function ChatSimple() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-                placeholder="Pregunta lo que quieras"
+                placeholder="Cuentanos sobre tu empresa"
                 disabled={isLoading}
                 className="w-full px-4 py-4 rounded-full text-lg bg-white outline-none relative z-10"
                 style={{
