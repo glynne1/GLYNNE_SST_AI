@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import ModalInicio from './components/madalInicio';
 import ChatLLM from './unifique';
 import Header from './components/header';
-import SideMenu from './components/menuLateral'; 
+import SideMenu from './components/menuLateral';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 
@@ -23,9 +23,9 @@ export default function Diagnostico() {
           fetch('https://gly-tts-v1.onrender.com/conversar', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ texto: 'ping' })
+            body: JSON.stringify({ texto: 'ping' }),
           }),
-          fetch(' https://gly-csv-v2.onrender.com', { method: 'GET' })
+          fetch('https://gly-csv-v2.onrender.com', { method: 'GET' }),
         ]);
         console.log('✅ Servicios despertados correctamente');
       } catch (error) {
@@ -52,16 +52,18 @@ export default function Diagnostico() {
           <motion.div
             className="fixed inset-0 flex items-center justify-center z-50 p-4 bg-cover bg-center"
             style={{
-              backgroundImage:
-                "url('/fort.png')",
+              backgroundImage: "url('/main-6.jpg')",
             }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <div className="absolute inset-0 bg-black/80" />
+            {/* Oscurecimiento ligero sobre la imagen */}
+            <div className="absolute inset-0 bg-black/40" />
+
+            {/* CONTENEDOR con blur (solo cambio aquí) */}
             <motion.div
-              className="relative bg-black/40 rounded-3xl shadow-2xl w-[80vw] max-w-4xl px-[4vw] py-[5vh] flex flex-col items-center z-10"
+              className="relative backdrop-blur-md bg-white/20 rounded-3xl shadow-2xl w-[80vw] max-w-4xl px-[4vw] py-[5vh] flex flex-col items-center z-10"
               initial={{ scale: 0.95, y: 30 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 40 }}
@@ -89,16 +91,17 @@ export default function Diagnostico() {
               />
 
               <p
-                className="text-center text-gray-300 max-w-[70ch] mt-4"
+                className="text-center text-gray-200 max-w-[70ch] mt-4"
                 style={{
                   fontSize: 'clamp(0.75rem, 1.2vw, 1rem)',
                   lineHeight: '1.6',
                 }}
               >
                 Estamos preparando los sistemas para que la experiencia sea rápida y estable.
-                Este paso inicial conecta con nuestros servicios de <strong>inteligencia artificial</strong> 
-                y procesamiento de voz antes de comenzar.
+                Este paso inicial conecta con nuestros servicios de{' '}
+                <strong>inteligencia artificial</strong> y procesamiento de voz antes de comenzar.
               </p>
+
               <br />
               <p className="text-gray-300">Puede tardar un minuto...</p>
 

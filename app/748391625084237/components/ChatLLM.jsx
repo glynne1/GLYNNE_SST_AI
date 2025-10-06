@@ -87,7 +87,7 @@ export default function ChatSimple() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     const userMessages = messages.filter((m) => m.from === 'user').length;
-    if (userMessages >= 3 && userMessages <= 5 && !showAuditAlert) {
+    if (userMessages >= 20 && userMessages <= 21 && !showAuditAlert) {
       setShowAuditAlert(true);
     }
   }, [messages]);

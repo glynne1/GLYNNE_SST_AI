@@ -55,7 +55,7 @@ export default function PerfilUsuario() {
       
       <div className="mt-4 px-4 py-2 rounded-lg bg-gray-50 border border-gray-200">
         <p className="text-gray-600 text-sm">
-          ¡Bienvenido a <span className="font-bold text-black">GLY_SALES_AGENTS</span>!
+          ¡Bienvenido a <span className="font-bold text-black">GLY_AI</span>!
         </p>
         <p className="text-xs text-gray-400 mt-1">
           Tu espacio para conocer como integramos ia a tus procesos empresariales

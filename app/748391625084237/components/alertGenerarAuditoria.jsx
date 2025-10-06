@@ -2,10 +2,12 @@
 import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import jsPDF from 'jspdf';
-import SaveAudit from './saveJSON'; // 
+import SaveAudit from './saveJSON';
+// import MapaRutaAlert from './ecosistemaMapa'; // 🚫 Comentado: componente del mapa
 
 export default function AuditAlert({ onClose, userId }) {
   const [openResult, setOpenResult] = useState(false);
+  // const [openStructure, setOpenStructure] = useState(false); // 🚫 Comentado: estado del popup del mapa
   const [auditoria, setAuditoria] = useState(null);
   const [loading, setLoading] = useState(false);
   const [tempJson, setTempJson] = useState(null);
@@ -74,14 +76,14 @@ export default function AuditAlert({ onClose, userId }) {
         doc.text('Informe de Auditoría', pageWidth / 2, y, { align: 'center' });
         y += 30;
 
-        // LOGO más pequeño
+        // LOGO
         const logoSrc = jsonData.contenido?.logo || '/logo2.png';
         if (logoSrc) {
           const logo = new Image();
           logo.src = logoSrc;
           await new Promise((resolve) => {
             logo.onload = () => {
-              const imgWidth = 60; // más pequeño
+              const imgWidth = 60;
               const imgHeight = (logo.height / logo.width) * imgWidth;
               doc.addImage(logo, 'PNG', (pageWidth - imgWidth) / 2, y, imgWidth, imgHeight);
               y += imgHeight + 20;
@@ -90,7 +92,7 @@ export default function AuditAlert({ onClose, userId }) {
           });
         }
 
-        // TEXTO DE AUDITORÍA
+        // TEXTO
         doc.setFontSize(12);
         const parrafos = texto.split(/\n+/).filter(p => p.trim() !== '');
         for (let parrafo of parrafos) {
@@ -117,8 +119,8 @@ export default function AuditAlert({ onClose, userId }) {
           y += 18;
         }
 
-        // PÁRRAFO GLYNNE
-        const glText = `GLYNNE TECH S.A.S. es una sociedad por acciones simplificada (SAS) constituida bajo la Ley 1258 de 2008, con domicilio principal en Madrid (Cundinamarca) y duración indefinida. La empresa cuenta con plena personificación jurídica y la capacidad de celebrar actos y contratos a nivel nacional e internacional. Su objeto social se centra en el diseño, desarrollo e implementación de soluciones tecnológicas avanzadas, con énfasis en arquitectura de software, automatización de procesos empresariales e inteligencia artificial.`;
+        // TEXTO FINAL
+        const glText = `GLYNNE TECH S.A.S. es una sociedad por acciones simplificada (SAS) constituida bajo la Ley 1258 de 2008...`;
         const glLines = doc.splitTextToSize(glText, pageWidth - margin * 2);
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(10);
@@ -132,33 +134,27 @@ export default function AuditAlert({ onClose, userId }) {
         });
         y += 30;
 
-        // SELLO y FIRMA más grandes
+        // SELLO y FIRMA
         const selloSrc = jsonData.contenido?.sello || '/celloGLY.png';
         const firmaSrc = jsonData.contenido?.firma || '/firma.png';
 
-        const imgSelloWidth = 140; // más grande
+        const imgSelloWidth = 140;
         const imgSelloHeight = 140;
-
-        const imgFirmaWidth = 140; // más grande
+        const imgFirmaWidth = 140;
         const imgFirmaHeight = 100;
 
-        // Sello
         if (selloSrc) {
           const sello = new Image();
           sello.src = selloSrc;
           await new Promise((resolve) => {
             sello.onload = () => {
               doc.addImage(sello, 'PNG', margin, y, imgSelloWidth, imgSelloHeight);
-              // Texto debajo del sello
-              doc.setFont('helvetica', 'normal');
-              doc.setFontSize(10);
-              doc.text("Sello de la Empresa", margin + imgSelloWidth/2, y + imgSelloHeight + 12, { align: 'center' });
+              doc.text("Sello de la Empresa", margin + imgSelloWidth / 2, y + imgSelloHeight + 12, { align: 'center' });
               resolve(true);
             };
           });
         }
 
-        // Firma
         if (firmaSrc) {
           const firma = new Image();
           firma.src = firmaSrc;
@@ -166,12 +162,7 @@ export default function AuditAlert({ onClose, userId }) {
             firma.onload = () => {
               const xFirma = pageWidth - margin - imgFirmaWidth;
               doc.addImage(firma, 'PNG', xFirma, y, imgFirmaWidth, imgFirmaHeight);
-              // Texto debajo de la firma
-              doc.setFont('helvetica', 'normal');
-              doc.setFontSize(10);
-              doc.text("Firma Autorizada", xFirma + imgFirmaWidth/2, y + imgFirmaHeight + 12, { align: 'center' });
-              doc.setFontSize(9);
-              doc.text("Alexander Quiroga\nCC 1073176755\nCEO & Director de GLYNNE", xFirma + imgFirmaWidth/2, y + imgFirmaHeight + 28, { align: 'center' });
+              doc.text("Firma Autorizada", xFirma + imgFirmaWidth / 2, y + imgFirmaHeight + 12, { align: 'center' });
               resolve(true);
             };
           });
@@ -219,10 +210,10 @@ export default function AuditAlert({ onClose, userId }) {
             Es momento de realizar la auditoría
           </h2>
           <p className="text-gray-600 mb-6">
-            GLYai ya cuenta con informacion clave para auditarte  
+            GLYai ya cuenta con información clave para auditarte.  
             ¿Quieres generar la auditoría ahora o continuar chateando?
           </p>
-          <div className="flex justify-center gap-4">
+          <div className="flex flex-col gap-3">
             <button
               onClick={generarAuditoria}
               className="px-4 py-2 bg-black text-white rounded-lg shadow hover:bg-gray-800 transition"
@@ -230,6 +221,16 @@ export default function AuditAlert({ onClose, userId }) {
             >
               {loading ? "Generando..." : "Generar Auditoría"}
             </button>
+
+            {/* 🚫 Botón azul de crear mapa comentado
+            <button
+              onClick={() => setOpenStructure(true)}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
+            >
+              Visualizar estructura de negocio
+            </button>
+            */}
+
             <button
               onClick={onClose}
               className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition"
@@ -240,7 +241,7 @@ export default function AuditAlert({ onClose, userId }) {
         </motion.div>
       </div>
 
-      {/* Modal con resultado */}
+      {/* Modal con resultado de auditoría */}
       {openResult && auditoria && (
         <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm z-[60]">
           <motion.div
@@ -274,13 +275,11 @@ export default function AuditAlert({ onClose, userId }) {
                 <p>
                   GLYNNE TECH S.A.S. es una <strong>sociedad por acciones simplificada (SAS)</strong> 
                   constituida bajo la Ley 1258 de 2008, con domicilio principal en 
-                  <strong> Madrid (Cundinamarca)</strong> y duración indefinida. 
-                  La empresa cuenta con plena personificación jurídica y la capacidad de celebrar 
-                  actos y contratos a nivel nacional e internacional.
+                  <strong> Madrid (Cundinamarca)</strong>.
                 </p>
                 <p className="mt-2">
                   Su objeto social se centra en el <strong>diseño, desarrollo e implementación de soluciones tecnológicas avanzadas</strong>, 
-                  con énfasis en <strong>arquitectura de software, automatización de procesos empresariales e inteligencia artificial</strong>.
+                  con énfasis en <strong>arquitectura de software, automatización e inteligencia artificial</strong>.
                 </p>
               </div>
 
@@ -313,6 +312,12 @@ export default function AuditAlert({ onClose, userId }) {
           </motion.div>
         </div>
       )}
+
+      {/* 🚫 Popup del mapa completamente comentado
+      {openStructure && (
+        <MapaRutaAlert onClose={() => setOpenStructure(false)} />
+      )}
+      */}
     </>
   );
 }

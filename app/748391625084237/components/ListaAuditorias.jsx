@@ -65,7 +65,7 @@ export default function AuditoriasFullScreen() {
       className="w-full h-screen relative flex flex-col bg-cover bg-center"
       style={{ backgroundImage: "url('/ruta/de/tu/imagen-fondo.jpg')" }}
     >
-      {/* Overlay para legibilidad */}
+      {/* Overlay */}
       <div className="absolute inset-0 w-full h-full z-0 bg-white/90"></div>
 
       {/* 🎯 Contenedor principal */}
@@ -81,7 +81,7 @@ export default function AuditoriasFullScreen() {
               className="absolute top-0 left-0 h-full w-full bg-white border-r border-gray-200 shadow-lg z-30 overflow-y-auto"
             >
               <div className="p-5 flex justify-between items-center border-b border-gray-200">
-                <h2 className="text-lg font-semibold">Mis Auditorías</h2>
+                <h2 className="text-lg font-semibold text-gray-800">Mis Auditorías</h2>
                 <button onClick={toggleSidebar} className="text-gray-500 hover:text-black">
                   <X size={20} />
                 </button>
@@ -91,13 +91,16 @@ export default function AuditoriasFullScreen() {
                 {auditorias.length === 0 ? (
                   <p className="text-sm text-gray-500">Aún no tienes auditorías.</p>
                 ) : (
-                  auditorias.map((a) => (
+                  auditorias.map((a, i) => (
                     <motion.div
                       key={a.id}
                       onClick={() => setSelectedAudit(a)}
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.05, duration: 0.3 }}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="cursor-pointer bg-gray-50 border border-gray-200 hover:border-black rounded-lg p-3 shadow-sm flex justify-between items-center"
+                      className="cursor-pointer bg-white border border-gray-200 hover:border-black rounded-lg p-3 shadow-sm flex justify-between items-center"
                     >
                       <div className="flex-1">
                         <p className="text-xs font-medium text-gray-700">
@@ -129,7 +132,7 @@ export default function AuditoriasFullScreen() {
 
         {/* Contenido principal */}
         <div className="flex-1 h-full overflow-y-auto transition-all duration-300 p-6 ml-0">
-          {/* 🟠 Botón para abrir/cerrar panel de auditorías */}
+          {/* 🟠 Botón para abrir/cerrar panel */}
           <button
             onClick={toggleSidebar}
             className="fixed top-[120px] left-[18px] z-40 bg-black text-white p-3 shadow-lg hover:bg-gray-900 transition rounded-md"
@@ -137,7 +140,7 @@ export default function AuditoriasFullScreen() {
             <FaListUl size={18} />
           </button>
 
-          {/* 📌 Contenedor en columna: Perfil arriba, Preguntas abajo */}
+          {/* 📌 Contenedor principal */}
           <div className="flex flex-col gap-[15px]">
             <div className="w-full">
               <Perfil />
@@ -151,14 +154,14 @@ export default function AuditoriasFullScreen() {
         </div>
       </div>
 
-      {/* Footer fijo */}
+      {/* Footer */}
       <footer className="bg-white p-4 border-t border-gray-200 text-center z-10 relative">
         <p className="text-xs text-gray-500">
           © GLYNNE 2025 - Innovación impulsada por inteligencia artificial
         </p>
       </footer>
 
-      {/* 🪟 Modal detalle de auditoría */}
+      {/* 🪟 Modal detalle */}
       <AnimatePresence>
         {selectedAudit && (
           <motion.div
@@ -181,12 +184,30 @@ export default function AuditoriasFullScreen() {
                 <X size={20} />
               </button>
 
-              <h3 className="text-lg font-bold mb-4">
+              <h3 className="text-lg font-bold mb-4 text-gray-800">
                 Auditoría del {new Date(selectedAudit.created_at).toLocaleString()}
               </h3>
 
-              <div className="prose prose-gray max-w-none text-sm leading-relaxed">
-                <ReactMarkdown>
+              <div className="text-sm text-gray-700 leading-relaxed space-y-4">
+                <ReactMarkdown
+                  components={{
+                    p: ({ node, ...props }) => (
+                      <p className="mb-3 text-gray-700 leading-relaxed" {...props} />
+                    ),
+                    h1: ({ node, ...props }) => (
+                      <h1 className="text-lg font-bold mt-4 mb-2" {...props} />
+                    ),
+                    h2: ({ node, ...props }) => (
+                      <h2 className="text-md font-semibold mt-3 mb-2" {...props} />
+                    ),
+                    ul: ({ node, ...props }) => (
+                      <ul className="list-disc pl-6 space-y-1" {...props} />
+                    ),
+                    ol: ({ node, ...props }) => (
+                      <ol className="list-decimal pl-6 space-y-1" {...props} />
+                    ),
+                  }}
+                >
                   {typeof selectedAudit.audit_content === 'string'
                     ? selectedAudit.audit_content
                     : JSON.stringify(selectedAudit.audit_content, null, 2)}
