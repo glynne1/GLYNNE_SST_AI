@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { LoginPopup } from './LoginPopup';
+
 
 export default function Main1() {
-  const [showLoginModal, setShowLoginModal] = useState(false);
+
   const [showLogo, setShowLogo] = useState(false);
 
   useEffect(() => {
@@ -17,8 +17,8 @@ export default function Main1() {
       {/* Video de fondo desde Cloudinary */}
       <div className="absolute top-0 left-0 w-full h-full">
         <video
-          src="https://res.cloudinary.com/dpdyco5po/video/upload/f_auto,q_auto/f_auto,q_auto/Generated_File_September_21_2025_-_10_15PM_t91zai.mp4"
-          poster="https://res.cloudinary.com/dpdyco5po/video/upload/f_auto,q_auto/Generated_File_September_21_2025_-_10_15PM_t91zai.jpg"
+          src="https://res.cloudinary.com/dpdyco5po/video/upload/f_auto,q_auto/f_auto,q_auto/Hailuo_Video__Animación_hiperrealista_en_fo_427709358801817606_eyl9wc.mp4"
+          poster="https://res.cloudinary.com/dpdyco5po/video/upload/f_auto,q_auto/Hailuo_Video__Animación_hiperrealista_en_fo_427709358801817606_eyl9wc.jpg"
           autoPlay
           muted
           loop
@@ -69,8 +69,6 @@ export default function Main1() {
         </div>
       </div>
 
-      {/* Popup separado */}
-      <LoginPopup visible={showLoginModal} onClose={() => setShowLoginModal(false)} />
     </main>
   );
 }
