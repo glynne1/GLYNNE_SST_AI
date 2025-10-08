@@ -57,7 +57,7 @@ export default function PlusMenu() {
   };
 
   // 🔹 Si la ventana es menor a 500px, no renderizamos nada
-  if (windowWidth < 500) return null;
+  //if (windowWidth < 500) return null;
 
   return (
     <div ref={menuRef} className="relative flex items-center">
