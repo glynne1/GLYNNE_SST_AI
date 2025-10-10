@@ -229,64 +229,57 @@ export default function CSVAnalyzer() {
           </p>
         </div>
 
-        {/* Inputs: descripción arriba, CSV debajo */}
-<div className="relative rounded-2xl p-4 sm:p-6 lg:p-8 mb-6 lg:mb-8">
-  <div className="flex flex-col gap-4">
-    {/* Input de descripción con gradiente animado */}
-    <div className="w-full max-w-2xl relative flex items-center gap-2 mx-auto">
-      {/* 👈 Aquí podrías agregar un botón o icono tipo PlusMenu si quieres */}
-      <div className="relative flex-1">
-        <input
-          type="text"
-          value={descripcion}
-          onChange={handleDescripcionChange}
-          placeholder="Ej. Datos de accidentes de tránsito 2024"
-          className="w-full px-4 py-4 rounded-full text-lg bg-white outline-none relative z-10"
-          style={{
-            border: '2px solid transparent',
-            backgroundClip: 'padding-box',
-          }}
-        />
-        <span
-          className="absolute inset-0 rounded-full pointer-events-none"
-          style={{
-            background: 'linear-gradient(90deg, #4ade80, #3b82f6, #facc15, #ec4899)',
-            backgroundSize: '300% 300%',
-            animation: 'shine 2.5s linear infinite',
-            borderRadius: '9999px',
-            padding: '2px',
-            zIndex: 0,
-            maskImage: 'linear-gradient(#fff 0 0)',
-            WebkitMaskImage: 'linear-gradient(#fff 0 0)',
-          }}
-        />
-      </div>
-    </div>
-
-    {/* Selector de CSV */}
-    <div className="w-full">
-      <label className="block text-sm font-medium text-gray-900 mb-2">Selecciona tu archivo CSV</label>
-      <input
-        type="file"
-        accept=".csv"
-        onChange={handleFileChange}
-        className="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl focus:border-gray-500 focus:ring-2 focus:ring-gray-200 transition-all duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:text-sm file:font-semibold file:bg-gray-50 file:text-gray-900 hover:file:bg-gray-100"
-      />
-    </div>
-
-    {/* Botón de analizar */}
-    <button
-      onClick={handleAnalyze}
-      disabled={!file || !descripcion || loading}
-      className="w-full sm:w-auto px-6 lg:px-8 py-3 lg:py-4 bg-black text-white font-semibold rounded-xl hover:bg-gray-900 disabled:bg-gray-400 disabled:cursor-not-allowed transform hover:scale-105 disabled:scale-100 transition-all duration-200 shadow-lg"
-    >
-      {loading ? "Analizando..." : "Analizar CSV"}
-    </button>
+       {/* Inputs: descripción arriba, CSV debajo + botón */}
+<div className="relative rounded-2xl p-4 sm:p-6 lg:p-8 mb-6 lg:mb-8 flex flex-col gap-4 w-full max-w-2xl mx-auto">
+  {/* Input de descripción */}
+  <div className="relative flex-1">
+    <input
+      type="text"
+      value={descripcion}
+      onChange={handleDescripcionChange}
+      placeholder="Ej. Datos de accidentes de tránsito 2024"
+      className="w-full px-4 py-4 rounded-full text-lg bg-white outline-none relative z-10"
+      style={{ border: "2px solid transparent", backgroundClip: "padding-box" }}
+    />
+    <span
+      className="absolute inset-0 rounded-full pointer-events-none"
+      style={{
+        background: "linear-gradient(90deg, #4ade80, #3b82f6, #facc15, #ec4899)",
+        backgroundSize: "300% 300%",
+        animation: "shine 2.5s linear infinite",
+        borderRadius: "9999px",
+        padding: "2px",
+        zIndex: 0,
+      }}
+    />
   </div>
+
+  {/* Selector de CSV */}
+  <div className="w-full">
+    <label className="block text-sm font-medium text-gray-900 mb-2">
+      Selecciona tu archivo CSV
+    </label>
+    <input
+      type="file"
+      accept=".csv"
+      onChange={handleFileChange}
+      className="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl focus:border-gray-500 focus:ring-2 focus:ring-gray-200 transition-all duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:text-sm file:font-semibold file:bg-gray-50 file:text-gray-900 hover:file:bg-gray-100"
+    />
+  </div>
+
+  {/* Botón de analizar */}
+  <button
+    onClick={handleAnalyze}
+    disabled={!file || !descripcion || loading}
+    className="w-full px-6 lg:px-8 py-3 lg:py-4 bg-black text-white font-semibold rounded-xl hover:bg-gray-900 disabled:bg-gray-400 disabled:cursor-not-allowed transform hover:scale-105 disabled:scale-100 transition-all duration-200 shadow-lg"
+  >
+    {loading ? "Analizando..." : "Analizar CSV"}
+  </button>
 
   {file && <p className="mt-2 text-gray-700">Archivo seleccionado: <b>{file.name}</b></p>}
   {error && <p className="mt-2 text-orange-700 font-medium">❌ {error}</p>}
 </div>
+
 
 
         {/* Results */}
@@ -310,20 +303,103 @@ export default function CSVAnalyzer() {
             </div>
 
             {/* Content */}
-            <div className="p-4 sm:p-6 lg:p-8 h-[calc(100vh-200px)] overflow-y-auto">
-              {view === "informe" && <div className="bg-white p-6 lg:p-8 rounded-2xl shadow-inner border border-gray-300 h-full overflow-y-auto text-gray-700">{data.informe_ejecutivo}</div>}
-              {view === "tablas" && (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
-                  <div>
-                    <h2 className="text-2xl font-bold mb-3 text-gray-900">📈 Columnas Numéricas</h2>
-                    {renderTable(data.tablas?.numericas)}
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-bold mb-3 text-gray-700">📝 Columnas No Numéricas</h2>
-                    {renderTable(data.tablas?.no_numericas)}
-                  </div>
-                </div>
-              )}
+<div className="p-4 sm:p-6 lg:p-8 h-[calc(100vh-200px)] overflow-y-auto">
+  {view === "informe" && (
+    <div className="bg-white p-6 lg:p-8 rounded-2xl shadow-inner border border-gray-300 h-full overflow-y-auto text-gray-700">
+      {data.informe_ejecutivo.split(". ").map((sentence, idx) => {
+        // Resaltar palabras clave y cifras
+        const highlighted = sentence.replace(
+          /(\d{1,3}(?:\.\d{3})*(?:,\d+)?|\bBitcoin\b|\bvolatilidad\b|\binversores\b|\bmercado\b|\bcapitalización\b|\briesgos\b)/gi,
+          "<strong>$1</strong>"
+        );
+
+        // Retornar cada oración como párrafo
+        return (
+          <p key={idx} className="mb-4 leading-relaxed" dangerouslySetInnerHTML={{ __html: highlighted }} />
+        );
+      })}
+    </div>
+  )}
+
+{view === "tablas" && (
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
+    {/* Tabla Numéricas */}
+    <div className="flex flex-col h-full bg-white rounded-2xl shadow-lg border border-gray-300 overflow-hidden">
+      <h2 className="text-2xl font-bold mb-3 p-4 bg-gray-50 text-gray-900 border-b border-gray-200">
+         Columnas Numéricas
+      </h2>
+      <div className="flex-1 overflow-x-auto">
+        <table className="min-w-full border-collapse">
+          <thead className="bg-gray-100 text-gray-900 sticky top-0 z-10">
+            <tr>
+              {data.tablas?.numericas && Object.keys(data.tablas.numericas[0] || {}).map((col, idx) => (
+                <th
+                  key={idx}
+                  className="px-4 py-3 border border-gray-200 text-sm font-semibold text-center whitespace-nowrap"
+                >
+                  {col}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {data.tablas?.numericas?.map((row, rowIdx) => (
+              <tr key={rowIdx} className="hover:bg-gray-50 transition-colors duration-200">
+                {Object.keys(row).map((col, colIdx) => (
+                  <td
+                    key={colIdx}
+                    className="px-4 py-3 border border-gray-100 text-sm text-center text-gray-700 whitespace-nowrap"
+                  >
+                    {row[col] ?? "-"}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    {/* Tabla No Numéricas */}
+    <div className="flex flex-col h-full bg-white rounded-2xl shadow-lg border border-gray-300 overflow-hidden">
+      <h2 className="text-2xl font-bold mb-3 p-4 bg-gray-50 text-gray-700 border-b border-gray-200">
+        Columnas No Numéricas
+      </h2>
+      <div className="flex-1 overflow-x-auto">
+        <table className="min-w-full border-collapse">
+          <thead className="bg-gray-100 text-gray-900 sticky top-0 z-10">
+            <tr>
+              {data.tablas?.no_numericas && Object.keys(data.tablas.no_numericas[0] || {}).map((col, idx) => (
+                <th
+                  key={idx}
+                  className="px-4 py-3 border border-gray-200 text-sm font-semibold text-center whitespace-nowrap"
+                >
+                  {col}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {data.tablas?.no_numericas?.map((row, rowIdx) => (
+              <tr key={rowIdx} className="hover:bg-gray-50 transition-colors duration-200">
+                {Object.keys(row).map((col, colIdx) => (
+                  <td
+                    key={colIdx}
+                    className="px-4 py-3 border border-gray-100 text-sm text-center text-gray-700 whitespace-nowrap"
+                  >
+                    {row[col] ?? "-"}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+)}
+
+
               {view === "graficas" && (
                 <div className="flex flex-col h-full">
                   <div className="flex flex-wrap gap-2 mb-4">

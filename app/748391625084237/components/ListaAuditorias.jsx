@@ -134,11 +134,12 @@ export default function AuditoriasFullScreen() {
         <div className="flex-1 h-full overflow-y-auto transition-all duration-300 p-6 ml-0">
           {/* 🟠 Botón para abrir/cerrar panel */}
           <button
-            onClick={toggleSidebar}
-            className="fixed top-[120px] left-[18px] z-40 bg-black text-white p-3 shadow-lg hover:bg-gray-900 transition rounded-md"
-          >
-            <FaListUl size={18} />
-          </button>
+  onClick={toggleSidebar}
+  className="fixed mt-[-50px] left-[18px] z-40 bg-black text-white p-3 shadow-lg hover:bg-gray-900 transition rounded-md"
+>
+  <FaListUl size={8} />
+</button>
+
 
           {/* 📌 Contenedor principal */}
           <div className="flex flex-col gap-[15px]">

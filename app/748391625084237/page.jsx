@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import ModalInicio from './components/madalInicio';
 import ChatLLM from './unifique';
-import Header from './components/header';
+
 import SideMenu from './components/menuLateral';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
@@ -123,9 +123,7 @@ export default function Diagnostico() {
       {/* Contenido principal */}
       <div className="flex-1 flex flex-col h-full">
         {/* Header fijo */}
-        <div className="shrink-0">
-          <Header />
-        </div>
+    
 
         {/* Contenedor del chat */}
         <div className="flex-1">

@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 export default function AlertRotator() {
   const [currentMessage, setCurrentMessage] = useState('');
   const [visible, setVisible] = useState(false);
-  const [showAlerts, setShowAlerts] = useState(true);
+  const [showAlerts, setShowAlerts] = useState(false);
 
   const messages = [
     'Cada flujo de trabajo puede convertirse en un sistema inteligente. GLYNNE lo diseña, lo entrena y lo escala contigo.',
@@ -74,7 +74,8 @@ export default function AlertRotator() {
   // 👇 Detectar ancho de pantalla
   useEffect(() => {
     const handleResize = () => {
-      setShowAlerts(window.innerWidth > 400);
+      // Solo mostrar alerts si el ancho es <= 600px
+      setShowAlerts(window.innerWidth <= 600);
     };
 
     handleResize(); // Verificar al cargar
@@ -94,11 +95,11 @@ export default function AlertRotator() {
     };
 
     showRandomMessage();
-    const interval = setInterval(showRandomMessage, 2000000);
+    const interval = setInterval(showRandomMessage, 2000000); // Ajusta tiempo si quieres
     return () => clearInterval(interval);
   }, [showAlerts]);
 
-  if (!showAlerts) return null; // 👈 no renderiza nada si la pantalla es pequeña
+  if (!showAlerts) return null; // 👈 No renderiza nada si la pantalla es > 600px
 
   return (
     <div className="fixed top-6 right-6 mt-[30px] z-50">
@@ -115,7 +116,7 @@ export default function AlertRotator() {
                 '0 0 0px rgba(255,255,255,0)',
                 '0 0 12px rgba(255,255,255,0.6)',
                 '0 0 4px rgba(255,255,255,0.3)',
-                '0 0 0px rgba(255,255,255,0)'
+                '0 0 0px rgba(255,255,255,0)',
               ],
             }}
             exit={{ opacity: 0, y: -20, scale: 0.98 }}
