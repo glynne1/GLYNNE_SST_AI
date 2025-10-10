@@ -8,7 +8,7 @@ import { supabase } from '../../lib/supabaseClient';
 import AuditAlert from './alertGenerarAuditoria';
 import DiscoverG from './instruccionnesAuditoria';
 import PlusMenu from './masContenido2';
-import BannerAuditoria from './banerAut'; // 🔹 Banner
+import BannerAuditoria from './banerAut';
 
 export default function ChatSimple() {
   const [input, setInput] = useState('');
@@ -22,22 +22,19 @@ export default function ChatSimple() {
 
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
-
   const API_URL = 'https://gly-chat-v1-2.onrender.com';
+
   const quickQuestions = [
     "Mi empresa tiene problemas de ...",
-    "¿qué puedo automatizar primero?",
-
+    "¿Qué puedo automatizar primero?",
   ];
 
   useEffect(() => {
     if ('webkitSpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const recognition = new SpeechRecognition();
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
       recognition.lang = 'es-ES';
       recognition.continuous = false;
       recognition.interimResults = false;
-
       recognition.onresult = (event) => {
         let transcript = '';
         for (let i = event.resultIndex; i < event.results.length; ++i) {
@@ -45,10 +42,8 @@ export default function ChatSimple() {
         }
         setInput(transcript);
       };
-
       recognition.onend = () => setIsRecording(false);
-      recognition.onerror = (err) => { console.error(err); setIsRecording(false); };
-
+      recognition.onerror = () => setIsRecording(false);
       recognitionRef.current = recognition;
     }
   }, []);
@@ -66,10 +61,10 @@ export default function ChatSimple() {
 
   useEffect(() => {
     const fetchUserInfo = async () => {
-      const { data: { user }, error } = await supabase.auth.getUser();
-      if (error || !user) return;
-      const { user_metadata } = user;
-      setUserInfo({ nombre: user_metadata?.full_name || 'Usuario' });
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUserInfo({ nombre: user.user_metadata?.full_name || 'Usuario' });
+      }
     };
     fetchUserInfo();
   }, []);
@@ -87,8 +82,6 @@ export default function ChatSimple() {
 
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return;
-
-    // Ocultar las preguntas rápidas al enviar el primer mensaje
     if (showQuickQuestions) setShowQuickQuestions(false);
 
     const userMsg = { from: 'user', text: input };
@@ -115,7 +108,6 @@ export default function ChatSimple() {
 
   return (
     <div className="w-full h-screen flex flex-col bg-white">
-      {/* 🔹 Banner animado arriba */}
       <BannerAuditoria />
 
       {showAuditAlert && (
@@ -129,21 +121,23 @@ export default function ChatSimple() {
       )}
 
       {messages.length === 0 ? (
-        <div className="flex flex-1 flex-col items-center justify-center text-center px-4 relative">
+        // 🧭 Vista inicial (sin mensajes)
+        <div className="flex flex-1 flex-col items-center justify-center text-center px-6 md:px-12 lg:px-20">
           <p className="text-2xl md:text-xl sm:text-lg mb-6">
             Hoy auditaremos tus procesos, <span className="font-semibold">{userInfo.nombre}</span>.
           </p>
 
-          <div className="w-full max-w-2xl relative flex flex-col items-center gap-2">
+          <div className="w-full max-w-2xl flex flex-col items-center gap-2 relative">
             <PlusMenu />
 
-            <div className="relative flex-1 w-full">
+            {/* Input inicial */}
+            <div className="relative w-full">
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-                placeholder="Cuentanos sobre tu empresa"
+                placeholder="Cuéntanos sobre tu empresa"
                 disabled={isLoading}
                 className="w-full px-4 py-4 rounded-full text-lg bg-white outline-none relative z-10"
                 style={{ border: '2px solid transparent', backgroundClip: 'padding-box' }}
@@ -157,10 +151,9 @@ export default function ChatSimple() {
                   borderRadius: '9999px',
                   padding: '2px',
                   zIndex: 0,
-                  maskImage: 'linear-gradient(#fff 0 0)',
-                  WebkitMaskImage: 'linear-gradient(#fff 0 0)',
                 }}
               />
+
               {input.trim() ? (
                 <motion.button
                   whileTap={{ scale: 0.9 }}
@@ -177,16 +170,16 @@ export default function ChatSimple() {
                   whileHover={{ scale: 1.05 }}
                   onClick={toggleRecording}
                   disabled={isLoading}
-                  className={`absolute right-2 top-1/2 -translate-y-1/2 rounded-full w-10 h-10 flex items-center justify-center shadow-md z-20 ${isRecording ? 'bg-red-600 text-white' : 'bg-black text-white'}`}
+                  className={`absolute right-2 top-1/2 -translate-y-1/2 rounded-full w-10 h-10 flex items-center justify-center shadow-md z-20 ${isRecording ? 'bg-red-600' : 'bg-black'} text-white`}
                 >
                   <Mic size={18} />
                 </motion.button>
               )}
             </div>
 
-            {/* 🔹 Preguntas predefinidas */}
+            {/* Preguntas rápidas */}
             {showQuickQuestions && (
-              <div className="flex flex-wrap justify-center gap-2 mt-2">
+              <div className="flex flex-wrap justify-center gap-2 mt-3">
                 {quickQuestions.map((q, idx) => (
                   <button
                     key={idx}
@@ -198,40 +191,38 @@ export default function ChatSimple() {
                 ))}
               </div>
             )}
-
-            <style jsx>{`
-              @keyframes shine {
-                0% { background-position: 0% 50%; }
-                50% { background-position: 100% 50%; }
-                100% { background-position: 0% 50%; }
-              }
-            `}</style>
           </div>
 
-          <div className="hidden md:block">
+          <div className="hidden md:block mt-6">
             <DiscoverG />
           </div>
         </div>
       ) : (
+        // 💬 Vista de chat con mensajes
         <>
-          {/* 🔹 Chat normal */}
-          <div className="flex-1 px-4 py-2 flex flex-col justify-end">
-            {messages.map((msg, idx) => (
-              <div key={idx} className={`mb-2 flex ${msg.from === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div
-                  className={`px-4 py-2 rounded-2xl max-w-[80%] ${msg.from === 'user' ? 'bg-black text-white' : 'bg-white text-black shadow-sm'}`}
-                >
-                  {msg.text}
+          <div className="flex-1 px-6 md:px-16 lg:px-28 py-6 flex flex-col justify-end">
+            <div className="flex flex-col w-full max-w-4xl mx-auto space-y-3">
+              {messages.map((msg, idx) => (
+                <div key={idx} className={`flex ${msg.from === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div
+                    className={`px-5 py-3 rounded-2xl break-words ${
+                      msg.from === 'user'
+                        ? 'bg-black text-white self-end'
+                        : 'bg-white text-black shadow-sm border border-gray-200'
+                    } max-w-[75%]`}
+                  >
+                    {msg.text}
+                  </div>
                 </div>
-              </div>
-            ))}
-            <div ref={messagesEndRef} />
+              ))}
+              <div ref={messagesEndRef} />
+            </div>
           </div>
 
-          <div className="w-full px-4 py-4 flex justify-center">
-            <div className="flex w-[70%] relative items-center gap-2">
+          {/* Input inferior */}
+          <div className="w-full px-6 md:px-16 lg:px-28 py-4 flex justify-center">
+            <div className="flex w-full max-w-3xl relative items-center gap-2">
               <PlusMenu />
-
               <div className="relative flex-1">
                 <input
                   type="text"
@@ -239,7 +230,7 @@ export default function ChatSimple() {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
                   placeholder="Escribe tu mensaje..."
-                  className="w-full px-4 py-4 rounded-full text-lg bg-white outline-none relative z-10 pr-14"
+                  className="w-full px-5 py-4 rounded-full text-lg bg-white outline-none pr-14 relative z-10"
                   style={{ border: '2px solid transparent', backgroundClip: 'padding-box' }}
                   disabled={isLoading}
                 />
@@ -252,8 +243,6 @@ export default function ChatSimple() {
                     borderRadius: '9999px',
                     padding: '2px',
                     zIndex: 0,
-                    maskImage: 'linear-gradient(#fff 0 0)',
-                    WebkitMaskImage: 'linear-gradient(#fff 0 0)',
                   }}
                 />
                 {input.trim() ? (
@@ -272,24 +261,16 @@ export default function ChatSimple() {
                     whileHover={{ scale: 1.05 }}
                     onClick={toggleRecording}
                     disabled={isLoading}
-                    className={`absolute right-3 top-1/2 -translate-y-1/2 rounded-full w-10 h-10 flex items-center justify-center shadow-md z-20 ${isRecording ? 'bg-red-600 text-white' : 'bg-black text-white'}`}
+                    className={`absolute right-3 top-1/2 -translate-y-1/2 rounded-full w-10 h-10 flex items-center justify-center shadow-md z-20 ${isRecording ? 'bg-red-600' : 'bg-black'} text-white`}
                   >
                     <Mic size={18} />
                   </motion.button>
                 )}
               </div>
             </div>
-
-            <style jsx>{`
-              @keyframes shine {
-                0% { background-position: 0% 50%; }
-                50% { background-position: 100% 50%; }
-                100% { background-position: 0% 50%; }
-              }
-            `}</style>
           </div>
 
-          <div className="hidden md:flex justify-center items-center w-full">
+          <div className="hidden md:flex justify-center items-center w-full mb-4">
             <DiscoverG />
           </div>
         </>
