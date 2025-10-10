@@ -2,19 +2,13 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  FaTimes,
-  FaMicrophoneAlt,
-  FaDatabase,
-  FaFileSignature,
-} from 'react-icons/fa';
+import { FaTimes, FaMinus, FaMicrophoneAlt } from 'react-icons/fa';
 import ChatTTS from './LLM';
-import ChatLLM from './ChatAuditoria';
-import DB from '../../CSVanaliza/components/panel';
 
 export default function PlusMenu() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [popupOpen, setPopupOpen] = useState(false);
+  const [minimized, setMinimized] = useState(false);
   const [popupContent, setPopupContent] = useState(null);
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== 'undefined' ? window.innerWidth : 0
@@ -39,13 +33,13 @@ export default function PlusMenu() {
   }, []);
 
   useEffect(() => {
-    if (popupOpen) {
+    if (popupOpen && !minimized) {
       document.documentElement.style.overflow = 'hidden';
       requestAnimationFrame(() => closeButtonRef.current?.focus());
     } else {
       document.documentElement.style.overflow = '';
     }
-  }, [popupOpen]);
+  }, [popupOpen, minimized]);
 
   const handleOpenPopup = (content) => {
     setPopupContent(content);
@@ -55,6 +49,7 @@ export default function PlusMenu() {
 
   const handleClosePopup = () => {
     setPopupOpen(false);
+    setMinimized(false);
     setPopupContent(null);
   };
 
@@ -81,52 +76,16 @@ export default function PlusMenu() {
             className="absolute bottom-full mb-2 left-0 w-52 bg-white shadow-md rounded-lg border border-gray-200 z-50"
           >
             <div className="flex flex-col py-2 text-sm">
-              {/* 1️⃣ Conversación hablada */}
+              {/* 🗣️ Conversación hablada */}
               <div
                 onClick={() => handleOpenPopup(<ChatTTS onStop={handleClosePopup} />)}
-                className="relative group flex items-center gap-2 px-3 py-2 cursor-pointer overflow-hidden rounded-t-lg hover:bg-gray-100 transition-colors"
+                className="relative group flex items-center gap-2 px-3 py-2 cursor-pointer overflow-hidden rounded-lg hover:bg-gray-100 transition-colors"
               >
-                {/* ✨ Efecto barrido */}
+                {/* ✨ Efecto barrido luminoso */}
                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none" />
                 <FaMicrophoneAlt className="text-gray-600 text-sm relative z-10" />
                 <span className="text-gray-700 text-xs relative z-10">
                   Conversación por voz
-                </span>
-              </div>
-
-              {/* 2️⃣ Analizar base de datos */}
-              <div
-                onClick={() =>
-                  handleOpenPopup(
-                    <div className="w-full h-[100vh] overflow-y-auto">
-                      <DB />
-                    </div>
-                  )
-                }
-                className="relative group flex items-center gap-2 px-3 py-2 cursor-pointer overflow-hidden hover:bg-gray-100 transition-colors"
-              >
-                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none" />
-                <FaDatabase className="text-gray-600 text-sm relative z-10" />
-                <span className="text-gray-700 text-xs relative z-10">
-                  Analiza tu base
-                </span>
-              </div>
-
-              {/* 3️⃣ Auditoría IA */}
-              <div
-                onClick={() =>
-                  handleOpenPopup(
-                    <div className="w-full h-[100vh] overflow-y-auto">
-                      <ChatLLM />
-                    </div>
-                  )
-                }
-                className="relative group flex items-center gap-2 px-3 py-2 cursor-pointer overflow-hidden rounded-b-lg hover:bg-gray-100 transition-colors"
-              >
-                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none" />
-                <FaFileSignature className="text-gray-600 text-sm relative z-10" />
-                <span className="text-gray-700 text-xs relative z-10">
-                  Auditoría empresarial
                 </span>
               </div>
             </div>
@@ -134,9 +93,9 @@ export default function PlusMenu() {
         )}
       </AnimatePresence>
 
-      {/* 🔹 Popup pantalla completa (solo cerrar, sin minimizar) */}
+      {/* 🔹 Popup pantalla completa (fade + scale animación) */}
       <AnimatePresence>
-        {popupOpen && (
+        {popupOpen && !minimized && (
           <>
             {/* Fondo oscuro */}
             <motion.div
@@ -145,22 +104,34 @@ export default function PlusMenu() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
               className="fixed inset-0 z-40 bg-black"
-              onClick={handleClosePopup}
+              onClick={() => setMinimized(true)}
               aria-hidden="true"
             />
 
-            {/* Contenedor modal */}
+            {/* Contenedor principal */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.4, ease: 'easeInOut' }}
-              className="fixed inset-0 z-50 bg-white overflow-y-auto w-screen h-screen shadow-xl rounded-2xl"
+              transition={{ duration: 0.35, ease: 'easeOut' }}
+              className="fixed inset-0 z-50 bg-white overflow-y-auto w-screen h-screen flex flex-col"
               role="dialog"
               aria-modal="true"
             >
-              {/* Botón cerrar */}
-              <div className="absolute top-4 right-4 z-20">
+              {/* Controles */}
+              <div className="absolute top-4 right-4 z-20 flex gap-3">
+                {/* Minimizar */}
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => setMinimized(true)}
+                  aria-label="Minimizar"
+                  className="inline-flex items-center justify-center p-3 rounded-full shadow-md bg-gray-100 hover:bg-gray-200 focus:outline-none"
+                >
+                  <FaMinus className="w-4 h-4 text-gray-600" />
+                </motion.button>
+
+                {/* Cerrar */}
                 <motion.button
                   whileHover={{ rotate: 90, scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
@@ -177,6 +148,22 @@ export default function PlusMenu() {
               <div className="w-full h-full p-4">{popupContent}</div>
             </motion.div>
           </>
+        )}
+      </AnimatePresence>
+
+      {/* 🔹 Popup minimizado */}
+      <AnimatePresence>
+        {popupOpen && minimized && (
+          <motion.div
+            initial={{ opacity: 0, y: 100 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 100 }}
+            transition={{ duration: 0.25 }}
+            className="fixed bottom-4 right-4 z-50 bg-black text-white px-4 py-2 rounded-full shadow-lg cursor-pointer"
+            onClick={() => setMinimized(false)}
+          >
+            Reabrir chat de voz
+          </motion.div>
         )}
       </AnimatePresence>
     </div>

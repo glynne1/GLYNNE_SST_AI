@@ -1,27 +1,29 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { Send, Mic } from 'lucide-react';
+import { Send, Mic } from 'lucide-react';  // 👈 Mic
 import { supabase } from '../../lib/supabaseClient';
-import AlertUpgrade from './alertPlanes';
-import DiscoverG from './TTSinvoke';
-import PlusMenu from './masContenido';
+
+import AuditAlert from './alertGenerarAuditoria';
+import DiscoverG from './instruccionnesAuditoria';
+import PlusMenu from './masContenido2'; // 👈 importamos tu botón +
+
 
 export default function ChatSimple() {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [userId, setUserId] = useState('');
+  const [showAuditAlert, setShowAuditAlert] = useState(false);
   const [userInfo, setUserInfo] = useState({ nombre: 'Usuario' });
-  const [isRecording, setIsRecording] = useState(false);
-
+  const [isRecording, setIsRecording] = useState(false); // 👈 estado toggle
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
+
   const API_URL = 'https://gly-chat-v1-2.onrender.com';
 
-  // 🎙️ Inicializar STT
+  // Inicializar STT
   useEffect(() => {
     if ('webkitSpeechRecognition' in window) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -38,14 +40,20 @@ export default function ChatSimple() {
         setInput(transcript);
       };
 
-      recognition.onend = () => setIsRecording(false);
-      recognition.onerror = () => setIsRecording(false);
+      recognition.onend = () => {
+        setIsRecording(false);
+      };
+
+      recognition.onerror = (err) => {
+        console.error('Error en SpeechRecognition:', err);
+        setIsRecording(false);
+      };
 
       recognitionRef.current = recognition;
     }
   }, []);
 
-  // 🎙️ Toggle grabación
+  // Toggle grabación
   const toggleRecording = () => {
     if (!recognitionRef.current) return;
     if (!isRecording) {
@@ -57,7 +65,7 @@ export default function ChatSimple() {
     }
   };
 
-  // 👤 Cargar info del usuario
+  // Traer datos del usuario
   useEffect(() => {
     const fetchUserInfo = async () => {
       const {
@@ -78,16 +86,18 @@ export default function ChatSimple() {
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const userMessages = messages.filter((m) => m.from === 'user').length;
+    if (userMessages >= 9 && userMessages <= 9 && !showAuditAlert) {
+      setShowAuditAlert(true);
+    }
   }, [messages]);
 
-  // ✉️ Enviar mensaje
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return;
     const userMsg = { from: 'user', text: input };
     setMessages((prev) => [...prev, userMsg]);
     setInput('');
     setIsLoading(true);
-
     try {
       const response = await fetch(`${API_URL}/chat`, {
         method: 'POST',
@@ -107,15 +117,26 @@ export default function ChatSimple() {
 
   return (
     <div className="w-full h-screen flex flex-col bg-white">
+      {/* Popup de auditoría */}
+      {showAuditAlert && (
+        <AuditAlert
+          onClose={() => setShowAuditAlert(false)}
+          onGenerate={() => {
+            setShowAuditAlert(false);
+            alert('🔍 Aquí dispararías la generación de la auditoría');
+          }}
+        />
+      )}
+
       {messages.length === 0 ? (
         <div className="flex flex-1 flex-col items-center justify-center text-center px-4 relative">
-          <p className="text-2xl md:text-xl sm:text-lg mb-2">
-          ¿Cómo puedo ayudarte, <span className="font-semibold">{userInfo.nombre}</span>?
+          <p className="text-2xl md:text-xl sm:text-lg mb-6">
+            Hoy auditaremos tus procesos, <span className="font-semibold">{userInfo.nombre}</span>.
           </p>
 
-
-          {/* 🔹 Input inicial */}
+          {/* Input centrado con borde animado */}
           <div className="w-full max-w-2xl relative flex items-center gap-2">
+            {/* 👈 Botón + */}
             <PlusMenu />
 
             <div className="relative flex-1">
@@ -124,23 +145,28 @@ export default function ChatSimple() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-                placeholder="Hablemos de IA"
+                placeholder="Cuentanos sobre tu empresa"
                 disabled={isLoading}
                 className="w-full px-4 py-4 rounded-full text-lg bg-white outline-none relative z-10"
-                style={{ border: '2px solid transparent', backgroundClip: 'padding-box' }}
+                style={{
+                  border: '2px solid transparent',
+                  backgroundClip: 'padding-box',
+                }}
               />
               <span
                 className="absolute inset-0 rounded-full pointer-events-none"
                 style={{
-                  background:
-                    'linear-gradient(90deg, #4ade80, #3b82f6, #facc15, #ec4899)',
+                  background: 'linear-gradient(90deg, #4ade80, #3b82f6, #facc15, #ec4899)',
                   backgroundSize: '300% 300%',
                   animation: 'shine 2.5s linear infinite',
                   borderRadius: '9999px',
                   padding: '2px',
                   zIndex: 0,
+                  maskImage: 'linear-gradient(#fff 0 0)',
+                  WebkitMaskImage: 'linear-gradient(#fff 0 0)',
                 }}
               />
+              {/* 👇 Botón toggle */}
               {input.trim() ? (
                 <motion.button
                   whileTap={{ scale: 0.9 }}
@@ -169,15 +195,9 @@ export default function ChatSimple() {
 
             <style jsx>{`
               @keyframes shine {
-                0% {
-                  background-position: 0% 50%;
-                }
-                50% {
-                  background-position: 100% 50%;
-                }
-                100% {
-                  background-position: 0% 50%;
-                }
+                0% { background-position: 0% 50%; }
+                50% { background-position: 100% 50%; }
+                100% { background-position: 0% 50%; }
               }
             `}</style>
           </div>
@@ -185,25 +205,17 @@ export default function ChatSimple() {
           <div className="hidden md:block">
             <DiscoverG />
           </div>
-          <AlertUpgrade />
+   
         </div>
       ) : (
         <>
-          {/* 🔹 Mensajes */}
+          {/* Mensajes */}
           <div className="flex-1 px-4 py-2 flex flex-col justify-end">
             {messages.map((msg, idx) => (
-              <div
-                key={idx}
-                className={`mb-2 flex ${
-                  msg.from === 'user' ? 'justify-end' : 'justify-start'
-                }`}
-              >
+              <div key={idx} className={`mb-2 flex ${msg.from === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div
-                  className={`px-4 py-2 rounded-2xl max-w-[80%] ${
-                    msg.from === 'user'
-                      ? 'bg-black text-white'
-                      : 'bg-white text-black shadow-sm'
-                  }`}
+                  className={`px-4 py-2 rounded-2xl max-w-[80%] 
+                    ${msg.from === 'user' ? 'bg-black text-white' : 'bg-white text-black shadow-sm'}`}
                 >
                   {msg.text}
                 </div>
@@ -212,10 +224,12 @@ export default function ChatSimple() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* 🔹 Input inferior */}
+          {/* Input flotante */}
           <div className="w-full px-4 py-4 flex justify-center">
             <div className="flex w-[70%] relative items-center gap-2">
+              {/* 👈 Botón + */}
               <PlusMenu />
+
               <div className="relative flex-1">
                 <input
                   type="text"
@@ -224,21 +238,26 @@ export default function ChatSimple() {
                   onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
                   placeholder="Escribe tu mensaje..."
                   className="w-full px-4 py-4 rounded-full text-lg bg-white outline-none relative z-10 pr-14"
-                  style={{ border: '2px solid transparent', backgroundClip: 'padding-box' }}
+                  style={{
+                    border: '2px solid transparent',
+                    backgroundClip: 'padding-box',
+                  }}
                   disabled={isLoading}
                 />
                 <span
                   className="absolute inset-0 rounded-full pointer-events-none"
                   style={{
-                    background:
-                      'linear-gradient(90deg, #4ade80, #3b82f6, #facc15, #ec4899)',
+                    background: 'linear-gradient(90deg, #4ade80, #3b82f6, #facc15, #ec4899)',
                     backgroundSize: '300% 300%',
                     animation: 'shine 2.5s linear infinite',
                     borderRadius: '9999px',
                     padding: '2px',
                     zIndex: 0,
+                    maskImage: 'linear-gradient(#fff 0 0)',
+                    WebkitMaskImage: 'linear-gradient(#fff 0 0)',
                   }}
                 />
+                {/* 👇 Toggle también aquí */}
                 {input.trim() ? (
                   <motion.button
                     whileTap={{ scale: 0.9 }}
@@ -265,6 +284,14 @@ export default function ChatSimple() {
                 )}
               </div>
             </div>
+
+            <style jsx>{`
+              @keyframes shine {
+                0% { background-position: 0% 50%; }
+                50% { background-position: 100% 50%; }
+                100% { background-position: 0% 50%; }
+              }
+            `}</style>
           </div>
 
           <div className="hidden md:flex justify-center items-center w-full">

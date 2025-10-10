@@ -94,7 +94,7 @@ export default function AlertRotator() {
     };
 
     showRandomMessage();
-    const interval = setInterval(showRandomMessage, 70000);
+    const interval = setInterval(showRandomMessage, 2000000);
     return () => clearInterval(interval);
   }, [showAlerts]);
 
