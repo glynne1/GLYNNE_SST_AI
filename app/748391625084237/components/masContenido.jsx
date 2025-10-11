@@ -76,28 +76,13 @@ export default function PlusMenu({ onRefresh }) {
     });
   }, [showContent]);
 
-  const openVoice = () => {
+  const openService = (type) => {
     clearTimeouts();
-    setContentType('voice');
-    setShowLogo(false);
-    setShowContent(true);
-    setPopupOpen(true);
-  };
-
-  const openDB = () => {
-    clearTimeouts();
-    setContentType('db');
-    setShowLogo(false);
-    setShowContent(true);
-    setPopupOpen(true);
-  };
-
-  const openAudit = () => {
-    clearTimeouts();
-    setContentType('audit');
+    setContentType(type);
     setPopupOpen(true);
     setShowLogo(true);
     setShowContent(false);
+
     logoTimerRef.current = setTimeout(() => {
       setShowLogo(false);
       contentTimerRef.current = setTimeout(() => {
@@ -149,7 +134,7 @@ export default function PlusMenu({ onRefresh }) {
           >
             <div className="flex flex-col py-2 text-sm">
               <div
-                onClick={openVoice}
+                onClick={() => openService('voice')}
                 className="relative group flex items-center gap-2 px-3 py-2 cursor-pointer overflow-hidden rounded-t-lg hover:bg-gray-100 transition-colors"
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none" />
@@ -160,7 +145,7 @@ export default function PlusMenu({ onRefresh }) {
               </div>
 
               <div
-                onClick={openDB}
+                onClick={() => openService('db')}
                 className="relative group flex items-center gap-2 px-3 py-2 cursor-pointer overflow-hidden hover:bg-gray-100 transition-colors"
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none" />
@@ -171,7 +156,7 @@ export default function PlusMenu({ onRefresh }) {
               </div>
 
               <div
-                onClick={openAudit}
+                onClick={() => openService('audit')}
                 className="relative group flex items-center gap-2 px-3 py-2 cursor-pointer overflow-hidden hover:bg-gray-100 transition-colors"
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none" />
@@ -238,14 +223,14 @@ export default function PlusMenu({ onRefresh }) {
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ duration: 0.6 }}
+                      transition={{ duration: 0.05 }}
                       className="absolute inset-0 z-50 flex items-center justify-center pointer-events-none"
                     >
                       <div className="flex flex-col items-center justify-center">
                         <img
                           src="/logo2.png"
                           alt="Logo"
-                          className="w-36 h-36 object-contain mb-4"
+                          className="w-26 h-=26 object-contain mb-4"
                         />
                         <motion.span
                           initial={{ opacity: 0 }}
