@@ -52,14 +52,14 @@ export default function Diagnostico() {
           <motion.div
             className="fixed inset-0 flex items-center justify-center z-50 p-4 bg-cover bg-center"
             style={{
-              backgroundImage: "url('/main-6.jpg')",
+              backgroundImage: "url('https://i.pinimg.com/originals/da/50/09/da500959c4a72da8dd39ce88fc97208c.gif')",
             }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
             {/* Oscurecimiento ligero sobre la imagen */}
-            <div className="absolute inset-0 bg-black/40" />
+            <div className="absolute inset-0 bg-black/50" />
 
             {/* CONTENEDOR con blur (solo cambio aquí) */}
             <motion.div

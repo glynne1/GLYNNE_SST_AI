@@ -109,7 +109,7 @@ export default function PlusMenu() {
       contentTimerRef.current = setTimeout(() => {
         setShowContent(true);
       }, 120);
-    }, 1800);
+    }, 600);
   };
 
   const clearTimeouts = () => {

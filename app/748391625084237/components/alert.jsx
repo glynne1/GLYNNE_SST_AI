@@ -75,7 +75,7 @@ export default function AlertRotator() {
   useEffect(() => {
     const handleResize = () => {
       // Solo mostrar alerts si el ancho es <= 600px
-      setShowAlerts(window.innerWidth <= 600);
+      setShowAlerts(window.innerWidth >= 600);
     };
 
     handleResize(); // Verificar al cargar
