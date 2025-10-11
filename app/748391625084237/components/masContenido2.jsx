@@ -2,11 +2,10 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaTimes, FaMinus, FaMicrophoneAlt } from 'react-icons/fa';
+import { FaTimes, FaMinus } from 'react-icons/fa';
 import ChatTTS from './LLM';
 
 export default function PlusMenu() {
-  const [menuOpen, setMenuOpen] = useState(false);
   const [popupOpen, setPopupOpen] = useState(false);
   const [minimized, setMinimized] = useState(false);
   const [popupContent, setPopupContent] = useState(null);
@@ -14,8 +13,8 @@ export default function PlusMenu() {
     typeof window !== 'undefined' ? window.innerWidth : 0
   );
 
-  const menuRef = useRef(null);
   const closeButtonRef = useRef(null);
+  const bodyOverflowBackup = useRef('');
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -24,30 +23,22 @@ export default function PlusMenu() {
   }, []);
 
   useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target))
-        setMenuOpen(false);
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  useEffect(() => {
     if (popupOpen && !minimized) {
-      document.documentElement.style.overflow = 'hidden';
+      bodyOverflowBackup.current = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
       requestAnimationFrame(() => closeButtonRef.current?.focus());
     } else {
-      document.documentElement.style.overflow = '';
+      document.body.style.overflow = bodyOverflowBackup.current || '';
     }
   }, [popupOpen, minimized]);
 
-  const handleOpenPopup = (content) => {
-    setPopupContent(content);
+  const handleOpenPopup = () => {
+    setPopupContent(<ChatTTS onStop={handleClosePopup} />);
     setPopupOpen(true);
-    setMenuOpen(false);
   };
 
-  const handleClosePopup = () => {
+  const handleClosePopup = (e) => {
+    e?.stopPropagation();
     setPopupOpen(false);
     setMinimized(false);
     setPopupContent(null);
@@ -55,80 +46,87 @@ export default function PlusMenu() {
 
   if (windowWidth < 500) return null;
 
+  // 🎵 Variantes de animación para las 12 barras
+  const barVariants = {
+    animate: (i) => ({
+      scaleY: [1, 1.8, 1],
+      transition: {
+        duration: 1.2,
+        repeat: Infinity,
+        ease: 'easeInOut',
+        delay: i * 0.1,
+      },
+    }),
+  };
+
   return (
-    <div ref={menuRef} className="relative flex items-center">
-      {/* Botón + */}
-      <button
-        onClick={() => setMenuOpen(!menuOpen)}
-        className="text-gray-500 hover:text-gray-700 transition-colors text-xl font-bold px-2"
+    <div className="relative flex items-center z-[60]">
+      {/* 🎛️ Botón circular con líneas animadas */}
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={(e) => {
+          e.stopPropagation();
+          handleOpenPopup();
+        }}
+        className="flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-800 shadow-md hover:shadow-lg transition-all"
+        aria-label="Abrir chat de voz"
       >
-        +
-      </button>
+        {/* 🎚️ Animación de líneas de sonido */}
+        <div className="flex items-end justify-center gap-[2px] h-4">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <motion.div
+              key={i}
+              className="w-[2px] bg-black rounded-sm"
+              style={{ height: '40%' }}
+              variants={barVariants}
+              animate="animate"
+              custom={i}
+            />
+          ))}
+        </div>
+      </motion.button>
 
-      {/* 🔹 Menú desplegable */}
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: -5 }}
-            exit={{ opacity: 0, y: 10 }}
-            transition={{ duration: 0.2 }}
-            className="absolute bottom-full mb-2 left-0 w-52 bg-white shadow-md rounded-lg border border-gray-200 z-50"
-          >
-            <div className="flex flex-col py-2 text-sm">
-              {/* 🗣️ Conversación hablada */}
-              <div
-                onClick={() => handleOpenPopup(<ChatTTS onStop={handleClosePopup} />)}
-                className="relative group flex items-center gap-2 px-3 py-2 cursor-pointer overflow-hidden rounded-lg hover:bg-gray-100 transition-colors"
-              >
-                {/* ✨ Efecto barrido luminoso */}
-                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none" />
-                <FaMicrophoneAlt className="text-gray-600 text-sm relative z-10" />
-                <span className="text-gray-700 text-xs relative z-10">
-                  Conversación por voz
-                </span>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* 🔹 Popup pantalla completa (fade + scale animación) */}
+      {/* 🔹 Popup principal */}
       <AnimatePresence>
         {popupOpen && !minimized && (
           <>
-            {/* Fondo oscuro */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.6 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="fixed inset-0 z-40 bg-black"
-              onClick={() => setMinimized(true)}
+              className="fixed inset-0 z-[80] bg-black/60 backdrop-blur-sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                setMinimized(true);
+              }}
               aria-hidden="true"
             />
 
-            {/* Contenedor principal */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.35, ease: 'easeOut' }}
-              className="fixed inset-0 z-50 bg-white overflow-y-auto w-screen h-screen flex flex-col"
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'tween', ease: 'easeInOut', duration: 0.4 }}
+              className="fixed inset-0 z-[90] bg-white overflow-y-auto w-screen h-screen shadow-2xl"
               role="dialog"
               aria-modal="true"
+              onClick={(e) => e.stopPropagation()}
             >
-              {/* Controles */}
-              <div className="absolute top-4 right-4 z-20 flex gap-3">
+              <div className="absolute top-4 right-4 z-90 flex gap-3">
                 {/* Minimizar */}
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
-                  onClick={() => setMinimized(true)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setMinimized(true);
+                  }}
                   aria-label="Minimizar"
-                  className="inline-flex items-center justify-center p-3 rounded-full shadow-md bg-gray-100 hover:bg-gray-200 focus:outline-none"
+                  className="inline-flex items-center justify-center p-3 rounded-full shadow-md bg-black text-white hover:bg-gray-900 focus:outline-none"
                 >
-                  <FaMinus className="w-4 h-4 text-gray-600" />
+                  <FaMinus className="w-4 h-4" />
                 </motion.button>
 
                 {/* Cerrar */}
@@ -137,14 +135,13 @@ export default function PlusMenu() {
                   whileTap={{ scale: 0.9 }}
                   ref={closeButtonRef}
                   onClick={handleClosePopup}
-                  aria-label="Cerrar"
-                  className="inline-flex items-center justify-center p-3 rounded-full shadow-md bg-gray-100 hover:bg-gray-200 focus:outline-none"
+                  aria-label="Cerrar chat de voz"
+                  className="inline-flex items-center justify-center p-3 rounded-full shadow-md bg-black text-white hover:bg-gray-900 focus:outline-none"
                 >
-                  <FaTimes className="w-4 h-4 text-gray-600" />
+                  <FaTimes className="w-4 h-4" />
                 </motion.button>
               </div>
 
-              {/* Contenido dinámico */}
               <div className="w-full h-full p-4">{popupContent}</div>
             </motion.div>
           </>
@@ -158,9 +155,11 @@ export default function PlusMenu() {
             initial={{ opacity: 0, y: 100 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 100 }}
-            transition={{ duration: 0.25 }}
-            className="fixed bottom-4 right-4 z-50 bg-black text-white px-4 py-2 rounded-full shadow-lg cursor-pointer"
-            onClick={() => setMinimized(false)}
+            className="fixed bottom-4 right-4 z-[70] bg-black text-white px-4 py-2 rounded-full shadow-lg cursor-pointer"
+            onClick={(e) => {
+              e.stopPropagation();
+              setMinimized(false);
+            }}
           >
             Reabrir chat de voz
           </motion.div>

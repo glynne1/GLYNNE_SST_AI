@@ -7,7 +7,7 @@ import { supabase } from '../../lib/supabaseClient';
 
 import AuditAlert from './alertGenerarAuditoria';
 import DiscoverG from './instruccionnesAuditoria';
-import PlusMenu from './masContenido2';
+
 import BannerAuditoria from './banerAut';
 
 export default function ChatSimple() {
@@ -127,9 +127,7 @@ export default function ChatSimple() {
             Hoy auditaremos tus procesos, <span className="font-semibold">{userInfo.nombre}</span>.
           </p>
 
-          <div className="w-full max-w-2xl flex flex-col items-center gap-2 relative">
-            <PlusMenu />
-
+          <div className="w-full max-w-2xl flex flex-col items-center gap-3 relative">
             {/* Input inicial */}
             <div className="relative w-full">
               <input
@@ -153,7 +151,6 @@ export default function ChatSimple() {
                   zIndex: 0,
                 }}
               />
-
               {input.trim() ? (
                 <motion.button
                   whileTap={{ scale: 0.9 }}
@@ -176,6 +173,9 @@ export default function ChatSimple() {
                 </motion.button>
               )}
             </div>
+
+            {/* 👉 PlusMenu debajo del input */}
+       
 
             {/* Preguntas rápidas */}
             {showQuickQuestions && (
@@ -220,9 +220,8 @@ export default function ChatSimple() {
           </div>
 
           {/* Input inferior */}
-          <div className="w-full px-6 md:px-16 lg:px-28 py-4 flex justify-center">
+          <div className="w-full px-6 md:px-16 lg:px-28 py-4 flex flex-col justify-center items-center gap-2">
             <div className="flex w-full max-w-3xl relative items-center gap-2">
-              <PlusMenu />
               <div className="relative flex-1">
                 <input
                   type="text"
@@ -268,6 +267,9 @@ export default function ChatSimple() {
                 )}
               </div>
             </div>
+
+            {/* 👉 PlusMenu debajo del input del chat */}
+      
           </div>
 
           <div className="hidden md:flex justify-center items-center w-full mb-4">

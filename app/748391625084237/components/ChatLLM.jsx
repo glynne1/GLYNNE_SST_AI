@@ -8,6 +8,7 @@ import { supabase } from '../../lib/supabaseClient';
 import AlertUpgrade from './alertPlanes';
 import DiscoverG from './TTSinvoke';
 import PlusMenu from './masContenido';
+import { marked } from "marked";
 
 export default function ChatSimple() {
   const [input, setInput] = useState('');
@@ -19,7 +20,7 @@ export default function ChatSimple() {
 
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
-  const API_URL = 'https://gly-chat-v1-2.onrender.com';
+  const API_URL = 'http://0.0.0.0:8000/chat1';
 
   // 🎙️ Inicializar STT
   useEffect(() => {
@@ -89,7 +90,7 @@ export default function ChatSimple() {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${API_URL}/chat`, {
+      const response = await fetch(`${API_URL}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mensaje: input, user_id: userId }),
@@ -105,6 +106,12 @@ export default function ChatSimple() {
     }
   };
 
+  // 🔄 Función de refresh
+  const handleRefresh = () => {
+    setMessages([]);
+    setInput('');
+  };
+
   return (
     <div className="w-full h-screen flex flex-col bg-white">
       {messages.length === 0 ? (
@@ -113,10 +120,9 @@ export default function ChatSimple() {
           ¿Cómo puedo ayudarte, <span className="font-semibold">{userInfo.nombre}</span>?
           </p>
 
-
           {/* 🔹 Input inicial */}
           <div className="w-full max-w-2xl relative flex items-center gap-2">
-            <PlusMenu />
+            <PlusMenu onRefresh={handleRefresh} />
 
             <div className="relative flex-1">
               <input
@@ -189,33 +195,38 @@ export default function ChatSimple() {
         </div>
       ) : (
         <>
-          {/* 🔹 Mensajes */}
-          <div className="flex-1 px-4 py-2 flex flex-col justify-end">
-            {messages.map((msg, idx) => (
-              <div
-                key={idx}
-                className={`mb-2 flex ${
-                  msg.from === 'user' ? 'justify-end' : 'justify-start'
-                }`}
-              >
-                <div
-                  className={`px-4 py-2 rounded-2xl max-w-[80%] ${
-                    msg.from === 'user'
-                      ? 'bg-black text-white'
-                      : 'bg-white text-black shadow-sm'
-                  }`}
-                >
-                  {msg.text}
-                </div>
-              </div>
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
+
+<div className="flex-1 px-4 py-2 flex flex-col justify-end space-y-2">
+  {messages.map((msg, idx) => (
+    <div
+      key={idx}
+      className={`flex ${msg.from === 'user' ? 'justify-end' : 'justify-start'}`}
+    >
+      <div
+        className={`px-4 py-3 rounded-2xl max-w-[80%] break-words whitespace-pre-wrap ${
+          msg.from === 'user'
+            ? 'bg-black text-white'
+            : 'bg-white text-black shadow-md'
+        }`}
+      >
+        {msg.from === 'user' ? (
+          <p>{msg.text}</p>
+        ) : (
+          <div
+            className="prose prose-sm"
+            dangerouslySetInnerHTML={{ __html: marked(msg.text) }}
+          />
+        )}
+      </div>
+    </div>
+  ))}
+  <div ref={messagesEndRef} />
+</div>
 
           {/* 🔹 Input inferior */}
           <div className="w-full px-4 py-4 flex justify-center">
             <div className="flex w-[70%] relative items-center gap-2">
-              <PlusMenu />
+              <PlusMenu onRefresh={handleRefresh} />
               <div className="relative flex-1">
                 <input
                   type="text"

@@ -7,12 +7,13 @@ import {
   FaMicrophoneAlt,
   FaDatabase,
   FaFileSignature,
+  FaSyncAlt,
 } from 'react-icons/fa';
 import ChatTTS from './LLM';
 import ChatLLM from './ChatAuditoria';
 import DB from '../../CSVanaliza/components/panel';
 
-export default function PlusMenu() {
+export default function PlusMenu({ onRefresh }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [popupOpen, setPopupOpen] = useState(false);
   const [contentType, setContentType] = useState(null); // 'voice' | 'db' | 'audit' | null
@@ -62,10 +63,9 @@ export default function PlusMenu() {
     };
   }, []);
 
-  // Focus automático cuando aparece el contenido (intenta seleccionar primer input/textarea/contenteditable)
+  // Focus automático cuando aparece el contenido
   useEffect(() => {
     if (!showContent) return;
-    // Espera un frame para que el DOM esté listo
     requestAnimationFrame(() => {
       const modal = document.getElementById('auditoria-modal');
       if (!modal) return;
@@ -95,21 +95,20 @@ export default function PlusMenu() {
   const openAudit = () => {
     clearTimeouts();
     setContentType('audit');
-
-    // abrimos popup y mostramos logo primero
     setPopupOpen(true);
     setShowLogo(true);
     setShowContent(false);
-
-    // tiempo del logo visible (1.8s). Luego se oculta logo y se muestra contenido.
     logoTimerRef.current = setTimeout(() => {
       setShowLogo(false);
-
-      // esperar un microtick para permitir exit animation del logo; luego mostrar contenido
       contentTimerRef.current = setTimeout(() => {
         setShowContent(true);
       }, 120);
-    }, 600);
+    }, 700);
+  };
+
+  const handleRefresh = () => {
+    setMenuOpen(false);
+    if (typeof onRefresh === 'function') onRefresh();
   };
 
   const clearTimeouts = () => {
@@ -127,12 +126,10 @@ export default function PlusMenu() {
     setShowContent(false);
   };
 
-  // small guard: hide + menu on tiny screens (igual que antes)
   if (typeof window !== 'undefined' && window.innerWidth < 500) return null;
 
   return (
     <div ref={menuRef} className="relative flex items-center">
-      {/* Botón + */}
       <button
         onClick={() => setMenuOpen(!menuOpen)}
         className="text-gray-500 hover:text-gray-700 transition-colors text-xl font-bold px-2"
@@ -141,7 +138,6 @@ export default function PlusMenu() {
         +
       </button>
 
-      {/* Menú desplegable */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -176,7 +172,7 @@ export default function PlusMenu() {
 
               <div
                 onClick={openAudit}
-                className="relative group flex items-center gap-2 px-3 py-2 cursor-pointer overflow-hidden rounded-b-lg hover:bg-gray-100 transition-colors"
+                className="relative group flex items-center gap-2 px-3 py-2 cursor-pointer overflow-hidden hover:bg-gray-100 transition-colors"
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none" />
                 <FaFileSignature className="text-gray-600 text-sm relative z-10" />
@@ -184,16 +180,25 @@ export default function PlusMenu() {
                   Auditoría empresarial
                 </span>
               </div>
+
+              <div
+                onClick={handleRefresh}
+                className="relative group flex items-center gap-2 px-3 py-2 cursor-pointer overflow-hidden rounded-b-lg hover:bg-gray-100 transition-colors"
+              >
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none" />
+                <FaSyncAlt className="text-gray-600 text-sm relative z-10" />
+                <span className="text-gray-700 text-xs relative z-10">
+                  Refrescar chat
+                </span>
+              </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* POPUP pantalla completa */}
       <AnimatePresence>
         {popupOpen && (
           <>
-            {/* Overlay */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.6 }}
@@ -203,9 +208,6 @@ export default function PlusMenu() {
               onClick={handleClosePopup}
               aria-hidden="true"
             />
-
-            {/* Contenedor principal: usamos un contenedor relativo + overflow-hidden para evitar reflows.
-                Logo y contenido se renderizan en capas absolutas dentro del mismo contenedor. */}
             <motion.div
               initial={{ opacity: 0, scale: 0.995 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -215,7 +217,6 @@ export default function PlusMenu() {
               role="dialog"
               aria-modal="true"
             >
-              {/* Botón cerrar */}
               <div className="absolute top-4 right-4 z-60">
                 <motion.button
                   whileHover={{ rotate: 90, scale: 1.05 }}
@@ -229,9 +230,7 @@ export default function PlusMenu() {
                 </motion.button>
               </div>
 
-              {/* Inner container: relative para capas absolutas */}
               <div className="relative w-full h-full overflow-hidden">
-                {/* LOGO (capa absoluta, centrado) */}
                 <AnimatePresence>
                   {showLogo && (
                     <motion.div
@@ -253,16 +252,12 @@ export default function PlusMenu() {
                           animate={{ opacity: 1 }}
                           transition={{ delay: 0.2, duration: 0.6 }}
                           className="text-gray-700 text-sm font-medium tracking-wide"
-                        >
-                      
-                        </motion.span>
+                        ></motion.span>
                       </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
 
-                {/* CONTENIDO: capa absoluta que ocupa todo el modal.
-                    Se monta SOLO cuando showContent es true (para evitar reflows). */}
                 <AnimatePresence>
                   {showContent && contentType === 'audit' && (
                     <motion.div
@@ -273,13 +268,11 @@ export default function PlusMenu() {
                       transition={{ duration: 0.32 }}
                       className="absolute inset-0 z-40 overflow-auto"
                     >
-                      {/* id para foco */}
                       <div id="auditoria-modal" className="w-full h-full">
                         <ChatLLM />
                       </div>
                     </motion.div>
                   )}
-
                   {showContent && contentType === 'voice' && (
                     <motion.div
                       key="voice-content"
@@ -294,7 +287,6 @@ export default function PlusMenu() {
                       </div>
                     </motion.div>
                   )}
-
                   {showContent && contentType === 'db' && (
                     <motion.div
                       key="db-content"
