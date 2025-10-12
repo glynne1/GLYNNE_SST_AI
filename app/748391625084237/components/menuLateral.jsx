@@ -13,7 +13,7 @@ const SideMenu = () => {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed top-4 left-4 z-50 p-3 mt-[0px] rounded-md bg-none transition-transform duration-300 hover:scale-105"
+          className="fixed top-4 left-6 z-50 p-3 mt-[0px] rounded-md bg-none transition-transform duration-300 hover:scale-105"
         >
           <FaBars className="text-black text-xl" />
         </button>

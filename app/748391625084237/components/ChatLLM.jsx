@@ -9,6 +9,7 @@ import AlertUpgrade from './alertPlanes';
 import DiscoverG from './TTSinvoke';
 import PlusMenu from './masContenido';
 import { marked } from "marked";
+import PlusMenu2 from './menuColumna';
 
 export default function ChatSimple() {
   const [input, setInput] = useState('');
@@ -123,6 +124,7 @@ export default function ChatSimple() {
           {/* 🔹 Input inicial */}
           <div className="w-full max-w-2xl relative flex items-center gap-2">
             <PlusMenu onRefresh={handleRefresh} />
+            <PlusMenu2 onRefresh={handleRefresh} />
 
             <div className="relative flex-1">
               <input
@@ -227,6 +229,7 @@ export default function ChatSimple() {
           <div className="w-full px-4 py-4 flex justify-center">
             <div className="flex w-[70%] relative items-center gap-2">
               <PlusMenu onRefresh={handleRefresh} />
+              <PlusMenu2 onRefresh={handleRefresh} />
               <div className="relative flex-1">
                 <input
                   type="text"
