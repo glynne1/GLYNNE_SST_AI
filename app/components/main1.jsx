@@ -6,6 +6,25 @@ import { LoginPopup } from './LoginPopup';
 export default function Main1() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showLogo, setShowLogo] = useState(false);
+  const [bgImage, setBgImage] = useState('/main-2.jpg'); // Imagen por defecto (pantallas grandes)
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 700) {
+        setBgImage('https://i.pinimg.com/1200x/13/02/bf/1302bf9f5ff2a41e5f1bd7d4de5373f4.jpg'); // Imagen alternativa para móviles
+      } else {
+        setBgImage('/main-2.jpg');
+      }
+    };
+
+    // Ejecutar una vez al cargar
+    handleResize();
+
+    // Escuchar cambios de tamaño
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const timeout = setTimeout(() => setShowLogo(true), 1000);
@@ -14,17 +33,12 @@ export default function Main1() {
 
   return (
     <main className="relative w-full h-screen overflow-hidden font-inter">
-      {/* Video de fondo */}
+      {/* Imagen de fondo */}
       <div className="absolute top-0 left-0 w-full h-full">
-        <video
-          src="https://res.cloudinary.com/dpdyco5po/video/upload/f_auto,q_auto/Generated_File_September_21_2025_-_10_15PM_t91zai.mp4"
-          poster="https://res.cloudinary.com/dpdyco5po/video/upload/Generated_File_September_21_2025_-_10_15PM_t91zai.jpg"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          className="w-full h-full object-cover"
+        <img
+          src={bgImage}
+          alt="Fondo GLYNNE"
+          className="w-full h-full object-cover transition-all duration-700 ease-in-out"
         />
       </div>
 

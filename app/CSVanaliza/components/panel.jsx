@@ -218,14 +218,12 @@ export default function CSVAnalyzer() {
       <div className="flex-1 flex flex-col max-w-7xl mx-auto w-full px-3 sm:px-6 py-4 lg:py-8">
         {/* Header */}
         <div className="text-center mb-6 lg:mb-10">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-black mb-3 lg:mb-2">
-            Analiza tus Datos
-          </h1>
+          
           <div className="mb-3">
             <img src="/logo2.png" alt="Logo" className="mx-auto w-12 h-auto" />
           </div>
           <p className="text-gray-700 text-sm sm:text-base lg:text-lg max-w-2xl mx-auto">
-            Sube tu archivo CSV, agrega una descripción y obtén análisis detallados y reportes ejecutivos
+            Sube tu archivo CSV, agrega una descripción y obtén análisis detallado
           </p>
         </div>
 
@@ -254,20 +252,19 @@ export default function CSVAnalyzer() {
     />
   </div>
 
-  {/* Selector de CSV */}
-  <div className="w-full">
-    <label className="block text-sm font-medium text-gray-900 mb-2">
-      Selecciona tu archivo CSV
-    </label>
-    <input
-      type="file"
-      accept=".csv"
-      onChange={handleFileChange}
-      className="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl focus:border-gray-500 focus:ring-2 focus:ring-gray-200 transition-all duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:text-sm file:font-semibold file:bg-gray-50 file:text-gray-900 hover:file:bg-gray-100"
-    />
-  </div>
+  {/* Selector de CSV + Botón */}
+<div className="w-full flex flex-col gap-4">
+  <label className="block text-sm font-medium text-gray-900">
+    Selecciona tu archivo CSV
+  </label>
 
-  {/* Botón de analizar */}
+  <input
+    type="file"
+    accept=".csv"
+    onChange={handleFileChange}
+    className="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-xl focus:border-gray-500 focus:ring-2 focus:ring-gray-200 transition-all duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:text-sm file:font-semibold file:bg-gray-50 file:text-gray-900 hover:file:bg-gray-100"
+  />
+
   <button
     onClick={handleAnalyze}
     disabled={!file || !descripcion || loading}
@@ -276,8 +273,17 @@ export default function CSVAnalyzer() {
     {loading ? "Analizando..." : "Analizar CSV"}
   </button>
 
-  {file && <p className="mt-2 text-gray-700">Archivo seleccionado: <b>{file.name}</b></p>}
-  {error && <p className="mt-2 text-orange-700 font-medium">❌ {error}</p>}
+  {file && (
+    <p className="mt-2 text-gray-700">
+      Archivo seleccionado: <b>{file.name}</b>
+    </p>
+  )}
+
+  {error && (
+    <p className="mt-2 text-orange-700 font-medium">❌ {error}</p>
+  )}
+</div>
+
 </div>
 
 
