@@ -2,13 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Mic,
-  Database,
-  FileSignature,
-  RefreshCcw,
-  X,
-} from 'lucide-react'; // 🧠 Iconos modernos
+import { Mic, Database, FileSignature, RefreshCcw, X } from 'lucide-react'; // 🧠 Iconos modernos
 import ChatTTS from './LLM';
 import ChatLLM from './ChatAuditoria';
 import DB from '../../CSVanaliza/components/panel';
@@ -18,15 +12,29 @@ export default function PlusMenu({ onRefresh }) {
   const [contentType, setContentType] = useState(null);
   const [showLogo, setShowLogo] = useState(false);
   const [showContent, setShowContent] = useState(false);
+  const [isVisible, setIsVisible] = useState(true); // 👁️ Control de visibilidad por tamaño
 
   const closeButtonRef = useRef(null);
   const logoTimerRef = useRef(null);
   const contentTimerRef = useRef(null);
 
+  // 👇 Escucha el ancho de pantalla
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsVisible(window.innerWidth >= 700);
+    };
+
+    checkScreenSize(); // Inicial
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
+  // Evita scroll cuando está abierto
   useEffect(() => {
     document.documentElement.style.overflow = popupOpen ? 'hidden' : '';
   }, [popupOpen]);
 
+  // Limpieza de timers
   useEffect(() => {
     return () => {
       clearTimeout(logoTimerRef.current);
@@ -61,7 +69,8 @@ export default function PlusMenu({ onRefresh }) {
     setShowContent(false);
   };
 
-  if (typeof window !== 'undefined' && window.innerWidth < 500) return null;
+  // 🚫 No renderiza nada si está en pantalla pequeña
+  if (!isVisible) return null;
 
   return (
     <>
@@ -73,7 +82,10 @@ export default function PlusMenu({ onRefresh }) {
           className="p-2 rounded-md transition-all hover:scale-110"
           title="Conversación por voz"
         >
-          <Mic className="text-gray-300 hover:text-gray-500 w-5 h-5 transition-all duration-200" strokeWidth={1.4} />
+          <Mic
+            className="text-gray-300 hover:text-gray-500 w-5 h-5 transition-all duration-200"
+            strokeWidth={1.4}
+          />
         </button>
 
         {/* 🧩 Base de datos */}
@@ -82,7 +94,10 @@ export default function PlusMenu({ onRefresh }) {
           className="p-2 rounded-md transition-all hover:scale-110"
           title="Analiza tu base"
         >
-          <Database className="text-gray-300 hover:text-gray-500 w-5 h-5 transition-all duration-200" strokeWidth={1.4} />
+          <Database
+            className="text-gray-300 hover:text-gray-500 w-5 h-5 transition-all duration-200"
+            strokeWidth={1.4}
+          />
         </button>
 
         {/* 🧠 Auditoría */}
@@ -91,7 +106,10 @@ export default function PlusMenu({ onRefresh }) {
           className="p-2 rounded-md transition-all hover:scale-110"
           title="Auditoría empresarial"
         >
-          <FileSignature className="text-gray-300 hover:text-gray-500 w-5 h-5 transition-all duration-200" strokeWidth={1.4} />
+          <FileSignature
+            className="text-gray-300 hover:text-gray-500 w-5 h-5 transition-all duration-200"
+            strokeWidth={1.4}
+          />
         </button>
 
         {/* 🔄 Refrescar */}
@@ -100,7 +118,10 @@ export default function PlusMenu({ onRefresh }) {
           className="p-2 rounded-md transition-all hover:scale-110"
           title="Refrescar chat"
         >
-          <RefreshCcw className="text-gray-300 hover:text-gray-500 w-5 h-5 transition-all duration-200" strokeWidth={1.4} />
+          <RefreshCcw
+            className="text-gray-300 hover:text-gray-500 w-5 h-5 transition-all duration-200"
+            strokeWidth={1.4}
+          />
         </button>
       </div>
 
