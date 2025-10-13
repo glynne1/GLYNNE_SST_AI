@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 export default function GlynneSidebar() {
   const backgroundImageUrl =
-    'https://i.pinimg.com/1200x/18/dc/26/18dc26a2d817f311fd2b4e0f432da6b4.jpg';
+    'https://i.pinimg.com/736x/51/a2/90/51a2907d0e6c014caa25fdb8642eea14.jpg';
 
   return (
     <aside
@@ -35,18 +35,18 @@ export default function GlynneSidebar() {
           <h1 className="text-sm font-semibold leading-snug tracking-tight">
             Cómo GLYNNE revoluciona la IA
           </h1>
-          <p className="mt-2 text-[11px] font-light leading-snug text-gray-300">
-            ¿Qué esperas para que tu negocio y tu vida se adapten a la IA?
+          <p className="mt-2 text-[9px] font-light leading-snug text-gray-300">
+
             <br />
             GLYNNE transforma procesos, acelera decisiones y libera tiempo
             <br />
-            para lo que realmente importa.
+        
           </p>
         </div>
 
         {/* QR y texto */}
         <div className="flex flex-col items-center text-center space-y-3 mt-4">
-          <div className="w-28 h-28 relative">
+          <div className="w-15 h-15 relative">
             <Image
               src="/qrGLY.png"
               alt="Código QR GLYNNE"

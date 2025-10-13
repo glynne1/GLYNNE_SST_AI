@@ -64,7 +64,7 @@ export default function MuroNoticiasGlynne() {
   return (
     <div className="flex">
       {/* 🔹 SECCIÓN PRINCIPAL */}
-      <section className="w-[80%] min-h-screen bg-white text-gray-900 font-sans antialiased">
+      <section className="w-[89%] min-h-screen bg-white text-gray-900 font-sans antialiased">
         {/* HEADER */}
         <motion.header
           initial={{ opacity: 0, y: -20 }}
@@ -101,33 +101,6 @@ export default function MuroNoticiasGlynne() {
         {/* 🔹 Hero Section */}
         <Main />
 
-        {/* 🔘 BOTONES DE FUENTE DE NOTICIAS */}
-        <div className="max-w-6xl mx-auto px-6 mt-8 flex gap-4 justify-center">
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setActiveSource('newsIa.json')}
-            className={`px-5 py-2.5 rounded-xl text-sm font-medium shadow-sm transition-all ${
-              activeSource === 'newsIa.json'
-                ? 'bg-gray-900 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            Noticias IA
-          </motion.button>
-
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setActiveSource('newsGLNNE.json')}
-            className={`px-5 py-2.5 rounded-xl text-sm font-medium shadow-sm transition-all ${
-              activeSource === 'newsGLNNE.json'
-                ? 'bg-gray-900 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            Noticias GLYNNE
-          </motion.button>
-        </div>
-
         {/* MAIN CONTENT */}
         <main className="max-w-6xl mx-auto px-6 py-12">
           {filteredArticles.length === 0 ? (
@@ -143,7 +116,7 @@ export default function MuroNoticiasGlynne() {
             >
               {filteredArticles.map((article, i) => (
                 <motion.article
-                  key={article.id}
+                  key={`${article.id}-${i}`} // 🔹 Cambiado para evitar keys duplicadas
                   layout
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -161,7 +134,7 @@ export default function MuroNoticiasGlynne() {
                     />
                   </div>
 
-                  <div className="p-5 flex flex-col h-full">
+                  <div className="p-5 flex flex-col">
                     <div className="flex items-center gap-2 text-xs text-gray-500 mb-3 font-light">
                       <Calendar className="w-3 h-3" />
                       <span>{article.date}</span>
@@ -174,7 +147,7 @@ export default function MuroNoticiasGlynne() {
                       {article.title}
                     </h3>
 
-                    <p className="text-sm text-gray-600 leading-relaxed flex-1 line-clamp-3 font-light tracking-wide mb-4">
+                    <p className="text-sm text-gray-600 leading-relaxed line-clamp-3 font-light tracking-wide mb-4">
                       {article.summary}
                     </p>
 
@@ -275,7 +248,7 @@ export default function MuroNoticiasGlynne() {
       </section>
 
       {/* 🔹 SIDEBAR */}
-      <div className="w-[20%] h-screen sticky top-0 border-l border-gray-200 hidden-[max-850px]:hidden">
+      <div className="w-[11%] h-screen sticky top-0 border-l border-gray-200 hidden-[max-850px]:hidden">
         <GlynneSidebar />
       </div>
     </div>

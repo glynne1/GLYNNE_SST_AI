@@ -10,7 +10,7 @@ export default function GlynneNewsHeader() {
         initial={{ opacity: 0, y: -15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: 'easeOut' }}
-        className="text-7xl font-extralight tracking-[0.35em] text-gray-900 uppercase"
+        className="text-6xl font-extralight tracking-[0.35em] text-gray-900 uppercase"
       >
         GLYNNE NEWS
       </motion.h1>

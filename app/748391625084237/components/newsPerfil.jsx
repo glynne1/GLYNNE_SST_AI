@@ -69,7 +69,12 @@ export default function NewsRotator() {
       />
 
       {/* 🔹 Botón “Ver más” con efecto de barrido de luz */}
-     
+      <p className="text-[11px] text-gray-700 font-light  max-w-[180px]">
+            Escanea este código QR para ingresar al <br />
+            <strong className="text-gray-500 font-medium">
+              ecosistema GLYNNE Mobile
+            </strong>
+          </p>
     </section>
   );
 }
