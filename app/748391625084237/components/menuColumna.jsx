@@ -2,29 +2,29 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mic, Database, FileSignature, RefreshCcw, X } from 'lucide-react'; // 🧠 Iconos modernos
+import { Mic, Database, FileSignature, RefreshCcw, X, Newspaper } from 'lucide-react'; // 🧠 Iconos modernos
 import ChatTTS from './LLM';
 import ChatLLM from './ChatAuditoria';
 import DB from '../../CSVanaliza/components/panel';
+import News from './news/news'; // 🆕 Import del componente News
 
 export default function PlusMenu({ onRefresh }) {
   const [popupOpen, setPopupOpen] = useState(false);
   const [contentType, setContentType] = useState(null);
   const [showLogo, setShowLogo] = useState(false);
   const [showContent, setShowContent] = useState(false);
-  const [isVisible, setIsVisible] = useState(true); // 👁️ Control de visibilidad por tamaño
+  const [isVisible, setIsVisible] = useState(true);
 
   const closeButtonRef = useRef(null);
   const logoTimerRef = useRef(null);
   const contentTimerRef = useRef(null);
 
-  // 👇 Escucha el ancho de pantalla
+  // 👇 Control de visibilidad por tamaño
   useEffect(() => {
     const checkScreenSize = () => {
       setIsVisible(window.innerWidth >= 700);
     };
-
-    checkScreenSize(); // Inicial
+    checkScreenSize();
     window.addEventListener('resize', checkScreenSize);
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
@@ -69,23 +69,20 @@ export default function PlusMenu({ onRefresh }) {
     setShowContent(false);
   };
 
-  // 🚫 No renderiza nada si está en pantalla pequeña
   if (!isVisible) return null;
 
   return (
     <>
       {/* 🔹 BARRA LATERAL */}
       <div className="fixed left-0 top-0 h-screen w-12 bg-none flex flex-col items-center justify-center py-6 space-y-7 z-20">
+
         {/* 🎙️ Voz */}
         <button
           onClick={() => openService('voice')}
           className="p-2 rounded-md transition-all hover:scale-110"
           title="Conversación por voz"
         >
-          <Mic
-            className="text-gray-300 hover:text-gray-500 w-5 h-5 transition-all duration-200"
-            strokeWidth={1.4}
-          />
+          <Mic className="text-gray-300 hover:text-gray-500 w-5 h-5" strokeWidth={1.4} />
         </button>
 
         {/* 🧩 Base de datos */}
@@ -94,10 +91,7 @@ export default function PlusMenu({ onRefresh }) {
           className="p-2 rounded-md transition-all hover:scale-110"
           title="Analiza tu base"
         >
-          <Database
-            className="text-gray-300 hover:text-gray-500 w-5 h-5 transition-all duration-200"
-            strokeWidth={1.4}
-          />
+          <Database className="text-gray-300 hover:text-gray-500 w-5 h-5" strokeWidth={1.4} />
         </button>
 
         {/* 🧠 Auditoría */}
@@ -106,10 +100,16 @@ export default function PlusMenu({ onRefresh }) {
           className="p-2 rounded-md transition-all hover:scale-110"
           title="Auditoría empresarial"
         >
-          <FileSignature
-            className="text-gray-300 hover:text-gray-500 w-5 h-5 transition-all duration-200"
-            strokeWidth={1.4}
-          />
+          <FileSignature className="text-gray-300 hover:text-gray-500 w-5 h-5" strokeWidth={1.4} />
+        </button>
+
+        {/* 📰 Noticias */}
+        <button
+          onClick={() => openService('news')}
+          className="p-2 rounded-md transition-all hover:scale-110"
+          title="Noticias IA"
+        >
+          <Newspaper className="text-gray-300 hover:text-gray-500 w-5 h-5" strokeWidth={1.4} />
         </button>
 
         {/* 🔄 Refrescar */}
@@ -118,10 +118,7 @@ export default function PlusMenu({ onRefresh }) {
           className="p-2 rounded-md transition-all hover:scale-110"
           title="Refrescar chat"
         >
-          <RefreshCcw
-            className="text-gray-300 hover:text-gray-500 w-5 h-5 transition-all duration-200"
-            strokeWidth={1.4}
-          />
+          <RefreshCcw className="text-gray-300 hover:text-gray-500 w-5 h-5" strokeWidth={1.4} />
         </button>
       </div>
 
@@ -129,7 +126,6 @@ export default function PlusMenu({ onRefresh }) {
       <AnimatePresence>
         {popupOpen && (
           <>
-            {/* Fondo invisible */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 0 }}
@@ -139,7 +135,6 @@ export default function PlusMenu({ onRefresh }) {
               onClick={handleClosePopup}
             />
 
-            {/* Contenedor principal */}
             <motion.div
               initial={{ opacity: 0, scale: 0.995 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -147,7 +142,7 @@ export default function PlusMenu({ onRefresh }) {
               transition={{ duration: 0.28 }}
               className="fixed inset-0 z-30 bg-white w-screen h-screen"
             >
-              {/* Botón de cerrar */}
+              {/* ❌ Botón de cerrar */}
               <div className="absolute top-4 right-4 z-40">
                 <motion.button
                   whileHover={{ rotate: 90, scale: 1.05 }}
@@ -183,6 +178,7 @@ export default function PlusMenu({ onRefresh }) {
                 </AnimatePresence>
 
                 <AnimatePresence>
+                  {/* 🧠 Auditoría */}
                   {showContent && contentType === 'audit' && (
                     <motion.div
                       key="audit"
@@ -196,6 +192,7 @@ export default function PlusMenu({ onRefresh }) {
                     </motion.div>
                   )}
 
+                  {/* 🎙️ Voz */}
                   {showContent && contentType === 'voice' && (
                     <motion.div
                       key="voice"
@@ -209,6 +206,7 @@ export default function PlusMenu({ onRefresh }) {
                     </motion.div>
                   )}
 
+                  {/* 🧩 Base de datos */}
                   {showContent && contentType === 'db' && (
                     <motion.div
                       key="db"
@@ -221,6 +219,20 @@ export default function PlusMenu({ onRefresh }) {
                       <div className="w-full h-[100vh] overflow-y-auto">
                         <DB />
                       </div>
+                    </motion.div>
+                  )}
+
+                  {/* 📰 Noticias */}
+                  {showContent && contentType === 'news' && (
+                    <motion.div
+                      key="news"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="absolute inset-0 overflow-auto"
+                    >
+                      <News />
                     </motion.div>
                   )}
                 </AnimatePresence>

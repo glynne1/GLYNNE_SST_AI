@@ -1,0 +1,63 @@
+[
+    {
+      "id": 1,
+      "title": "Lanzamiento del Ecosistema GLYNNE Mobile",
+      "summary": "GLYNNE presenta su ecosistema móvil, diseñado para extender la experiencia de automatización a cualquier dispositivo.",
+      "details": "La aplicación GLYNNE Mobile permite a los usuarios monitorear sus flujos de automatización, recibir reportes inteligentes y gestionar interacciones con clientes desde su teléfono. Este lanzamiento marca la expansión de la plataforma hacia una experiencia omnicanal, unificando datos, interacciones y análisis en tiempo real bajo un mismo entorno seguro."
+    },
+    {
+      "id": 2,
+      "title": "Integración completa con canales empresariales (WhatsApp, Gmail y APIs)",
+      "summary": "GLYNNE unifica la comunicación corporativa bajo una sola arquitectura de IA.",
+      "details": "El nuevo módulo de integración avanzada permite conectar hasta tres líneas de WhatsApp y múltiples cuentas de Gmail a un mismo agente de IA, gestionando ventas, soporte y dirección en un flujo orquestado. Estas conexiones impulsan la autonomía conversacional del sistema, que ahora es capaz de atender, responder, vender y escalar tareas de manera proactiva."
+    },
+    {
+      "id": 3,
+      "title": "Auditorías Inteligentes con GLY-IA",
+      "summary": "El agente GLY-IA evoluciona para realizar diagnósticos empresariales conversacionales.",
+      "details": "Mediante un chat auditivo y contextual, GLY-IA analiza los procesos empresariales del usuario y genera automáticamente un diagnóstico técnico, junto con una propuesta de automatización basada en su arquitectura modular. Esta mejora convierte la auditoría en una experiencia fluida, interactiva y sin formularios extensos."
+    },
+    {
+      "id": 4,
+      "title": "Sistema de agentes orquestados con LangChain",
+      "summary": "GLYNNE implementa una arquitectura de agentes interconectados para automatizaciones complejas.",
+      "details": "Inspirado en plataformas como N8n y Zapier, el nuevo motor de agentes permite a las empresas crear flujos sin código mediante nodos inteligentes conectados a APIs externas. Cada agente funciona como un trabajador digital especializado, capaz de comunicarse con otros agentes para ejecutar tareas coordinadas dentro del ecosistema empresarial."
+    },
+    {
+      "id": 5,
+      "title": "CRM Inteligente con IA integrada",
+      "summary": "GLYNNE lanza un CRM autónomo enfocado en productividad y autoservicio.",
+      "details": "El CRM de GLYNNE combina gestión de clientes, productos y reportes con un sistema de IA conversacional que analiza patrones, predice comportamientos y sugiere acciones comerciales. Diseñado bajo una arquitectura escalable en Next.js y Supabase, el CRM se adapta tanto a startups tecnológicas como a corporaciones en expansión."
+    },
+    {
+      "id": 6,
+      "title": "Nuevo motor de propuestas técnicas automatizadas",
+      "summary": "GLYNNE transforma diagnósticos en propuestas profesionales instantáneamente.",
+      "details": "Tras cada auditoría, el sistema genera una propuesta técnica detallada en formato PDF, describiendo la arquitectura recomendada, tecnologías a utilizar y estrategia de automatización. Este módulo fue diseñado para reducir tiempos de consultoría y estandarizar la calidad de las entregas a nivel corporativo."
+    },
+    {
+      "id": 7,
+      "title": "Arquitectura 'Ciudad de Agentes'",
+      "summary": "GLYNNE redefine la forma de pensar los sistemas inteligentes.",
+      "details": "La plataforma adopta un enfoque conceptual donde la arquitectura de software es vista como una ciudad y los modelos de IA como ciudadanos que colaboran para mantenerla viva. Este marco mental guía el desarrollo de microservicios modulares que se comunican entre sí, creando una infraestructura adaptable, autónoma y en constante evolución."
+    },
+    {
+      "id": 8,
+      "title": "Implementación del Panel de Auditoría en tiempo real",
+      "summary": "La visualización de auditorías se hace dinámica y colaborativa.",
+      "details": "Ahora los usuarios pueden visualizar sus procesos evaluados y recomendaciones en tiempo real, junto a la conversación con GLY-IA. El panel lateral se mantiene sincronizado con Supabase y permite descargar los resultados o generar reportes de evolución empresarial."
+    },
+    {
+      "id": 9,
+      "title": "Optimización de rendimiento e interfaz Next.js 14",
+      "summary": "GLYNNE adopta la última versión de Next.js con Server Actions y React 19.",
+      "details": "La nueva actualización mejora significativamente la velocidad de carga y la interacción entre componentes, integrando el flujo de datos desde Supabase de forma directa y reactiva. Esto se traduce en una experiencia fluida y minimalista, con animaciones suaves mediante Framer Motion y componentes shadcn/ui personalizados."
+    },
+    {
+      "id": 10,
+      "title": "Visión 2026: Ecosistemas Autónomos Empresariales",
+      "summary": "GLYNNE proyecta su siguiente salto hacia empresas autoevolutivas.",
+      "details": "El roadmap de GLYNNE apunta hacia la creación de ecosistemas donde las empresas puedan crecer, adaptarse y optimizar sus procesos de forma autónoma. Esto incluirá módulos predictivos, agentes autoaprendientes y una infraestructura distribuida de inteligencia organizacional impulsada por IA y datos en tiempo real."
+    }
+  ]
+  

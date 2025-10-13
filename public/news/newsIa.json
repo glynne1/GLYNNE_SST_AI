@@ -1,0 +1,170 @@
+{
+    "news": [
+      {
+        "id": 1,
+        "title": "OpenAI y AMD cierran alianza estratégica de chips para infraestructura de IA",
+        "summary": "OpenAI firmó un acuerdo con AMD para recibir chips de alto rendimiento en apoyo a su infraestructura de IA.",
+        "fullText": "OpenAI y AMD anunciaron una asociación estratégica en la que AMD proveerá chips gráficos Instinct MI450 para respaldar el desarrollo de la infraestructura de IA de próxima generación. El pacto contempla hasta 6 gigavatios de capacidad computacional, con un primer despliegue de 1 gigavatio en 2026. OpenAI también obtuvo una opción para adquirir hasta un 10 % de las acciones de AMD condicionadas a metas de rendimiento. Esto diversifica los proveedores de hardware de OpenAI más allá de Nvidia.",
+        "date": "Oct 06, 2025",
+        "source": "AP / Reuters",
+        "tags": ["OpenAI", "AMD", "Infraestructura IA", "Hardware"],
+        "imageSmall": "https://www.muycomputerpro.com/wp-content/uploads/2025/10/AMDyOpenAI-1000x600.jpg",
+        "imageLarge": "https://www.muycomputerpro.com/wp-content/uploads/2025/10/AMDyOpenAI-1000x600.jpg"
+      },
+      {
+        "id": 2,
+        "title": "La UE lanza plan de €1.000 millones para impulsar IA en industrias estratégicas",
+        "summary": "La Comisión Europea presentó la estrategia “Apply AI” para fortalecer la adopción de IA en sectores clave y reducir dependencia tecnológica exterior.",
+        "fullText": "La Comisión Europea anunció un plan de 1.000 millones de euros para acelerar la integración de la inteligencia artificial en sectores estratégicos como salud, energía, manufactura y defensa, con el fin de disminuir la dependencia tecnológica de EE. UU. y China. Esta estrategia complementa el marco regulatorio de IA vigente y busca impulsar la soberanía digital europea mediante inversión, apoyo a startups y el despliegue de centros de screening asistido por IA.",
+        "date": "Oct 08, 2025",
+        "source": "Reuters / Comisión Europea",
+        "tags": ["Unión Europea", "Política IA", "Soberanía digital"],
+        "imageSmall": "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1O4oJB.img?w=1200&h=655&m=4&q=63",
+        "imageLarge": "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1O4oJB.img?w=1200&h=655&m=4&q=63"
+      },
+      {
+        "id": 3,
+        "title": "El financiamiento de empresas de IA crece 38 % en el tercer trimestre 2025",
+        "summary": "El capital de riesgo global invertido en compañías de IA alcanzó los 97.000 millones de dólares en el tercer trimestre.",
+        "fullText": "De acuerdo con datos de Crunchbase y Reuters, la financiación global de empresas de inteligencia artificial creció un 38 % interanual, alcanzando 97.000 millones de USD en el tercer trimestre de 2025. Aproximadamente el 46 % del capital de riesgo total se destinó a compañías de IA puras.",
+        "date": "Oct 06, 2025",
+        "source": "Reuters / Crunchbase",
+        "tags": ["Financiación", "Startups IA", "Inversión"],
+        "imageSmall": "https://www.technocio.com/wp-content/uploads/2025/07/Fintech_2.jpg",
+        "imageLarge": "https://www.technocio.com/wp-content/uploads/2025/07/Fintech_2.jpg"
+      },
+      {
+        "id": 4,
+        "title": "Entidades reguladoras financieras globales intensifican vigilancia sobre IA",
+        "summary": "Organismos mundiales planean monitorear riesgos de IA en bancos y sistemas financieros ante adopción masiva.",
+        "fullText": "Reguladores financieros globales han revelado planes para aumentar el monitoreo de los riesgos asociados con la inteligencia artificial en el sector bancario. El Financial Stability Board advierte que si muchas instituciones utilizan los mismos modelos o hardware, podrían generarse fallos sistemáticos.",
+        "date": "Oct 10, 2025",
+        "source": "Reuters",
+        "tags": ["Regulación", "Riesgos IA", "Finanzas"],
+        "imageSmall": "https://www.mintic.gov.co/portal/715/articles-396905_foto_marquesina.jpg",
+        "imageLarge": "https://www.mintic.gov.co/portal/715/articles-396905_foto_marquesina.jpg"
+      },
+      {
+        "id": 5,
+        "title": "Empresas reportan pérdidas iniciales al desplegar IA, revela encuesta de EY",
+        "summary": "Casi todas las grandes empresas que adoptaron IA han registrado pérdidas financieras durante los inicios de uso.",
+        "fullText": "Una encuesta de EY muestra que casi todas las grandes compañías que implementaron inteligencia artificial han sufrido pérdidas iniciales, sumando aproximadamente 4.400 millones de USD combinados. Las razones incluyen errores de cumplimiento, sesgos en resultados y disrupciones operativas.",
+        "date": "Oct 08, 2025",
+        "source": "Reuters / EY",
+        "tags": ["Empresas", "Despliegue IA", "Costos iniciales"],
+        "imageSmall": "https://www.valoraanalitik.com/wp-content/uploads/2024/06/Empresa-36.jpg",
+        "imageLarge": "https://www.valoraanalitik.com/wp-content/uploads/2024/06/Empresa-36.jpg"
+      },
+      {
+        "id": 6,
+        "title": "OpenAI declara ‘enfoque enorme’ en crecimiento empresarial y alianzas",
+        "summary": "OpenAI planea expandir drásticamente su capacidad de cómputo y fortalecer alianzas corporativas.",
+        "fullText": "OpenAI reveló que está poniendo un “enfoque enorme” en crecimiento empresarial mediante asociaciones clave y planes para construir más de $1 billón en capacidad de cómputo. También ha lanzado la aplicación viral de generación de video llamada Sora. No obstante, algunos inversionistas advierten sobre riesgos especulativos en el sector IA.",
+        "date": "Oct 06, 2025",
+        "source": "Reuters",
+        "tags": ["OpenAI", "Estrategia empresarial", "Infraestructura IA"],
+        "imageSmall": "https://imagenes.elpais.com/resizer/v2/EJHUYZYSUFHJRI3I3OXRANUABM.jpg?auth=c486b32aecb4f34df7be0f3475c915d75cce9400ffc839075d130d8f78e7298e&width=1200",
+        "imageLarge": "https://imagenes.elpais.com/resizer/v2/EJHUYZYSUFHJRI3I3OXRANUABM.jpg?auth=c486b32aecb4f34df7be0f3475c915d75cce9400ffc839075d130d8f78e7298e&width=1200"
+      },
+      {
+        "id": 7,
+        "title": "Empresas de EE. UU. podrían mostrar crecimiento de utilidades moderado ante gasto en IA",
+        "summary": "Se proyecta menor crecimiento de ganancias, mientras inversores analizan si el gasto en IA está rindiendo.",
+        "fullText": "Las utilidades del tercer trimestre para compañías del S&P 500 podrían crecer 8,8 %, menor que en trimestres previos, debido en parte al aumento en gastos de inversión en IA. Los inversionistas pondrán atención al retorno efectivo de estos proyectos.",
+        "date": "Oct 09, 2025",
+        "source": "Reuters",
+        "tags": ["Empresas USA", "Mercados", "Gasto IA"],
+        "imageSmall": "https://www.hostinger.com/es/tutoriales/wp-content/uploads/sites/32/2023/12/Crecimiento-de-la-industria-de-la-IA-al-2031-scaled.png",
+        "imageLarge": "https://www.hostinger.com/es/tutoriales/wp-content/uploads/sites/32/2023/12/Crecimiento-de-la-industria-de-la-IA-al-2031-scaled.png"
+      },
+      {
+        "id": 8,
+        "title": "Thinking Machines Lab cofundador deja empresa para unirse a Meta",
+        "summary": "Andrew Tulloch, cofundador de Thinking Machines Lab, se integra a Meta según reportes del WSJ.",
+        "fullText": "Andrew Tulloch dejó Thinking Machines Lab para unirse a Meta, según reportes del Wall Street Journal. La salida ocurre en medio de una intensa competencia por talento en el campo de la inteligencia artificial.",
+        "date": "Oct 11, 2025",
+        "source": "Reuters / WSJ",
+        "tags": ["Talento IA", "Pensamiento estratégico", "Movimientos laborales"],
+        "imageSmall": "https://www.computerworld.com/wp-content/uploads/2025/07/4031529-0-96145500-1753895264-shutterstock_2303237423.jpg?quality=50&strip=all",
+        "imageLarge": "https://www.computerworld.com/wp-content/uploads/2025/07/4031529-0-96145500-1753895264-shutterstock_2303237423.jpg?quality=50&strip=all"
+      },
+      {
+        "id": 9,
+        "title": "Anthropic abrirá oficina en India en 2026 ante alta demanda de herramientas IA",
+        "summary": "La startup IA planea ampliar su presencia internacional estableciendo sede en Bangalore.",
+        "fullText": "Anthropic, respaldada por Google y Amazon, anunció que inaugurará su primera oficina en India a inicios de 2026 en Bangalore. Este movimiento responde al crecimiento de la demanda en ese mercado para su chatbot Claude.",
+        "date": "Oct 08, 2025",
+        "source": "Reuters",
+        "tags": ["Anthropic", "Expansión global", "Mercado IA"],
+        "imageSmall": "https://images.pagina12.com.ar/styles/focal_3_2_470x313/public/2025-09/971511-6a-2.jpg?h=b54a0942&itok=zMs3QE1J",
+        "imageLarge": "https://images.pagina12.com.ar/styles/focal_3_2_470x313/public/2025-09/971511-6a-2.jpg?h=b54a0942&itok=zMs3QE1J"
+      },
+      {
+        "id": 10,
+        "title": "Reflection AI capta $2.000 millones en ronda liderada por Nvidia",
+        "summary": "La startup de IA, fundada por exinvestigadores de DeepMind, alcanza valoración de $8 mil millones.",
+        "fullText": "Reflection AI, respaldada por Nvidia, obtuvo $2.000 millones en una ronda de inversión que elevó su valoración a $8 mil millones. La empresa desarrolla herramientas para automatizar el desarrollo de software.",
+        "date": "Oct 09, 2025",
+        "source": "Reuters",
+        "tags": ["Startup IA", "Financiación", "Software automation"],
+        "imageSmall": "https://m.economictimes.com/thumb/height-450,width-600,imgsize-1170539,msid-124423959/nvidia-backed-reflection-ai-raises-2-billion-in-funding-boosts-valuation-to-8-billion.jpg",
+        "imageLarge": "https://m.economictimes.com/thumb/height-450,width-600,imgsize-1170539,msid-124423959/nvidia-backed-reflection-ai-raises-2-billion-in-funding-boosts-valuation-to-8-billion.jpg"
+      },
+      {
+        "id": 11,
+        "title": "SoftBank adquiere división de robótica de ABB por $5,4 mil millones",
+        "summary": "El grupo japonés apuesta fuerte a la robótica al adquirir el negocio de ABB en ese rubro.",
+        "fullText": "SoftBank acordó comprar la división de robótica de la empresa suiza ABB por $5,4 mil millones, posicionándose con mayor fuerza en el cruce entre IA y robótica.",
+        "date": "Oct 08, 2025",
+        "source": "Reuters",
+        "tags": ["Robótica", "Adquisiciones", "IA aplicada"],
+        "imageSmall": "https://statics.forbesargentina.com/2024/07/6685651584c3c.png",
+        "imageLarge": "https://statics.forbesargentina.com/2024/07/6685651584c3c.png"
+      },
+      {
+        "id": 12,
+        "title": "Huawei revela planes de producción de chips para competir con Nvidia",
+        "summary": "La firma china anuncia nuevas generaciones de chips Ascend y plataformas Atlas para fortalecer su autonomía tecnológica.",
+        "fullText": "Durante el congreso Huawei Connect, la compañía presentó su hoja de ruta de chips Ascend 950, 960 y 970 para 2026–2028, así como las plataformas Atlas 950/960. Busca reducir dependencia de tecnologías extranjeras.",
+        "date": "2025",
+        "source": "Reuters",
+        "tags": ["Huawei", "Semiconductores", "Soberanía tecnológica"],
+        "imageSmall": "https://elceo.com/wp-content/uploads/2025/09/Huawei_desarrolla_nuevos_chips_con_IA.jpg",
+        "imageLarge": "https://elceo.com/wp-content/uploads/2025/09/Huawei_desarrolla_nuevos_chips_con_IA.jpg"
+      },
+      {
+        "id": 13,
+        "title": "Japón inaugura ABCI 3.0 con más de 6.128 GPUs H200",
+        "summary": "La infraestructura japonesa de IA alcanza 6,22 exaflops en IA de media precisión.",
+        "fullText": "El sistema ABCI 3.0 de Japón fue diseñado con 6.128 GPUs Nvidia H200 y almacenamiento ultrarrápido. Su rendimiento pico es de 6,22 exaflops en media precisión y 3,0 exaflops en precisión simple, superando ampliamente a su versión anterior.",
+        "date": "2025",
+        "source": "arXiv / AIST",
+        "tags": ["Infraestructura IA", "Supercomputación", "Japón"],
+        "imageSmall": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSAx-ERnnvhVvHrORYAh4oThJ5HfGs9Eg7eQ&s",
+        "imageLarge": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSAx-ERnnvhVvHrORYAh4oThJ5HfGs9Eg7eQ&s"
+      },
+      {
+        "id": 14,
+        "title": "Foro de IA generativa recalca que supervisión humana es imprescindible",
+        "summary": "Expertos afirman que la integración de IA en servicios debe tener control humano y estándares éticos.",
+        "fullText": "En el *Emerging Technology & Generative AI Forum*, líderes del sector destacaron que los agentes de IA deben operar con supervisión humana, reglas éticas, y alineamiento con objetivos estratégicos.",
+        "date": "Oct 10, 2025",
+        "source": "Thomson Reuters Institute",
+        "tags": ["Ética IA", "Supervisión Humana", "IA generativa"],
+        "imageSmall": "https://iamasigual.eu/wp-content/uploads/2025/01/Por-que-la-supervision-humana-sigue-siendo-clave-en-la-toma-de-decisiones-con-IA-1.png",
+        "imageLarge": "https://iamasigual.eu/wp-content/uploads/2025/01/Por-que-la-supervision-humana-sigue-siendo-clave-en-la-toma-de-decisiones-con-IA-1.png"
+      },
+      {
+        "id": 15,
+        "title": "PYMEs europeas priorizan IA sobre herramientas digitales básicas, revela estudio",
+        "summary": "Muchas pequeñas empresas adoptan ChatGPT u otras IA sin contar con sistemas digitales esenciales.",
+        "fullText": "Un estudio de la fintech Qonto muestra que la mayoría de las PYMEs europeas están implementando herramientas de IA (como ChatGPT) mientras descuidan sistemas digitales básicos como contabilidad o gestión documental.",
+        "date": "Oct 08, 2025",
+        "source": "Reuters / Qonto",
+        "tags": ["PYMEs", "Transformación digital", "Brecha tecnológica"],
+        "imageSmall": "https://gbm-media.cltvo.com/wp-content/uploads/2025/10/tagreuters.com2025newsml_KCN3LJ0SI.jpg",
+        "imageLarge": "https://gbm-media.cltvo.com/wp-content/uploads/2025/10/tagreuters.com2025newsml_KCN3LJ0SI.jpg"
+      }
+    ]
+  }
+  
