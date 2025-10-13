@@ -1,5 +1,5 @@
 'use client';
-
+import NewsPerdil from './newsPerfil'
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -50,6 +50,7 @@ export default function InstruccionesAuditoriaCompact() {
 
   return (
     <div className="w-full max-w-[400px] mx-auto p-4 space-y-3 bg-white shadow-lg border border-gray-200 rounded-xl">
+      <NewsPerdil />
       <motion.h2
         className="text-base font-semibold text-center text-gray-800"
         initial={{ opacity: 0, y: 15 }}

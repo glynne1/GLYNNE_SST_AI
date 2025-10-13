@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { FaBars, FaTimes } from 'react-icons/fa'
 import ListaAur from './ListaAuditorias'
+import NewsPerdil from './newsPerfil'
 
 const SideMenu = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -35,11 +36,14 @@ const SideMenu = () => {
             <FaTimes className="text-[8px]" /> {/* 🔹 tamaño reducido a la mitad */}
           </button>
         </div>
-
+       
         {/* Contenido del menú */}
         <div className="p-4">
+        
           <ListaAur />
+          <NewsPerdil />
         </div>
+        
       </div>
     </>
   )
