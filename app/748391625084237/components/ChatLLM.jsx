@@ -122,7 +122,7 @@ export default function ChatSimple() {
           </p>
 
           {/* 🔹 Input inicial */}
-          <div className="w-full max-w-2xl relative flex items-center gap-2">
+          <div className="w-full max-w-4xl relative flex items-center gap-2">
             <PlusMenu onRefresh={handleRefresh} />
             <PlusMenu2 onRefresh={handleRefresh} />
 
