@@ -85,23 +85,7 @@ export default function PlusMenu({ onRefresh }) {
           <Mic className="text-gray-300 hover:text-gray-500 w-5 h-5" strokeWidth={1.4} />
         </button>
 
-        {/* 🧩 Base de datos */}
-        <button
-          onClick={() => openService('db')}
-          className="p-2 rounded-md transition-all hover:scale-110"
-          title="Analiza tu base"
-        >
-          <Database className="text-gray-300 hover:text-gray-500 w-5 h-5" strokeWidth={1.4} />
-        </button>
-
-        {/* 🧠 Auditoría */}
-        <button
-          onClick={() => openService('audit')}
-          className="p-2 rounded-md transition-all hover:scale-110"
-          title="Auditoría empresarial"
-        >
-          <FileSignature className="text-gray-300 hover:text-gray-500 w-5 h-5" strokeWidth={1.4} />
-        </button>
+       
 
         {/* 📰 Noticias */}
         <button
