@@ -22,12 +22,15 @@ export default function PlusMenu() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // 🧩 Bloqueo de scroll independiente (sin afectar otros modales)
   useEffect(() => {
     if (popupOpen && !minimized) {
+      // Guardar el estado previo del overflow (por si otro modal también lo bloquea)
       bodyOverflowBackup.current = document.body.style.overflow;
       document.body.style.overflow = 'hidden';
       requestAnimationFrame(() => closeButtonRef.current?.focus());
     } else {
+      // Solo restaurar si nadie más lo está bloqueando
       document.body.style.overflow = bodyOverflowBackup.current || '';
     }
   }, [popupOpen, minimized]);
@@ -37,6 +40,7 @@ export default function PlusMenu() {
     setPopupOpen(true);
   };
 
+  // 🔒 Cierra solo este popup, sin afectar otros
   const handleClosePopup = (e) => {
     e?.stopPropagation();
     setPopupOpen(false);
@@ -46,22 +50,21 @@ export default function PlusMenu() {
 
   if (windowWidth < 500) return null;
 
-  // 🎵 Variantes de animación para las 12 barras
   const barVariants = {
     animate: (i) => ({
-      scaleY: [1, 1.8, 1],
+      scaleY: [1, 2, 1],
       transition: {
-        duration: 1.2,
+        duration: 0.8,
         repeat: Infinity,
         ease: 'easeInOut',
-        delay: i * 0.1,
+        delay: i * 0.2,
       },
     }),
   };
 
   return (
     <div className="relative flex items-center z-[60]">
-      {/* 🎛️ Botón circular con líneas animadas */}
+      {/* 🎛️ Botón circular blanco con líneas animadas */}
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.9 }}
@@ -69,16 +72,15 @@ export default function PlusMenu() {
           e.stopPropagation();
           handleOpenPopup();
         }}
-        className="flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-800 shadow-md hover:shadow-lg transition-all"
+        className="flex items-center justify-center w-14 h-14 rounded-full bg-white border-2 border-black shadow-lg hover:shadow-xl transition-all"
         aria-label="Abrir chat de voz"
       >
-        {/* 🎚️ Animación de líneas de sonido */}
-        <div className="flex items-end justify-center gap-[2px] h-4">
-          {Array.from({ length: 12 }).map((_, i) => (
+        <div className="flex items-end justify-center gap-[3px] h-5">
+          {[0, 1, 2].map((i) => (
             <motion.div
               key={i}
-              className="w-[2px] bg-black rounded-sm"
-              style={{ height: '40%' }}
+              className="w-[3px] bg-black rounded-sm"
+              style={{ height: '50%' }}
               variants={barVariants}
               animate="animate"
               custom={i}
@@ -87,10 +89,11 @@ export default function PlusMenu() {
         </div>
       </motion.button>
 
-      {/* 🔹 Popup principal */}
+      {/* 🔹 Popup pantalla completa */}
       <AnimatePresence>
         {popupOpen && !minimized && (
           <>
+            {/* Fondo semi-transparente (solo cierra este popup si se hace clic afuera) */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.6 }}
@@ -104,6 +107,7 @@ export default function PlusMenu() {
               aria-hidden="true"
             />
 
+            {/* Contenedor del popup */}
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
@@ -114,7 +118,7 @@ export default function PlusMenu() {
               aria-modal="true"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="absolute top-4 right-4 z-90 flex gap-3">
+              <div className="absolute top-4 right-4 z-0 flex gap-3">
                 {/* Minimizar */}
                 <motion.button
                   whileHover={{ scale: 1.1 }}
@@ -129,7 +133,7 @@ export default function PlusMenu() {
                   <FaMinus className="w-4 h-4" />
                 </motion.button>
 
-                {/* Cerrar */}
+                {/* Cerrar SOLO este popup */}
                 <motion.button
                   whileHover={{ rotate: 90, scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}

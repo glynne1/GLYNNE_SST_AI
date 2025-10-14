@@ -8,15 +8,17 @@ import {
   FaDatabase,
   FaFileSignature,
   FaSyncAlt,
+  FaUserTie
 } from 'react-icons/fa';
 import ChatTTS from './LLM';
 import ChatLLM from './ChatAuditoria';
 import DB from '../../CSVanaliza/components/panel';
+import ChatTalento from './agentTalentoH/chatTalento'
 
 export default function PlusMenu({ onRefresh }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [popupOpen, setPopupOpen] = useState(false);
-  const [contentType, setContentType] = useState(null); // 'voice' | 'db' | 'audit' | null
+  const [contentType, setContentType] = useState(null); // 'voice' | 'db' | 'audit' | 'talento' | null
   const [showLogo, setShowLogo] = useState(false);
   const [showContent, setShowContent] = useState(false);
 
@@ -166,6 +168,18 @@ export default function PlusMenu({ onRefresh }) {
                 </span>
               </div>
 
+              {/* 🧠 NUEVO PERFIL DE TALENTO */}
+              <div
+                onClick={() => openService('talento')}
+                className="relative group flex items-center gap-2 px-3 py-2 cursor-pointer overflow-hidden hover:bg-gray-100 transition-colors"
+              >
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none" />
+                <FaUserTie className="text-gray-600 text-sm relative z-10" />
+                <span className="text-gray-700 text-xs relative z-10">
+                  Asistente de Talento
+                </span>
+              </div>
+
               <div
                 onClick={handleRefresh}
                 className="relative group flex items-center gap-2 px-3 py-2 cursor-pointer overflow-hidden rounded-b-lg hover:bg-gray-100 transition-colors"
@@ -258,6 +272,7 @@ export default function PlusMenu({ onRefresh }) {
                       </div>
                     </motion.div>
                   )}
+
                   {showContent && contentType === 'voice' && (
                     <motion.div
                       key="voice-content"
@@ -272,6 +287,7 @@ export default function PlusMenu({ onRefresh }) {
                       </div>
                     </motion.div>
                   )}
+
                   {showContent && contentType === 'db' && (
                     <motion.div
                       key="db-content"
@@ -285,6 +301,22 @@ export default function PlusMenu({ onRefresh }) {
                         <div className="w-full h-[100vh] overflow-y-auto">
                           <DB />
                         </div>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* 🧩 NUEVO BLOQUE DE CONTENIDO: ChatTalento */}
+                  {showContent && contentType === 'talento' && (
+                    <motion.div
+                      key="talento-content"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.25 }}
+                      className="absolute inset-0 z-40 overflow-auto"
+                    >
+                      <div id="talento-modal" className="w-full h-full">
+                        <ChatTalento />
                       </div>
                     </motion.div>
                   )}

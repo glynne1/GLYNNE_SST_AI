@@ -1,37 +1,40 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Send, Mic } from 'lucide-react';
-import { supabase } from '../../lib/supabaseClient';
-import AlertUpgrade from './alertPlanes';
-import DiscoverG from './TTSinvoke';
-import PlusMenu from './masContenido';
-import { marked } from "marked";
-import PlusMenu2 from './menuColumna';
+import DiscoverG from '../TTSinvoke';
+import AuditAlert from './alertGenerarTalento';
+
+import BannerAuditoria from '../banerAut';
 
 export default function ChatSimple() {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [userId, setUserId] = useState('');
+  const [showAuditAlert, setShowAuditAlert] = useState(false);
   const [userInfo, setUserInfo] = useState({ nombre: 'Usuario' });
   const [isRecording, setIsRecording] = useState(false);
+  const [showQuickQuestions, setShowQuickQuestions] = useState(true);
+
 
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
-  const API_URL = 'https://gly-chat-v1-2.onrender.com/chat1';
+  const API_URL = 'https://gly-chat-v1-2.onrender.com';
 
-  // 🎙️ Inicializar STT
+
+  const quickQuestions = [
+    'Me dedico a "_" y quiero adaptarme a la ia',
+    "¿Qué puedo aprender de ia para .... primero?",
+  ];
+
   useEffect(() => {
     if ('webkitSpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const recognition = new SpeechRecognition();
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
       recognition.lang = 'es-ES';
       recognition.continuous = false;
       recognition.interimResults = false;
-
       recognition.onresult = (event) => {
         let transcript = '';
         for (let i = event.resultIndex; i < event.results.length; ++i) {
@@ -39,15 +42,12 @@ export default function ChatSimple() {
         }
         setInput(transcript);
       };
-
       recognition.onend = () => setIsRecording(false);
       recognition.onerror = () => setIsRecording(false);
-
       recognitionRef.current = recognition;
     }
   }, []);
 
-  // 🎙️ Toggle grabación
   const toggleRecording = () => {
     if (!recognitionRef.current) return;
     if (!isRecording) {
@@ -59,20 +59,6 @@ export default function ChatSimple() {
     }
   };
 
-  // 👤 Cargar info del usuario
-  useEffect(() => {
-    const fetchUserInfo = async () => {
-      const {
-        data: { user },
-        error,
-      } = await supabase.auth.getUser();
-      if (error || !user) return;
-      const { user_metadata } = user;
-      setUserInfo({ nombre: user_metadata?.full_name || 'Usuario' });
-    };
-    fetchUserInfo();
-  }, []);
-
   useEffect(() => {
     const id = `user_${Math.floor(Math.random() * 90000) + 10000}`;
     setUserId(id);
@@ -80,23 +66,25 @@ export default function ChatSimple() {
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const userMessages = messages.filter((m) => m.from === 'user').length;
+    if (userMessages === 4 && !showAuditAlert) setShowAuditAlert(true);
   }, [messages]);
 
-  // ✉️ Enviar mensaje
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return;
+    if (showQuickQuestions) setShowQuickQuestions(false);
+
     const userMsg = { from: 'user', text: input };
     setMessages((prev) => [...prev, userMsg]);
     setInput('');
     setIsLoading(true);
-
     try {
-      const response = await fetch(`${API_URL}`, {
+      const response = await fetch('https://gly-chat-v1-2.onrender.com/chat2', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mensaje: input, user_id: userId }),
       });
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      
       const data = await response.json();
       const aiMsg = { from: 'ia', text: data.respuesta || 'No se recibió respuesta' };
       setMessages((prev) => [...prev, aiMsg]);
@@ -106,33 +94,39 @@ export default function ChatSimple() {
       setIsLoading(false);
     }
   };
+  const gradientWarm = 'linear-gradient(90deg, #f472b6, #a78bfa, #6366f1, #3b82f6, #0ea5e9, #0891b2, #06b6d4, #10b981, #14b8a6, #0f172a, #1e293b, #312e81, #7dd3fc, #dbeafe, #e0e7ff, #ffffff)';
 
-  // 🔄 Función de refresh
-  const handleRefresh = () => {
-    setMessages([]);
-    setInput('');
-  };
 
   return (
     <div className="w-full h-screen flex flex-col bg-white">
+      <BannerAuditoria />
+
+      {showAuditAlert && (
+        <AuditAlert
+          onClose={() => setShowAuditAlert(false)}
+          onGenerate={() => {
+            setShowAuditAlert(false);
+            alert('🔍 Aquí dispararías la generación de la auditoría');
+          }}
+        />
+      )}
+
       {messages.length === 0 ? (
-        <div className="flex flex-1 flex-col items-center justify-center text-center px-4 relative">
-          <p className="text-2xl md:text-xl sm:text-lg mb-2">
-          ¿Cómo puedo ayudarte, <span className="font-semibold">{userInfo.nombre}</span>?
+        // 🧭 Vista inicial (sin mensajes)
+        <div className="flex flex-1 flex-col items-center justify-center text-center px-6 md:px-12 lg:px-20">
+          <p className="text-2xl md:text-xl sm:text-lg mb-6">
+            Potencia tus habilidades con ia, <span className="font-semibold">{userInfo.nombre}</span>.
           </p>
 
-          {/* 🔹 Input inicial */}
-          <div className="w-full max-w-3xl relative flex items-center gap-2">
-            <PlusMenu onRefresh={handleRefresh} />
-            <PlusMenu2 onRefresh={handleRefresh} />
-
-            <div className="relative flex-1">
+          <div className="w-full max-w-3xl flex flex-col items-center gap-3 relative">
+            {/* Input inicial */}
+            <div className="relative w-full">
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-                placeholder="Hablemos de IA"
+                placeholder="Cuéntanos sobre tu empresa"
                 disabled={isLoading}
                 className="w-full px-4 py-4 rounded-full text-lg bg-white outline-none relative z-10"
                 style={{ border: '2px solid transparent', backgroundClip: 'padding-box' }}
@@ -140,7 +134,7 @@ export default function ChatSimple() {
               <span
                 className="absolute inset-0 rounded-full pointer-events-none"
                 style={{
-                  background: 'linear-gradient(90deg, #0f172a, #312e81, #ffffff, #2563eb, #0891b2, #064e3b)',
+                  background: gradientWarm,
                   backgroundSize: '300% 300%',
                   animation: 'shine 2.5s linear infinite',
                   borderRadius: '9999px',
@@ -154,8 +148,7 @@ export default function ChatSimple() {
                   whileHover={{ scale: 1.05 }}
                   onClick={sendMessage}
                   disabled={isLoading}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-black text-white rounded-full 
-                    w-10 h-10 flex items-center justify-center shadow-md z-20"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-black text-white rounded-full w-10 h-10 flex items-center justify-center shadow-md z-20"
                 >
                   <Send size={18} />
                 </motion.button>
@@ -165,70 +158,60 @@ export default function ChatSimple() {
                   whileHover={{ scale: 1.05 }}
                   onClick={toggleRecording}
                   disabled={isLoading}
-                  className={`absolute right-2 top-1/2 -translate-y-1/2 rounded-full 
-                    w-10 h-10 flex items-center justify-center shadow-md z-20 
-                    ${isRecording ? 'bg-red-600 text-white' : 'bg-black text-white'}`}
+                  className={`absolute right-2 top-1/2 -translate-y-1/2 rounded-full w-10 h-10 flex items-center justify-center shadow-md z-20 ${
+                    isRecording ? 'bg-red-600' : 'bg-black'
+                  } text-white`}
                 >
                   <Mic size={18} />
                 </motion.button>
               )}
             </div>
 
-            <style jsx>{`
-              @keyframes shine {
-                0% {
-                  background-position: 0% 50%;
-                }
-                50% {
-                  background-position: 100% 50%;
-                }
-                100% {
-                  background-position: 0% 50%;
-                }
-              }
-            `}</style>
+            {/* Preguntas rápidas */}
+            {showQuickQuestions && (
+              <div className="flex flex-wrap justify-center gap-2 mt-3">
+                {quickQuestions.map((q, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setInput(q)}
+                    className="bg-white hover:bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-sm transition"
+                  >
+                    {q}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
-          <div className="hidden md:block">
+          <div className="hidden md:block mt-6">
             <DiscoverG />
           </div>
-          <AlertUpgrade />
         </div>
       ) : (
+        // 💬 Vista de chat con mensajes
         <>
+          <div className="flex-1 px-6 md:px-16 lg:px-28 py-6 flex flex-col justify-end">
+            <div className="flex flex-col w-full max-w-4xl mx-auto space-y-3">
+              {messages.map((msg, idx) => (
+                <div key={idx} className={`flex ${msg.from === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div
+                    className={`px-5 py-3 rounded-2xl break-words ${
+                      msg.from === 'user'
+                        ? 'bg-black text-white self-end'
+                        : 'bg-white text-black shadow-sm border border-gray-200'
+                    } max-w-[75%]`}
+                  >
+                    {msg.text}
+                  </div>
+                </div>
+              ))}
+              <div ref={messagesEndRef} />
+            </div>
+          </div>
 
-<div className="flex-1 px-4 py-2 flex flex-col justify-end space-y-2">
-  {messages.map((msg, idx) => (
-    <div
-      key={idx}
-      className={`flex ${msg.from === 'user' ? 'justify-end' : 'justify-start'}`}
-    >
-      <div
-        className={`px-4 py-3 rounded-2xl max-w-[80%] break-words whitespace-pre-wrap ${
-          msg.from === 'user'
-            ? 'bg-black text-white'
-            : 'bg-white text-black shadow-md'
-        }`}
-      >
-        {msg.from === 'user' ? (
-          <p>{msg.text}</p>
-        ) : (
-          <div
-            className="prose prose-sm"
-            dangerouslySetInnerHTML={{ __html: marked(msg.text) }}
-          />
-        )}
-      </div>
-    </div>
-  ))}
-  <div ref={messagesEndRef} />
-</div>
-
-          {/* 🔹 Input inferior */}
-          <div className="w-full px-4 py-4 flex justify-center">
-            <div className="flex w-[70%] relative items-center gap-2">
-              <PlusMenu onRefresh={handleRefresh} />
-              <PlusMenu2 onRefresh={handleRefresh} />
+          {/* Input inferior */}
+          <div className="w-full px-6 md:px-16 lg:px-28 py-4 flex flex-col justify-center items-center gap-2">
+            <div className="flex w-full max-w-xl relative items-center gap-2">
               <div className="relative flex-1">
                 <input
                   type="text"
@@ -236,15 +219,14 @@ export default function ChatSimple() {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
                   placeholder="Escribe tu mensaje..."
-                  className="w-full px-4 py-4 rounded-full text-lg bg-white outline-none relative z-10 pr-14"
+                  className="w-full px-5 py-4 rounded-full text-lg bg-white outline-none pr-14 relative z-10"
                   style={{ border: '2px solid transparent', backgroundClip: 'padding-box' }}
                   disabled={isLoading}
                 />
                 <span
                   className="absolute inset-0 rounded-full pointer-events-none"
                   style={{
-                    background:
-                      'linear-gradient(90deg, #4ade80, #3b82f6, #facc15, #ec4899)',
+                    background: gradientWarm,
                     backgroundSize: '300% 300%',
                     animation: 'shine 2.5s linear infinite',
                     borderRadius: '9999px',
@@ -258,8 +240,7 @@ export default function ChatSimple() {
                     whileHover={{ scale: 1.05 }}
                     onClick={sendMessage}
                     disabled={isLoading}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 
-                      bg-black text-white rounded-full w-10 h-10 flex items-center justify-center shadow-md z-20"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 bg-black text-white rounded-full w-10 h-10 flex items-center justify-center shadow-md z-20"
                   >
                     <Send size={18} />
                   </motion.button>
@@ -269,9 +250,9 @@ export default function ChatSimple() {
                     whileHover={{ scale: 1.05 }}
                     onClick={toggleRecording}
                     disabled={isLoading}
-                    className={`absolute right-3 top-1/2 -translate-y-1/2 rounded-full 
-                      w-10 h-10 flex items-center justify-center shadow-md z-20
-                      ${isRecording ? 'bg-red-600 text-white' : 'bg-black text-white'}`}
+                    className={`absolute right-3 top-1/2 -translate-y-1/2 rounded-full w-10 h-10 flex items-center justify-center shadow-md z-20 ${
+                      isRecording ? 'bg-red-600' : 'bg-black'
+                    } text-white`}
                   >
                     <Mic size={18} />
                   </motion.button>
@@ -280,9 +261,10 @@ export default function ChatSimple() {
             </div>
           </div>
 
-          <div className="hidden md:flex justify-center items-center w-full">
-            <DiscoverG />
-          </div>
+       <div className="hidden md:block mt-6">
+  <DiscoverG />
+</div>
+
         </>
       )}
     </div>
