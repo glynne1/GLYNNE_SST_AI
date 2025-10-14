@@ -11,6 +11,7 @@ export default function ChatSimple() {
   const [isRecording, setIsRecording] = useState(false);
   const [iconVisible, setIconVisible] = useState(true);
   const [showCaptions, setShowCaptions] = useState(false);
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false); // 🔹 nuevo estado para controlar logo
 
   const recognitionRef = useRef(null);
   const messagesEndRef = useRef(null);
@@ -25,6 +26,8 @@ export default function ChatSimple() {
   // 🔊 Reproducir audio y controlar micrófono
   const reproducirAudio = (audioBase64) => {
     return new Promise((resolve) => {
+      setIsPlayingAudio(true); // 🔹 activo mientras se reproduce audio
+
       if (!audioCtxRef.current) {
         audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
         analyserRef.current = audioCtxRef.current.createAnalyser();
@@ -54,6 +57,7 @@ export default function ChatSimple() {
 
       audio.onended = () => {
         URL.revokeObjectURL(url);
+        setIsPlayingAudio(false); // 🔹 audio terminó
 
         // 🟢 Reactivar micrófono automáticamente al terminar la voz de la IA
         if (recognitionRef.current) {
@@ -67,6 +71,7 @@ export default function ChatSimple() {
 
       audio.onerror = () => {
         URL.revokeObjectURL(url);
+        setIsPlayingAudio(false);
         resolve();
       };
 
@@ -111,15 +116,16 @@ export default function ChatSimple() {
         const y = height - barHeight;
 
         const gradient = ctx.createLinearGradient(x, y, x, y + barHeight);
-        gradient.addColorStop(0, 'rgba(255, 240, 200, 0.1)');
-        gradient.addColorStop(0.3, 'rgba(255, 120, 39, 0.5)');
-        gradient.addColorStop(0.6, 'rgba(255, 159, 94, 0.8)');
-        gradient.addColorStop(1, 'rgba(255, 80, 0, 1)');
+gradient.addColorStop(0, 'rgba(200, 230, 255, 0.1)'); // azul muy claro, casi transparente
+gradient.addColorStop(0.3, 'rgba(0, 120, 255, 0.5)');  // azul medio
+gradient.addColorStop(0.6, 'rgba(0, 159, 255, 0.8)');  // azul brillante
+gradient.addColorStop(1, 'rgba(0, 80, 255, 1)');      // azul intenso
 
-        ctx.fillStyle = gradient;
-        ctx.shadowColor = 'rgba(255, 120, 40, 0.6)';
-        ctx.shadowBlur = 10;
-        ctx.fillRect(x, y, barWidth, barHeight);
+ctx.fillStyle = gradient;
+ctx.shadowColor = 'rgba(0, 120, 255, 0.6)'; // cambiar sombra también
+ctx.shadowBlur = 10;
+ctx.fillRect(x, y, barWidth, barHeight);
+
       }
 
       animationIdRef.current = requestAnimationFrame(draw);
@@ -269,14 +275,15 @@ export default function ChatSimple() {
             }}
           >
             <div className="rounded-full overflow-hidden w-[200px] h-[200px] backdrop-blur-md relative">
-              <canvas ref={canvasRef} className="w-full h-full block" />
-              <div
-                className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ${
-                  iconVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-90 pointer-events-none'
-                }`}
-              >
-                <img src="/logo.png" alt="Logo" className="w-15 h-15 object-contain" />
-              </div>
+              <canvas ref={canvasRef} className="w-80 h-full block" />
+              {/* Logo solo aparece cuando no se graba ni se reproduce audio */}
+              {!isRecording && !isPlayingAudio && (
+                <div
+                  className={`absolute inset-0 flex items-center justify-center transition-all duration-500`}
+                >
+                  <img src="/logo.png" alt="Logo" className="w-15 h-15 object-contain" />
+                </div>
+              )}
             </div>
           </div>
 
@@ -286,67 +293,8 @@ export default function ChatSimple() {
               <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-slide" />
             </div>
           )}
-
-          {/* 🚀 Botón subtítulos */}
-          <div className="mt-4 flex justify-center">
-            <button
-              onClick={() => setShowCaptions((prev) => !prev)}
-              className="p-2 rounded-full hover:bg-gray-200 transition-colors"
-            >
-              <span className="text-[10px] text-gray-700">subtítulos</span>
-            </button>
-          </div>
         </div>
-
-        {/* 🎬 Subtítulos */}
-        {showCaptions && displayedMessage.length > 0 && (
-          <div className="mt-4 w-full flex justify-center">
-            <div className="bg-white/90 p-8 rounded-2xl shadow-lg max-w-[50vw] text-center">
-              <div className="flex flex-wrap justify-center gap-2 text-gray-900 text-sm md:text-base leading-snug">
-                {displayedMessage.map((word, index) => (
-                  <span
-                    key={index}
-                    className="inline-block opacity-0 animate-fade-in-up"
-                    style={{ animationDelay: `${index * 0.08}s`, marginRight: '0.3rem' }}
-                  >
-                    {word}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
       </div>
-
-      <style jsx>{`
-        @keyframes fade-in-up {
-          0% {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        @keyframes slide {
-          0% {
-            transform: translateX(-100%);
-          }
-          100% {
-            transform: translateX(100%);
-          }
-        }
-        .animate-fade-in-up {
-          animation-name: fade-in-up;
-          animation-duration: 0.4s;
-          animation-fill-mode: forwards;
-          animation-timing-function: ease-out;
-        }
-        .animate-slide {
-          animation: slide 1.5s linear infinite;
-        }
-      `}</style>
     </div>
   );
 }

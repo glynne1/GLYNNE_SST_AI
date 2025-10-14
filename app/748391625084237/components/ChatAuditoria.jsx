@@ -127,7 +127,7 @@ export default function ChatSimple() {
             Hoy auditaremos tus procesos, <span className="font-semibold">{userInfo.nombre}</span>.
           </p>
 
-          <div className="w-full max-w-2xl flex flex-col items-center gap-3 relative">
+          <div className="w-full max-w-3xl flex flex-col items-center gap-3 relative">
             {/* Input inicial */}
             <div className="relative w-full">
               <input
