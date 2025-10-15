@@ -79,30 +79,37 @@ export default function PlusMenu({ onRefresh }) {
         {/* 🎙️ Voz */}
         <button
           onClick={() => openService('voice')}
-          className="p-2 rounded-md transition-all hover:scale-110"
+          className="p-2 rounded-md hover:scale-110 transition-all"
           title="Conversación por voz"
         >
-          <Mic className="text-gray-300 hover:text-gray-500 w-5 h-5" strokeWidth={1.4} />
+          <Mic
+            className="w-5 h-5 text-gray-400 hover:text-black transition-colors duration-1000 ease-in-out"
+            strokeWidth={1.4}
+          />
         </button>
-
-       
 
         {/* 📰 Noticias */}
         <button
           onClick={() => openService('news')}
-          className="p-2 rounded-md transition-all hover:scale-110"
+          className="p-2 rounded-md hover:scale-110 transition-all"
           title="Noticias IA"
         >
-          <Newspaper className="text-gray-300 hover:text-gray-500 w-5 h-5" strokeWidth={1.4} />
+          <Newspaper
+            className="w-5 h-5 text-gray-400 hover:text-black transition-colors duration-1000 ease-in-out"
+            strokeWidth={1.4}
+          />
         </button>
 
         {/* 🔄 Refrescar */}
         <button
           onClick={handleRefresh}
-          className="p-2 rounded-md transition-all hover:scale-110"
+          className="p-2 rounded-md hover:scale-110 transition-all"
           title="Refrescar chat"
         >
-          <RefreshCcw className="text-gray-300 hover:text-gray-500 w-5 h-5" strokeWidth={1.4} />
+          <RefreshCcw
+            className="w-5 h-5 text-gray-400 hover:text-black transition-colors duration-1000 ease-in-out"
+            strokeWidth={1.4}
+          />
         </button>
       </div>
 
@@ -162,20 +169,6 @@ export default function PlusMenu({ onRefresh }) {
                 </AnimatePresence>
 
                 <AnimatePresence>
-                  {/* 🧠 Auditoría */}
-                  {showContent && contentType === 'audit' && (
-                    <motion.div
-                      key="audit"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="absolute inset-0 overflow-auto"
-                    >
-                      <ChatLLM />
-                    </motion.div>
-                  )}
-
                   {/* 🎙️ Voz */}
                   {showContent && contentType === 'voice' && (
                     <motion.div
@@ -187,6 +180,20 @@ export default function PlusMenu({ onRefresh }) {
                       className="absolute inset-0 overflow-auto"
                     >
                       <ChatTTS onStop={handleClosePopup} />
+                    </motion.div>
+                  )}
+
+                  {/* 📰 Noticias */}
+                  {showContent && contentType === 'news' && (
+                    <motion.div
+                      key="news"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="absolute inset-0 overflow-auto"
+                    >
+                      <News />
                     </motion.div>
                   )}
 
@@ -203,20 +210,6 @@ export default function PlusMenu({ onRefresh }) {
                       <div className="w-full h-[100vh] overflow-y-auto">
                         <DB />
                       </div>
-                    </motion.div>
-                  )}
-
-                  {/* 📰 Noticias */}
-                  {showContent && contentType === 'news' && (
-                    <motion.div
-                      key="news"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="absolute inset-0 overflow-auto"
-                    >
-                      <News />
                     </motion.div>
                   )}
                 </AnimatePresence>
