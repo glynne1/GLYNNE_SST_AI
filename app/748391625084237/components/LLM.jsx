@@ -116,16 +116,15 @@ export default function ChatSimple() {
         const y = height - barHeight;
 
         const gradient = ctx.createLinearGradient(x, y, x, y + barHeight);
-gradient.addColorStop(0, 'rgba(200, 230, 255, 0.1)'); // azul muy claro, casi transparente
-gradient.addColorStop(0.3, 'rgba(0, 120, 255, 0.5)');  // azul medio
-gradient.addColorStop(0.6, 'rgba(0, 159, 255, 0.8)');  // azul brillante
-gradient.addColorStop(1, 'rgba(0, 80, 255, 1)');      // azul intenso
+        gradient.addColorStop(0, 'rgba(200, 230, 255, 0.1)');
+        gradient.addColorStop(0.3, 'rgba(0, 120, 255, 0.5)');
+        gradient.addColorStop(0.6, 'rgba(0, 159, 255, 0.8)');
+        gradient.addColorStop(1, 'rgba(0, 80, 255, 1)');
 
-ctx.fillStyle = gradient;
-ctx.shadowColor = 'rgba(0, 120, 255, 0.6)'; // cambiar sombra también
-ctx.shadowBlur = 10;
-ctx.fillRect(x, y, barWidth, barHeight);
-
+        ctx.fillStyle = gradient;
+        ctx.shadowColor = 'rgba(0, 120, 255, 0.6)';
+        ctx.shadowBlur = 10;
+        ctx.fillRect(x, y, barWidth, barHeight);
       }
 
       animationIdRef.current = requestAnimationFrame(draw);
@@ -243,7 +242,11 @@ ctx.fillRect(x, y, barWidth, barHeight);
     }
   };
 
+  // ⚙️ Control de clicks para evitar peticiones dobles
   const toggleConversation = () => {
+    // 🚫 Evita interacción mientras la IA habla o el backend responde
+    if (isPlayingAudio || isLoading) return;
+
     if (!recognitionRef.current) return;
     if (isRecording) {
       recognitionRef.current.stop();
