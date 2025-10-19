@@ -104,7 +104,8 @@ export default function ChatSimple() {
     }
   };
 
-  const gradientWarm = 'linear-gradient(90deg, #f97316, #facc15, #f43f5e, #fb7185)';
+  const gradientWarm = 'linear-gradient(90deg, #fff, #f5f5f5, #bfbfbf, #e6e6e6)';
+
 
   return (
     <div className="w-full h-screen flex flex-col bg-white">
@@ -221,7 +222,7 @@ export default function ChatSimple() {
 
           {/* Input inferior */}
           <div className="w-full px-6 md:px-16 lg:px-28 py-4 flex flex-col justify-center items-center gap-2">
-            <div className="flex w-full max-w-3xl relative items-center gap-2">
+            <div className="flex w-full max-w-xl relative items-center gap-2">
               <div className="relative flex-1">
                 <input
                   type="text"

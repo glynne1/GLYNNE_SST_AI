@@ -2,11 +2,12 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mic, Database, FileSignature, RefreshCcw, X, Newspaper } from 'lucide-react'; // 🧠 Iconos modernos
+import { Mic, Database, FileSignature, RefreshCcw, X, Newspaper, BookOpen } from 'lucide-react'; // 📘 Nuevo ícono BookOpen
 import ChatTTS from './LLM';
 import ChatLLM from './ChatAuditoria';
 import DB from '../../CSVanaliza/components/panel';
-import News from './news/news'; // 🆕 Import del componente News
+import News from './news/news';
+import DocsSection from './FW_section/page'; // 🆕 Importamos la nueva sección
 
 export default function PlusMenu({ onRefresh }) {
   const [popupOpen, setPopupOpen] = useState(false);
@@ -19,22 +20,19 @@ export default function PlusMenu({ onRefresh }) {
   const logoTimerRef = useRef(null);
   const contentTimerRef = useRef(null);
 
-  // 👇 Control de visibilidad por tamaño
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsVisible(window.innerWidth >= 700);
+      setIsVisible(window.innerWidth >= 1100);
     };
     checkScreenSize();
     window.addEventListener('resize', checkScreenSize);
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
-  // Evita scroll cuando está abierto
   useEffect(() => {
     document.documentElement.style.overflow = popupOpen ? 'hidden' : '';
   }, [popupOpen]);
 
-  // Limpieza de timers
   useEffect(() => {
     return () => {
       clearTimeout(logoTimerRef.current);
@@ -95,6 +93,18 @@ export default function PlusMenu({ onRefresh }) {
           title="Noticias IA"
         >
           <Newspaper
+            className="w-5 h-5 text-gray-400 hover:text-black transition-colors duration-1000 ease-in-out"
+            strokeWidth={1.4}
+          />
+        </button>
+
+        {/* 📘 Documentación */}
+        <button
+          onClick={() => openService('docs')}
+          className="p-2 rounded-md hover:scale-110 transition-all"
+          title="Documentación Framework IA"
+        >
+          <BookOpen
             className="w-5 h-5 text-gray-400 hover:text-black transition-colors duration-1000 ease-in-out"
             strokeWidth={1.4}
           />
@@ -212,6 +222,35 @@ export default function PlusMenu({ onRefresh }) {
                       </div>
                     </motion.div>
                   )}
+
+                  {/* 📘 Documentación */}
+                  {/* 📘 Documentación */}
+{showContent && contentType === 'docs' && (
+  <motion.div
+    key="docs"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    transition={{ duration: 0.3 }}
+    className="absolute inset-0 w-screen h-screen overflow-auto"
+  >
+    {/* Imagen de fondo con <img> normal */}
+    <div className="absolute inset-0 -z-10">
+      <img
+        src="/FWbg3.jpg" // tu imagen de fondo
+        alt="Fondo Docs"
+        className="w-full h-full object-100 object-center"
+      />
+      <div className="absolute inset-0 bg-black/30" /> {/* Overlay para legibilidad */}
+    </div>
+
+    {/* Contenido de DocsSection */}
+    <div className="relative w-full h-full p-10">
+      <DocsSection className="w-full h-full" />
+    </div>
+  </motion.div>
+)}
+
                 </AnimatePresence>
               </div>
             </motion.div>

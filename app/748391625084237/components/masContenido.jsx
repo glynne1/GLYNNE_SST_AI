@@ -21,8 +21,7 @@ export default function PlusMenu({ onRefresh }) {
   const [contentType, setContentType] = useState(null);
   const [showLogo, setShowLogo] = useState(false);
   const [showContent, setShowContent] = useState(false);
-  const [isSmallScreen, setIsSmallScreen] = useState(false); // 👈 NUEVO
-
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
   const menuRef = useRef(null);
   const closeButtonRef = useRef(null);
   const logoTimerRef = useRef(null);
@@ -30,7 +29,7 @@ export default function PlusMenu({ onRefresh }) {
 
   // 🖼️ LOGOS SEGÚN SECCIÓN
   const logos = {
-    voice: '/logoTTS.png',
+    voice: '/logoSTT.png',
     db: '/logoDBs.png',
     audit: '/logoAUD.png',
     talento: 'logoTAL.png',
@@ -75,25 +74,36 @@ export default function PlusMenu({ onRefresh }) {
     requestAnimationFrame(() => {
       const modal = document.getElementById('auditoria-modal');
       if (!modal) return;
-      const focusable = modal.querySelector('input, textarea, [contenteditable="true"], button[type="submit"]');
+      const focusable = modal.querySelector(
+        'input, textarea, [contenteditable="true"], button[type="submit"]'
+      );
       if (focusable && typeof focusable.focus === 'function') {
         focusable.focus();
       }
     });
   }, [showContent]);
 
+  // 🚀 Se abre directamente sin logo en "audit" y "talento"
   const openService = (type) => {
     clearTimeouts();
     setContentType(type);
     setPopupOpen(true);
-    setShowLogo(true);
-    setShowContent(false);
-    logoTimerRef.current = setTimeout(() => {
+
+    if (type === 'voice' || type === 'db') {
+      // Mantiene animación de logo
+      setShowLogo(true);
+      setShowContent(false);
+      logoTimerRef.current = setTimeout(() => {
+        setShowLogo(false);
+        contentTimerRef.current = setTimeout(() => {
+          setShowContent(true);
+        }, 180);
+      }, 700);
+    } else {
+      // Auditoría y Talento se abren de inmediato
       setShowLogo(false);
-      contentTimerRef.current = setTimeout(() => {
-        setShowContent(true);
-      }, 180);
-    }, 700);
+      setShowContent(true);
+    }
   };
 
   const handleRefresh = () => {
@@ -159,8 +169,9 @@ export default function PlusMenu({ onRefresh }) {
             initial="hidden"
             animate="visible"
             exit="exit"
-            className={`absolute bottom-full mb-2 w-56 bg-white shadow-lg rounded-xl border border-gray-200 z-50 backdrop-blur-sm 
-              ${isSmallScreen ? 'left-0' : 'right-0'}`}
+            className={`absolute bottom-full mb-2 w-56 bg-white shadow-lg rounded-xl border border-gray-200 z-50 backdrop-blur-sm ${
+              isSmallScreen ? 'left-0' : 'right-0'
+            }`}
           >
             <motion.div
               className="flex flex-col py-2 text-[0.75rem] font-light"
@@ -179,7 +190,7 @@ export default function PlusMenu({ onRefresh }) {
                   key={i}
                   custom={i}
                   variants={itemVariants}
-                  className={`relative group flex items-center gap-2 px-3 py-2 cursor-pointer overflow-hidden hover:bg-gray-100 transition-all`}
+                  className="relative group flex items-center gap-2 px-3 py-2 cursor-pointer overflow-hidden hover:bg-gray-100 transition-all"
                   onClick={() =>
                     item.type === 'refresh' ? handleRefresh() : openService(item.type)
                   }
@@ -239,7 +250,8 @@ export default function PlusMenu({ onRefresh }) {
 
               <div className="relative w-full h-full overflow-hidden">
                 <AnimatePresence>
-                  {showLogo && (
+                  {/* 🔹 SOLO DB y VOICE mantienen logo */}
+                  {showLogo && (contentType === 'voice' || contentType === 'db') && (
                     <motion.div
                       key="logo"
                       initial={{ opacity: 0, scale: 0.9 }}
@@ -276,6 +288,7 @@ export default function PlusMenu({ onRefresh }) {
                       </div>
                     </motion.div>
                   )}
+
                   {showContent && contentType === 'voice' && (
                     <motion.div
                       key="voice-content"
@@ -290,6 +303,7 @@ export default function PlusMenu({ onRefresh }) {
                       </div>
                     </motion.div>
                   )}
+
                   {showContent && contentType === 'db' && (
                     <motion.div
                       key="db-content"
@@ -304,6 +318,7 @@ export default function PlusMenu({ onRefresh }) {
                       </div>
                     </motion.div>
                   )}
+
                   {showContent && contentType === 'talento' && (
                     <motion.div
                       key="talento-content"

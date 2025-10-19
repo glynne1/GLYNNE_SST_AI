@@ -94,8 +94,7 @@ export default function ChatSimple() {
       setIsLoading(false);
     }
   };
-  const gradientWarm = 'linear-gradient(90deg, #f472b6, #a78bfa, #6366f1, #3b82f6, #0ea5e9, #0891b2, #06b6d4, #10b981, #14b8a6, #0f172a, #1e293b, #312e81, #7dd3fc, #dbeafe, #e0e7ff, #ffffff)';
-
+  const gradientWarm = 'linear-gradient(90deg, #f5f5f5, #d9d9d9, #bfbfbf, #e6e6e6)';
 
   return (
     <div className="w-full h-screen flex flex-col bg-white">
@@ -126,7 +125,7 @@ export default function ChatSimple() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-                placeholder="Cuéntanos sobre tu empresa"
+                placeholder="Cuéntanos sobre ti"
                 disabled={isLoading}
                 className="w-full px-4 py-4 rounded-full text-lg bg-white outline-none relative z-10"
                 style={{ border: '2px solid transparent', backgroundClip: 'padding-box' }}
