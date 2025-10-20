@@ -236,12 +236,8 @@ export default function PlusMenu({ onRefresh }) {
   >
     {/* Imagen de fondo con <img> normal */}
     <div className="absolute inset-0 -z-10">
-      <img
-        src="/FWbg3.jpg" // tu imagen de fondo
-        alt="Fondo Docs"
-        className="w-full h-full object-100 object-center"
-      />
-      <div className="absolute inset-0 bg-black/30" /> {/* Overlay para legibilidad */}
+    
+      <div className="absolute inset-0 bg-white" /> {/* Overlay para legibilidad */}
     </div>
 
     {/* Contenido de DocsSection */}

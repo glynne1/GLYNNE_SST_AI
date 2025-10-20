@@ -70,7 +70,7 @@ export default function DiscoverGlyAI() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ duration: 0.4, ease: 'easeOut' }}
-              className="fixed z-50 top-1/2 left-1/2 w-[90%] h-[100%] -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-xl border border-gray-800 overflow-hidden flex flex-col md:flex-row"
+              className="fixed z-50 top-1/2 left-1/2 w-[90%] h-[100%] -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-xl border border-gray-800 flex flex-col md:flex-row"
             >
               <button
                 onClick={() => setOpenModal(false)}

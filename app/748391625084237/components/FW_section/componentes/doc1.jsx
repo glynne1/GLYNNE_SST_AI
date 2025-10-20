@@ -67,7 +67,7 @@ export default function IntroCodeSection({ show = true, API_URL = 'https://gly-c
 
   return (
     <div className="flex justify-center items-start w-full bg-white p-4 pt-6">
-      <div className="flex flex-col md:flex-row items-center justify-center w-[70%] bg-white shadow-md rounded-2xl p-4 border border-gray-100">
+      <div className="flex flex-col md:flex-row items-center justify-center w-[80%] bg-white shadow-md rounded-2xl p-4 border border-gray-100">
 
         {/* Texto descriptivo */}
 <div className="flex-1 text-left md:pr-6 w-[30%] flex flex-col justify-center">

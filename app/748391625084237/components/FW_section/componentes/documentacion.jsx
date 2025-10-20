@@ -1,121 +1,81 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 
 export default function DocsSidebar() {
-  const [popupOpen, setPopupOpen] = useState(false);
-  const [contentType, setContentType] = useState(null);
-  const closeButtonRef = useRef(null);
-
   const sections = [
-    'Arquitectura',
-    'Integración API',
-    'Agentes Inteligentes',
-    'Automatizaciones',
-    'UI y Componentes',
-    'Seguridad',
-    'Base de Datos',
-    'Servicios Externos',
-    'Flujos de Trabajo',
-    'Logs y Monitoreo',
-    'Escalabilidad',
-    'DevOps',
+    'Introducción',
+    'Descarga del Framework',
+    'Instalación y Estructura de Carpetas',
+    'Obtención de la API Key',
+    'Selección de Modelos',
+    'Ejecución Inicial',
+    'Gestión de Código en /user',
+    'Automatización de Procesos',
+    'Modificación de Agentes',
+    'Personalidad del Agente',
+    'Configuración del Modelo',
+    'Ajuste de Temperatura',
+    'Conexión con el Frontend',
+    'Pruebas desde el CLI',
+    'Despliegue y Producción',
+    'Activación del Framework',
   ];
 
-  const openSection = (type) => {
-    setContentType(type);
-    setPopupOpen(true);
-  };
-
-  const closePopup = () => {
-    setPopupOpen(false);
-    setContentType(null);
-  };
-
   const [isVisible, setIsVisible] = useState(true);
+
   useEffect(() => {
-    const checkScreen = () => setIsVisible(window.innerWidth >= 700);
-    checkScreen();
-    window.addEventListener('resize', checkScreen);
-    return () => window.removeEventListener('resize', checkScreen);
+    const handleResize = () => setIsVisible(window.innerWidth >= 700);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   if (!isVisible) return null;
 
   return (
-    <>
-      {/* 🔹 Barra lateral */}
-      <div className="left-0 top-0 h-screen w-48 bg-white flex flex-col items-start justify-start py-6 px-4 space-y-4 z-20 border-r border-gray-100">
-        {sections.map((section) => (
-          <motion.button
+    <aside className="w-60 h-screen sticky top-0 left-0 bg-white border-r border-gray-200 flex flex-col items-center py-8 px-4 z-20 shadow-sm">
+      
+      {/* 🔹 Título de sección */}
+      <motion.h2
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="text-gray-800 text-xs font-semibold mb-6 tracking-wide uppercase"
+      >
+        Documentación del Framework
+      </motion.h2>
+
+      {/* 🔹 Navegación */}
+      <nav className="flex flex-col justify-start w-full space-y-1">
+        {sections.map((section, index) => (
+          <motion.a
             key={section}
-            onClick={() => openSection(section)}
-            className="relative w-full text-left px-3 py-2 rounded-md font-medium overflow-hidden group text-sm" // <-- texto más pequeño
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.97 }}
+            href={`#${section}`}
+            whileHover={{
+              x: 4,
+              scale: 1.02,
+              transition: { type: 'spring', stiffness: 300 },
+            }}
+            className="block px-2 py-1.5 rounded-md text-[12px] text-gray-600 font-medium hover:text-blue-600 hover:bg-gray-50 transition-all leading-snug"
           >
-            {/* Reflejo de barrido de luz */}
-            <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
-            <span className="relative z-10 text-gray-700">{section}</span>
-          </motion.button>
+            {index + 1}. {section}
+          </motion.a>
         ))}
+      </nav>
 
-        {/* 🔹 Logo al final */}
-        <div className="mt-auto w-full flex justify-start pt-4">
-          <img
-            src="/logo2.png"
-            alt="Logo GLYNNE"
-            className="w-10 md:w-10"
-          />
-        </div>
+      {/* 🔹 Logo inferior */}
+      <div className="mt-auto flex justify-center pt-6">
+        <motion.img
+          src="/logo2.png"
+          alt="Logo GLYNNE"
+          className="w-10 opacity-75 hover:opacity-100 transition-opacity"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6 }}
+        />
       </div>
-
-      {/* 🔹 Modal a pantalla completa */}
-      <AnimatePresence>
-        {popupOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.5 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-black z-30"
-              onClick={closePopup}
-            />
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.995 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.995 }}
-              transition={{ duration: 0.3 }}
-              className="fixed inset-0 z-40 bg-white w-screen h-screen overflow-auto"
-            >
-              {/* Botón de cerrar */}
-              <div className="absolute top-4 right-4 z-50">
-                <motion.button
-                  whileHover={{ rotate: 90, scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  ref={closeButtonRef}
-                  onClick={closePopup}
-                  aria-label="Cerrar"
-                  className="inline-flex items-center justify-center p-2 rounded-full bg-gray-100 hover:bg-gray-200"
-                >
-                  <X className="w-5 h-5 text-gray-600" strokeWidth={1.8} />
-                </motion.button>
-              </div>
-
-              {/* Contenido del modal */}
-              <div className="w-full h-full flex items-center justify-center px-6">
-                <p className="text-gray-400 text-sm italic text-center">
-                  Contenido de la sección <strong>{contentType}</strong> pendiente de importar.
-                </p>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-    </>
+    </aside>
   );
 }

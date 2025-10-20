@@ -168,7 +168,7 @@ export default function ServiceCards() {
   return (
     <div className="w-full flex justify-center mt-[30px] px-2 sm:px-4">
      <motion.div
-  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-[70%]"
+  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-[80%]"
   variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}
 >
   {services.map((service, index) => (
