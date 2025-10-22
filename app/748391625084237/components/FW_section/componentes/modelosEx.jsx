@@ -3,47 +3,33 @@
 import React, { useState } from 'react';
 import { ArrowLeft, ArrowRight, Copy } from 'lucide-react';
 
-export default function FrameworkTreeScroll({ show = true }) {
+export default function UserSettingsCLI({ show = true }) {
   if (!show) return null;
 
   const examples = [
     {
-      lang: 'Estructura',
+      lang: 'Configuración de Modelos',
       code: [
-        { type: 'comment', text: '📂 GLYNNE Framework - Estructura de Carpetas\n' },
-        { text: '└── 📁GLYNNE_Agents_ecosistem\n' },
-        { text: '    └── 📁__pycache__\n' },
-        { text: '        ├── main.cpython-312.pyc\n' },
-        { text: '    └── 📁core\n' },
-        { text: '        └── 📁__pycache__\n' },
-        { text: '            ├── config.cpython-312.pyc\n' },
-        { text: '            ├── graph_manager.cpython-312.pyc\n' },
-        { text: '            ├── imports.cpython-312.pyc\n' },
-        { text: '            ├── llm_manager.cpython-312.pyc\n' },
-        { text: '            ├── memory_manager.cpython-312.pyc\n' },
-        { text: '            ├── panel.cpython-312.pyc\n' },
-        { text: '            ├── prompt_manager.cpython-312.pyc\n' },
-        { text: '        ├── __init__.py\n' },
-        { text: '        ├── cli_runner.py\n' },
-        { text: '        ├── config.py\n' },
-        { text: '        ├── graph_manager.py\n' },
-        { text: '        ├── imports.py\n' },
-        { text: '        ├── llm_manager.py\n' },
-        { text: '        ├── memory_manager.py\n' },
-        { text: '        ├── panel.py\n' },
-        { text: '        ├── prompt_manager.py\n' },
-        { text: '    └── 📁user\n' },
-        { text: '        └── 📁__pycache__\n' },
-        { text: '            ├── __init__.cpython-312.pyc\n' },
-        { text: '            ├── panel.cpython-312.pyc\n' },
-        { text: '        ├── panel.py\n' },
-        { text: '    ├── .env\n' },
-        { text: '    ├── .gitignore\n' },
-        { text: '    ├── CLI.py\n' },
-        { text: '    ├── GLYNNE_Documentacion.pdf\n' },
-        { text: '    ├── main.py\n' },
-        { text: '    ├── README.md\n' },
-        { text: '    └── requirements.txt\n' },
+        { type: 'comment', text: '# 🧠 USER_SETTINGS - Ajuste de modelos en GLYNNE Framework\n' },
+        { type: 'comment', text: '# ------------------------------------------------------\n' },
+        { type: 'comment', text: '# 🤖 MODELO\n' },
+        { type: 'comment', text: '# ------------------------------------------------------\n' },
+        { type: 'comment', text: '# Aquí defines el modelo que quieres usar para tu agente.\n' },
+        { type: 'comment', text: '# Los modelos "gratuitos" disponibles en la infraestructura Groq son:\n' },
+        { type: 'comment', text: '# 1️⃣ "llama-3.3-70b-versatile"     → Equilibrado, rápido y generalista.\n' },
+        { type: 'comment', text: '# 2️⃣ "llama-3.1-8b-instruct"       → Liviano, ideal para chat y QA.\n' },
+        { type: 'comment', text: '# 3️⃣ "mixtral-8x7b"                → Excelente para tareas analíticas.\n' },
+        { type: 'comment', text: '# 4️⃣ "gemma-7b-it"                 → Eficiente para generación de texto corta.\n' },
+        { type: 'comment', text: '# 5️⃣ "llama-guard-2-8b"            → Especializado en filtrado seguro de contenido.\n' },
+        { type: 'comment', text: '#\n' },
+        { type: 'comment', text: '# También tienes acceso a modelos premium como ChatGPT-5 y Gemini,\n' },
+        { type: 'comment', text: '# pero estos requieren suscripción y están pensados para producción avanzada.\n' },
+        { type: 'comment', text: '#\n' },
+        { type: 'comment', text: '# 👉 Alterna el modelo según el tipo de agente que quieras crear.\n' },
+        { type: 'comment', text: '# ------------------------------------------------------\n\n' },
+        { text: 'USER_SETTINGS = {\n' },
+        { text: '    "model": "llama-3.3-70b-versatile",\n' },
+        { text: '}\n' },
       ]
     }
   ];
@@ -68,13 +54,17 @@ export default function FrameworkTreeScroll({ show = true }) {
     <div className="flex justify-center items-start w-full bg-white p-6 pt-8">
       <div className="flex flex-col md:flex-row items-center justify-center w-[95%] bg-white shadow-md rounded-2xl p-6 border border-gray-100">
 
-        {/* Logo descriptivo */}
-        <div className="flex-1 md:pr-6 w-[10%] flex justify-center items-center">
-          <img 
-            src="/logo2.png" 
-            alt="Logo GLYNNE" 
-            className="max-w-[40%] h-auto"
-          />
+        {/* Texto explicativo */}
+        <div className="flex-1 md:w-[30%] flex flex-col justify-center items-center text-center pr-6">
+          <h2 className="text-base font-semibold text-gray-800 mb-1">
+            Ajuste de Modelos en GLYNNE Framework
+          </h2>
+          <p className="text-xs text-gray-500 leading-snug">
+            Este bloque define el modelo de IA que tu agente utilizará. 
+            Puedes elegir entre los modelos gratuitos de Groq para pruebas y desarrollo, 
+            o usar modelos premium como ChatGPT-5 o Gemini si cuentas con suscripción para producción. 
+            Cambiar el modelo permite crear agentes con distintos enfoques: rápidos, analíticos, seguros o especializados.
+          </p>
         </div>
 
         {/* Contenedor del código */}

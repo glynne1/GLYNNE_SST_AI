@@ -32,7 +32,7 @@ export default function DiscoverGlyAI() {
 
   return (
     <>
-      <div className="w-full flex justify-center mt-3 relative">
+      <div className="w-full h-[50%] flex justify-center mt-3 relative">
         <button
           onClick={handleOpenModal}
           className="flex items-center gap-1.5 px-6 py-2 bg-white text-gray-800 rounded-full text-sm md:text-base shadow-sm border border-gray-200 hover:shadow-md hover:scale-[1.02] active:scale-[0.97] transition-all duration-300 ease-out backdrop-blur-sm w-[80%] max-w-[600px] justify-center relative"
@@ -70,7 +70,7 @@ export default function DiscoverGlyAI() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ duration: 0.4, ease: 'easeOut' }}
-              className="fixed z-50 top-1/2 left-1/2 w-[90%] h-[100%] -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-xl border border-gray-800 flex flex-col md:flex-row"
+              className="fixed z-50 top-1/2 left-1/2 w-[90%] h-[100%] -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-xl border border-gray-800 overflow-hidden flex flex-col md:flex-row"
             >
               <button
                 onClick={() => setOpenModal(false)}

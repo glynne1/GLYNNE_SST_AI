@@ -1,0 +1,39 @@
+/* Animación de fade-in (entrada suave) */
+@keyframes fade-in {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-fade-in {
+    animation: fade-in 1s ease-out both;
+  }
+  
+  /* Carrusel infinito (horizontal) */
+  @keyframes slide {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+  
+  .animate-slide-infinite {
+    animation: slide 30s linear infinite;
+  }
+  
+  /* Ocultar scrollbar en navegadores modernos */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  

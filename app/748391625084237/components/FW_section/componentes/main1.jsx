@@ -50,157 +50,79 @@ export default function TextSection() {
   return (
     <section className="w-full min-h-screen flex items-center justify-center px-6 md:px-16 bg-white">
       <motion.div
-        className="max-w-4xl w-full flex flex-col items-center text-left"
+        className="max-w-6xl w-full flex flex-col items-start text-left space-y-8"
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: 'easeOut' }}
         viewport={{ once: true }}
       >
-        {/* 📖 Texto tipo documentación */}
-        <motion.div
-          className="text-gray-700 text-sm md:text-[15px] leading-relaxed mb-10 w-full"
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.6 }}
-        >
-          <h2 className="text-lg md:text-xl font-semibold text-gray-900 mb-3">
-            Instalación del Framework GLYNNE
-          </h2>
 
-      
+        {/* Título y texto general sobre instalación */}
+        <div className="flex flex-col items-start mb-4">
+          <h1 className="text-lg font-bold text-gray-800 mb-1">
+            Varias formas de instalar GLYNNE Framework
+          </h1>
+          <p className="text-sm text-gray-500 leading-snug">
+            Tenemos varias formas de instalar nuestra herramienta de desarrollo. La forma más directa es clonar el repositorio oficial de GitHub: <code>{repoURL}</code>, luego crear el entorno virtual, instalar dependencias y ejecutar la aplicación localmente.
+          </p>
+        </div>
 
-          <ol className="list-decimal pl-4 space-y-3">
-            <li>
-              <strong>Descargar el ejecutable (.zip):</strong>  
-              la forma más rápida de comenzar. Descargue el archivo, descomprímalo y ejecútelo.
-              Este método incluye todos los módulos, dependencias y estructura base preconfigurada.
-            </li>
-             {/* 🔹 Botón principal */}
-       <motion.a
-  href="/GLYNNE_FW.zip"
-  download
-  className="relative px-12 py-3 text-sm md:text-base font-semibold 
-             bg-gradient-to-r from-neutral-800 via-neutral-900 to-black
-             text-white shadow-xl overflow-hidden rounded-xl group transition-all duration-300 inline-block"
-  whileHover={{ scale: 1.05 }}
-  whileTap={{ scale: 0.97 }}
->
-  {/* 💡 Efecto de brillo dinámico */}
-  <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent 
-                   transform -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
-  <span className="relative z-10 font-medium tracking-wide">
-    Descargar GLYNNE Framework (.zip)
-  </span>
-</motion.a>
+        {/* Bloque de código + texto explicativo */}
+        <div className="flex flex-col md:flex-row items-center w-full bg-white shadow-md rounded-2xl p-4 border border-gray-100">
+          {/* Texto explicativo */}
+          <div className="flex-1 md:w-[30%] flex flex-col justify-center items-center text-center pr-6">
+            <h2 className="text-base font-semibold text-gray-800 mb-1">
+              Clonar o descargar GLYNNE Framework
+            </h2>
+            <p className="text-xs text-gray-500 leading-snug">
+              Puedes clonar el repositorio desde GitHub, pero si lo haces deberás crear el entorno virtual,
+              instalar dependencias, activar el entorno y configurar <code>.gitignore</code> y <code>.env</code>.
+              La forma más rápida es descargarlo desde la página oficial, donde todo viene listo para ejecutar.
+            </p>
+          </div>
 
-<motion.p
-  className="text-gray-400 text-xs md:text-sm mt-4 text-center md:text-left"
-  initial={{ opacity: 0, y: 10 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  transition={{ delay: 0.6, duration: 0.6 }}
->
-  Haga clic derecho → “Abrir” para iniciar la instalación en MacOS.
-</motion.p>
-
-            <li>
-              <strong>Clonar el repositorio manualmente:</strong>  
-              si prefiere trabajar desde la terminal, puede clonar el repositorio oficial e instalar
-              el entorno con Python.
-            </li>
-          </ol>
-        </motion.div>
-
-        {/* 💻 Consola tipo Mac */}
-        <motion.div
-          className="w-full md:w-[90%] bg-neutral-50 border border-gray-200 rounded-xl shadow-lg overflow-hidden mb-8"
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-        >
-          <div className="flex items-center justify-between px-4 py-2 bg-gray-100 border-b border-gray-200">
-            <div className="flex items-center gap-2">
-              <span className="w-3 h-3 bg-red-400 rounded-full"></span>
-              <span className="w-3 h-3 bg-yellow-400 rounded-full"></span>
-              <span className="w-3 h-3 bg-green-400 rounded-full"></span>
-              <span className="ml-3 text-xs text-gray-600 font-medium">{examples[currentIndex].lang}</span>
-            </div>
-            <div className="flex gap-1">
-              <button onClick={prevExample} className="p-1 rounded hover:bg-gray-200 transition">
-                <ArrowLeft className="w-3 h-3 text-gray-600" />
-              </button>
-              <button onClick={nextExample} className="p-1 rounded hover:bg-gray-200 transition">
-                <ArrowRight className="w-3 h-3 text-gray-600" />
-              </button>
+          {/* Contenedor del código */}
+          <div className="flex flex-col w-full md:w-[70%] mt-6 md:mt-0">
+            {/* Header estilo ventana Mac */}
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <span className="w-3 h-3 bg-red-400 rounded-full"></span>
+                <span className="w-3 h-3 bg-yellow-400 rounded-full"></span>
+                <span className="w-3 h-3 bg-green-400 rounded-full"></span>
+                <span className="ml-2 font-semibold text-neutral-600 text-xs">{examples[currentIndex].lang}</span>
+                <button onClick={prevExample} className="ml-2 p-1 rounded hover:bg-gray-200 transition">
+                  <ArrowLeft className="w-3 h-3 text-gray-600" />
+                </button>
+                <button onClick={nextExample} className="p-1 rounded hover:bg-gray-200 transition">
+                  <ArrowRight className="w-3 h-3 text-gray-600" />
+                </button>
+              </div>
               <button onClick={copyToClipboard} className="p-1 rounded hover:bg-gray-200 transition">
                 <Copy className="w-3 h-3 text-gray-600" />
               </button>
             </div>
+
+            {/* Bloque de código */}
+            <div className="w-full bg-neutral-50 text-neutral-800 rounded-lg p-3 font-mono text-xs shadow-inner border border-gray-200 overflow-x-auto">
+              <pre className="whitespace-pre-wrap leading-snug text-left">
+                <code>{renderCode(examples[currentIndex].code)}</code>
+                {'\n'}
+                <span className="text-gray-500 italic"># Crear y activar entorno virtual</span>{'\n'}
+                python -m venv venv{'\n'}
+                cd venv{'\n'}
+                cd bin{'\n'}
+                source activate{'\n'}
+                cd ..{'\n'}
+                cd ..{'\n\n'}
+                <span className="text-gray-500 italic"># Instalar dependencias</span>{'\n'}
+                pip install -r requirements.txt{'\n\n'}
+                <span className="text-gray-500 italic"># Ejecutar entorno local</span>{'\n'}
+                uvicorn main:app --host 0.0.0.0 --port 8000
+              </pre>
+            </div>
           </div>
+        </div>
 
-          <div className="p-4 font-mono text-xs text-left overflow-x-auto text-gray-800">
-            <pre className="whitespace-pre-wrap leading-snug">
-              <code>{renderCode(examples[currentIndex].code)}</code>
-              {'\n'}
-
-             
-              <span className="text-gray-500 italic"># Instalar dependencias</span>{'\n'}
-              pip install -r requirements.txt{'\n\n'}
-              <span className="text-gray-500 italic"># Ejecutar entorno local</span>{'\n'}
-              uvicorn main:app --host 0.0.0.0 --port 8000
-            </pre>
-          </div>
-        </motion.div>
-        <motion.div
-  className="w-full md:w-[90%] bg-neutral-50 border border-gray-200 rounded-xl shadow-lg overflow-hidden mb-8"
-  initial={{ opacity: 0, scale: 0.95 }}
-  whileInView={{ opacity: 1, scale: 1 }}
-  transition={{ delay: 0.2, duration: 0.6 }}
->
-  <div className="flex items-center justify-between px-4 py-2 bg-gray-100 border-b border-gray-200">
-    <div className="flex items-center gap-2">
-      <span className="w-3 h-3 bg-red-400 rounded-full"></span>
-      <span className="w-3 h-3 bg-yellow-400 rounded-full"></span>
-      <span className="w-3 h-3 bg-green-400 rounded-full"></span>
-      <span className="ml-3 text-xs text-gray-600 font-medium">bash</span>
-    </div>
-    <div className="flex gap-1">
-      <button onClick={prevExample} className="p-1 rounded hover:bg-gray-200 transition">
-        <ArrowLeft className="w-3 h-3 text-gray-600" />
-      </button>
-      <button onClick={nextExample} className="p-1 rounded hover:bg-gray-200 transition">
-        <ArrowRight className="w-3 h-3 text-gray-600" />
-      </button>
-      <button onClick={copyToClipboard} className="p-1 rounded hover:bg-gray-200 transition">
-        <Copy className="w-3 h-3 text-gray-600" />
-      </button>
-    </div>
-  </div>
-
-  {/* Contenido del bloque de terminal */}
-  <div className="p-4 font-mono text-xs text-gray-800 bg-gray-50">
-    <pre className="whitespace-pre-wrap leading-relaxed">
-{`# Crear entorno virtual
-$ python -m venv bend
-
-# Entrar al entorno
-$ cd bend
-
-# Entrar a la carpeta bin
-$ cd bin
-
-# Activar el entorno
-$ source activate
-
-# Regresar a la carpeta principal
-$ cd ..
-$ cd ..
-$ cd ..
-`}
-    </pre>
-  </div>
-</motion.div>
-
-       
       </motion.div>
     </section>
   );

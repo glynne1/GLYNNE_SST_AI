@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 export default function TextSection() {
   return (
     <section
-      className="w-[100%] min-h-[40vh] flex items-center justify-center px-6 md:px-16 bg-white bg-center bg-no-repeat relative"
+      className="w-[100%] min-h-[75vh] flex items-center justify-center px-6 md:px-16 bg-white bg-center bg-no-repeat relative"
     >
       {/* Fondo blanco */}
       <div className="absolute inset-0 bg-white"></div>
@@ -35,8 +35,7 @@ export default function TextSection() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
         >
-         Con GLYNNE Framework, incorporar modelos de inteligencia artificial avanzados es fácil y rápido. Solo personaliza la personalidad, el rol y el modelo de tu agente, y estará listo para integrarse directamente en tus procesos o plataformas. Nuestra herramienta hace accesible la IA para developers, simplificando el desarrollo y la implementación de soluciones inteligentes sin código complejo.
-        </motion.p>
+       GLYNNE Framework redefine cómo los desarrolladores integran inteligencia artificial en sus proyectos. Descarga, personaliza y ejecuta: así de simple. Solo ajusta la personalidad, el rol y el modelo de tu agente, inicia el servidor y obtendrás un ecosistema completo listo para procesar consultas, responder contextos y conectarse a cualquier aplicación. Sin configuraciones complejas, sin dependencias externas: un entorno de ejecución optimizado para desplegar IA funcional desde el primer comando. </motion.p>
 
         {/* Botón de descarga */}
         <motion.a

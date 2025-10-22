@@ -46,13 +46,13 @@ ENVIRONMENT=development`);
 
       {/* Bloque tipo terminal estilo VS Code Light */}
       <motion.div
-        className="w-full md:w-[90%] bg-[#f8f8f8] border border-gray-300 rounded-xl shadow-lg overflow-hidden mb-8"
+        className="w-full md:w-[90%] bg-[#fff] border border-gray-300 rounded-xl shadow-lg overflow-hidden mb-8"
         initial={{ opacity: 0, scale: 0.95 }}
         whileInView={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.2, duration: 0.6 }}
       >
         {/* Header tipo terminal */}
-        <div className="flex items-center justify-between px-4 py-2 bg-gray-100 border-b border-gray-300">
+        <div className="flex items-center justify-between px-4 py-2 bg-white border-b border-gray-300">
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 bg-red-400 rounded-full"></span>
             <span className="w-3 h-3 bg-yellow-400 rounded-full"></span>
@@ -81,12 +81,9 @@ ENVIRONMENT=development`);
               <span className="text-[#0451A5]">GROQ_API_KEY</span>
               <span className="text-gray-700">=</span>
               <span className="text-[#A31515]">sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</span>{'\n\n'}
-              <span className="text-[#0451A5]">PORT</span>
-              <span className="text-gray-700">=</span>
-              <span className="text-[#098658]">8000</span>{'\n'}
-              <span className="text-[#0451A5]">ENVIRONMENT</span>
-              <span className="text-gray-700">=</span>
-              <span className="text-[#A31515]">development</span>{'\n'}
+             
+
+   
             </code>
           </pre>
         </div>
