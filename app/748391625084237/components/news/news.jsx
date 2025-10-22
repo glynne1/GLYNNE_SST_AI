@@ -64,7 +64,7 @@ export default function MuroNoticiasGlynne() {
   return (
     <div className="flex">
       {/* 🔹 SECCIÓN PRINCIPAL */}
-      <section className="w-[89%] min-h-screen bg-white text-gray-900 font-sans antialiased">
+      <section className="w-[100%] min-h-screen bg-white text-gray-900 font-sans antialiased">
         {/* HEADER */}
         <motion.header
           initial={{ opacity: 0, y: -20 }}
@@ -200,7 +200,7 @@ export default function MuroNoticiasGlynne() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+              className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm"
             >
               <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
@@ -247,10 +247,7 @@ export default function MuroNoticiasGlynne() {
         </AnimatePresence>
       </section>
 
-      {/* 🔹 SIDEBAR */}
-      <div className="w-[11%] h-screen sticky top-0 border-l border-gray-200 hidden-[max-850px]:hidden">
-        <GlynneSidebar />
-      </div>
+
     </div>
   );
 }

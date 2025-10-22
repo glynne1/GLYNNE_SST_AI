@@ -67,7 +67,7 @@ export default function DocsPage() {
           </div>
         </section>
 
-        <section id="Instalación y Estructura de Carpetas" className="scroll-mt-24">
+        <section id="Estructura de Carpetas" className="scroll-mt-24">
 
           <div className="space-y-4">
             

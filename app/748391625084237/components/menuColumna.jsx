@@ -2,11 +2,11 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mic, Database, FileSignature, RefreshCcw, X, Newspaper, BookOpen } from 'lucide-react'; // 📘 Nuevo ícono BookOpen
+import { Mic, Database, FileSignature, RefreshCcw, X, Newspaper, BookOpen,UserCircle2 } from 'lucide-react'; // 📘 Nuevo ícono BookOpen
 import ChatTTS from './LLM';
 import ChatLLM from './ChatAuditoria';
 import DB from '../../CSVanaliza/components/panel';
-import News from './news/news';
+import News from './muroSocial/page';
 import DocsSection from './FW_section/page'; // 🆕 Importamos la nueva sección
 
 export default function PlusMenu({ onRefresh }) {
@@ -22,7 +22,7 @@ export default function PlusMenu({ onRefresh }) {
 
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsVisible(window.innerWidth >= 1100);
+      setIsVisible(window.innerWidth >=900);
     };
     checkScreenSize();
     window.addEventListener('resize', checkScreenSize);
@@ -92,7 +92,7 @@ export default function PlusMenu({ onRefresh }) {
           className="p-2 rounded-md hover:scale-110 transition-all"
           title="Noticias IA"
         >
-          <Newspaper
+          <UserCircle2
             className="w-5 h-5 text-gray-400 hover:text-black transition-colors duration-1000 ease-in-out"
             strokeWidth={1.4}
           />
