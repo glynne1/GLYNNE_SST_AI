@@ -3,11 +3,10 @@
 import { useState } from 'react';
 import { Dialog } from '@headlessui/react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  FaUserTie, FaBullseye, FaEye, FaStar, FaBalanceScale, FaHistory, FaFlagCheckered,
-  FaBuilding, FaLaptopCode, FaBrain, FaFlask, FaGlobe
+import {
+  FaUserTie, FaBullseye, FaEye, FaStar, FaBalanceScale, FaHistory,
+  FaFlagCheckered, FaBuilding, FaLaptopCode, FaBrain, FaFlask, FaGlobe
 } from 'react-icons/fa';
-
 const services = [
   {
     icon: <FaUserTie size={40} className="text-orange-500 drop-shadow-sm" />,
@@ -144,7 +143,7 @@ const containerVariants = {
 
 const cardVariants = {
   hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
 };
 
 export default function NosotrosMain() {
@@ -152,7 +151,7 @@ export default function NosotrosMain() {
 
   return (
     <section className="relative w-full min-h-screen flex items-center justify-center px-4 sm:px-6 md:px-10 pt-[100px] bg-white">
-      <div className="absolute inset-0 bg-white/80 backdrop-blur-[3.7px] z-0" />
+      <div className="absolute inset-0 backdrop-blur-[4px] z-0" />
 
       <div className="relative z-10 w-full max-w-7xl flex flex-col items-center text-center space-y-10 p-6 sm:p-10">
         <motion.div
@@ -166,12 +165,12 @@ export default function NosotrosMain() {
             Nosotros
           </h2>
           <p className="text-gray-700 max-w-3xl mx-auto mt-4 text-base md:text-lg">
-            GLYNNE TECH S.A.S es una empresa de transformación digital dedicada a impulsar la autonomía empresarial mediante auditorías inteligentes, diagnóstico automatizado y soluciones de inteligencia artificial enfocadas en resultados reales.
+            GLYNNE TECH S.A.S impulsa la autonomía empresarial mediante auditorías inteligentes, diagnóstico automatizado y soluciones de inteligencia artificial enfocadas en resultados reales.
           </p>
         </motion.div>
 
         <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 gap-10"
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -180,13 +179,13 @@ export default function NosotrosMain() {
           {services.map((service, index) => (
             <motion.div
               key={index}
-              className="bg-white border border-gray-200 p-6 rounded-xl text-center shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer"
+              className="bg-white/40 backdrop-blur-md border border-gray-200/40 p-5 rounded-2xl text-center shadow-[0_4px_30px_rgba(0,0,0,0.05)] hover:shadow-[0_4px_40px_rgba(0,0,0,0.1)] transition-all duration-300 cursor-pointer"
               variants={cardVariants}
-              whileHover={{ scale: 1.03 }}
+              whileHover={{ scale: 1.05 }}
               onClick={() => setSelected(service)}
             >
-              <div className="mb-4 flex justify-center">{service.icon}</div>
-              <h3 className="text-lg font-bold uppercase text-gray-900 mb-2">
+              <div className="mb-3 flex justify-center">{service.icon}</div>
+              <h3 className="text-md font-semibold uppercase text-gray-800 mb-1 tracking-wide">
                 {service.title}
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed">
@@ -197,37 +196,36 @@ export default function NosotrosMain() {
         </motion.div>
       </div>
 
-      {/* Popup con detalle */}
+      {/* Popup con estilo glass futurista */}
       <AnimatePresence>
         {selected && (
           <Dialog open={!!selected} onClose={() => setSelected(null)} className="relative z-50">
-            <motion.div 
-              className="fixed inset-0  backdrop-blur-sm"
+            <motion.div
+              className="fixed inset-0 backdrop-blur-sm"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
               aria-hidden="true"
             />
-
             <div className="fixed inset-0 flex items-center justify-center p-4">
               <motion.div
-                initial={{ opacity: 0, scale: 0.7, y: 40 }}
+                initial={{ opacity: 0, scale: 0.8, y: 40 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.7, y: 40 }}
-                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                className="relative w-4/5 max-w-4xl bg-gradient-to-br from-white via-white to-gray-50 rounded-2xl p-8 shadow-2xl border border-gray-200"
+                exit={{ opacity: 0, scale: 0.8, y: 40 }}
+                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                className="relative w-4/5 max-w-4xl bg-white/40 backdrop-blur-lg border border-gray-200/30 shadow-[0_8px_40px_rgba(0,0,0,0.15)] rounded-2xl p-8"
               >
-                <Dialog.Title className="text-2xl font-extrabold mb-4 text-gray-900">
+                <Dialog.Title className="text-2xl font-bold mb-4 text-gray-900">
                   {selected?.title}
                 </Dialog.Title>
-                <Dialog.Description className="text-gray-700 text-base whitespace-pre-line leading-relaxed">
+                <Dialog.Description className="text-gray-800 text-base whitespace-pre-line leading-relaxed">
                   {selected?.detail}
                 </Dialog.Description>
                 <div className="mt-8 flex justify-end">
                   <button
                     onClick={() => setSelected(null)}
-                    className="px-6 py-2 bg-orange-500 text-white font-semibold rounded-lg shadow hover:bg-orange-600 transition"
+                    className="px-6 py-2 bg-gray-900/80 text-white font-medium rounded-lg hover:bg-gray-900 transition-all shadow-sm hover:shadow-md"
                   >
                     Cerrar
                   </button>

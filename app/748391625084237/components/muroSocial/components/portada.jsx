@@ -1,6 +1,9 @@
 'use client';
 import Nosotros from '../../../somos/componentes/cardNosotros'
 import News2 from '../../news/news'
+import PubDB from './publiccionDB'
+import PubDP from './publicacionInterfaz'
+import PubSTT from './sttP'
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -9,12 +12,11 @@ import {
   Link,
   Users,
   Briefcase,
-  Folder,
   Edit2,
 } from "lucide-react";
 
 export default function PerfilSocial({ profile }) {
-  const [activeSection, setActiveSection] = useState("publicaciones");
+  const [activeSection, setActiveSection] = useState("informacion"); // 👈 Empieza en 'informacion'
   const [openModal, setOpenModal] = useState(false);
 
   const data = profile || {
@@ -26,13 +28,12 @@ export default function PerfilSocial({ profile }) {
     location: "Bogotá, Colombia",
     email: "axglynne7@gmail.com",
     linkedin:
-      "https://www.linkedin.com/in/alexander-quiroga-a992452b4/", // tu perfil LinkedIn
+      "https://www.linkedin.com/in/alexander-quiroga-a992452b4/",
     about:
-      "En GLYNNE S.A.S diseñamos ecosistemas tecnológicos inteligentes capaces de automatizar, analizar y escalar operaciones empresariales. Nuestra misión es construir arquitecturas de software acoplables, impulsadas por IA, que anticipen problemas antes de que existan. Cada línea de código refleja nuestro compromiso con la eficiencia, la modularidad y la innovación constante",
+      "En GLYNNE S.A.S diseñamos ecosistemas tecnológicos inteligentes capaces de automatizar, analizar y escalar operaciones empresariales. Nuestra misión es construir arquitecturas de software acoplables, impulsadas por IA, que anticipen problemas antes de que existan. Cada línea de código refleja nuestro compromiso con la eficiencia, la modularidad y la innovación constante.",
     stats: {
       conexiones: 512,
       puestos: 24,
-      proyectos: 12,
     },
   };
 
@@ -47,10 +48,8 @@ export default function PerfilSocial({ profile }) {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.4 }}
           >
-            <h3 className="text-lg font-semibold text-slate-800 mb-3">
-              Publicaciones
-            </h3>
-            <article className="p-5 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition">
+         
+            <article className="p-5 bg-white  transition">
               <div className="flex items-start gap-3">
                 <img
                   src={data.avatarUrl}
@@ -61,94 +60,41 @@ export default function PerfilSocial({ profile }) {
                   <p className="text-sm font-semibold text-slate-900">
                     {data.name}
                   </p>
-                  <p className="text-xs text-slate-500 mb-2">Hace 2 horas</p>
+       
                   <p className="text-sm text-slate-700">
-                    Lanzando una nueva arquitectura de microservicios orientada
-                    a eventos — observabilidad y pruebas desde el día 0.
+                  <Nosotros />
+                
                   </p>
-                  <div className="mt-3 flex gap-4 text-xs text-slate-500 font-medium">
-                    <button className="hover:text-slate-700">👍 Me gusta</button>
-                    <button className="hover:text-slate-700">💬 Comentar</button>
-                    <button className="hover:text-slate-700">↗ Compartir</button>
-                  </div>
                 </div>
               </div>
             </article>
           </motion.section>
         );
 
-        case "informacion":
-            return (
-              <motion.section
-                key="informacion"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.4 }}
-                className="bg-white p-6 rounded-xl border border-slate-200"
-              >
-                <h3 className="text-lg font-semibold text-slate-800 mb-2">
-                  Información
-                </h3>
-          
-                {/* Mantener descripción */}
-                <p className="text-sm text-slate-600 leading-relaxed mb-4">
-                  {data.about}
-                </p>
-          
-                {/* Insertar componente News */}
-     
-                <News2 />
-              </motion.section>
-            );
-
-      case "quienes":
+      case "informacion":
         return (
           <motion.section
-            key="quienes"
+            key="informacion"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.4 }}
-            className="p-6 bg-white rounded-xl border border-slate-200"
+            className="bg-white p-6 rounded-xl border border-slate-200"
           >
             <h3 className="text-lg font-semibold text-slate-800 mb-2">
-              Quiénes somos
+              GLYNNE NEWS
             </h3>
-            <p className="text-sm text-slate-600 leading-relaxed">
-              Somos un equipo multidisciplinario de ingenieros, diseñadores y
-              arquitectos de software enfocados en crear tecnología acoplable.
-              Nuestra filosofía: la automatización no reemplaza, amplifica el
-              potencial humano. En GLYNNE trabajamos para construir sistemas que
-              piensen, aprendan y colaboren.
+
+            <p className="text-sm text-slate-600 leading-relaxed mb-4">
+              {data.about}
             </p>
-            <Nosotros />
+
+            <News2 />
           </motion.section>
         );
 
-      case "proyectos":
-        return (
-          <motion.section
-            key="proyectos"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.4 }}
-            className="p-6 bg-slate-50 rounded-xl border border-slate-200"
-          >
-            <h3 className="text-lg font-semibold text-slate-800 mb-3">
-              Nuestros proyectos
-            </h3>
-            <ul className="space-y-2 text-sm text-slate-700">
-              <li>
-                🚀 Sistema de auditoría inteligente para procesos empresariales.
-              </li>
-              <li>🤖 Plataforma Client AI para automatización de ventas con IA.</li>
-              <li>🌐 Integración omnicanal con WhatsApp, Gmail y CRMs.</li>
-              <li>📊 Dashboard de análisis predictivo con IA embebida.</li>
-            </ul>
-          </motion.section>
-        );
+ 
+
       default:
         return null;
     }
@@ -230,13 +176,12 @@ export default function PerfilSocial({ profile }) {
           </div>
         </div>
 
-        {/* Submenú de secciones */}
+        {/* Submenú sin “Proyectos” */}
         <div className="flex justify-center mt-6 border-b border-slate-200">
           {[
             { key: "publicaciones", label: "Publicaciones" },
-            { key: "informacion", label: "Información" },
-            { key: "quienes", label: "Quiénes Somos" },
-            { key: "proyectos", label: "Proyectos" },
+            { key: "GLYNNE NEWS", label: "GLYNNE NEWS" },
+  
           ].map((item) => (
             <button
               key={item.key}
@@ -258,7 +203,7 @@ export default function PerfilSocial({ profile }) {
         </div>
       </div>
 
-      {/* Modal Servicios */}
+      {/* Modal Servicios (sin cambios) */}
       <AnimatePresence>
         {openModal && (
           <motion.div
