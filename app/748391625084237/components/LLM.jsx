@@ -21,7 +21,7 @@ export default function ChatSimple() {
   const animationIdRef = useRef(null);
   const audioCtxRef = useRef(null);
 
-  const API_URL = 'https://gly-tts-v1.onrender.com';
+  const API_URL = 'http://0.0.0.0:8000';
 
   // 🔊 Reproducir audio y controlar micrófono
   const reproducirAudio = (audioBase64) => {

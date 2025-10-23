@@ -22,7 +22,7 @@ export default function ChatSimple() {
 
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
-  const API_URL = 'https://gly-chat-v1-2.onrender.com';
+  const API_URL = 'http://0.0.0.0:8000';
 
   const quickQuestions = [
     "Mi empresa tiene problemas de ...",

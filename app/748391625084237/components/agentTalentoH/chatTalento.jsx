@@ -21,7 +21,7 @@ export default function ChatSimple() {
 
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
-  const API_URL = 'https://gly-chat-v1-2.onrender.com';
+  const API_URL = 'http://0.0.0.0:8000 ';
 
 
   const quickQuestions = [
@@ -79,7 +79,7 @@ export default function ChatSimple() {
     setInput('');
     setIsLoading(true);
     try {
-      const response = await fetch('https://gly-chat-v1-2.onrender.com/chat2', {
+      const response = await fetch('http://0.0.0.0:8000/chat2', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mensaje: input, user_id: userId }),

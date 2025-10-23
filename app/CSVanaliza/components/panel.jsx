@@ -60,7 +60,7 @@ export default function CSVAnalyzer() {
       formData.append("file", file);
       formData.append("descripcion", descripcion);
 
-      const response = await fetch("https://gly-csv-v2.onrender.com/procesar-csv", {
+      const response = await fetch("http://0.0.0.0:8000/procesar-csv", {
         method: "POST",
         body: formData,
       });
