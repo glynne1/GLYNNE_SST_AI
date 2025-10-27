@@ -18,20 +18,12 @@ export default function Diagnostico() {
     const wakeUpServers = async () => {
       try {
         // No bloqueamos la UI, el popup ya está activo
-        await Promise.all([
-          fetch('https://gly-chat-v1-2.onrender.com', { method: 'GET' }),
-          fetch('https://gly-tts-v1.onrender.com/conversar', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ texto: 'ping' }),
-          }),
-          fetch('https://gly-csv-v2.onrender.com', { method: 'GET' }),
-        ]);
-        console.log('✅ Servicios despertados correctamente');
+        await fetch('https://glynne-ecosistem.onrender.com', { method: 'GET' });
+        console.log('✅ Servicio principal despertado correctamente');
       } catch (error) {
-        console.error('❌ Error al despertar los servicios:', error);
+        console.error('❌ Error al despertar el servicio principal:', error);
       } finally {
-        // Quitamos el popup una vez terminen los intentos iniciales
+        // Quitamos el popup una vez termine el intento inicial
         setLoading(false);
       }
     };
@@ -61,7 +53,7 @@ export default function Diagnostico() {
             {/* Oscurecimiento ligero sobre la imagen */}
             <div className="absolute inset-0 bg-black/50" />
 
-            {/* CONTENEDOR con blur (solo cambio aquí) */}
+            {/* CONTENEDOR con blur */}
             <motion.div
               className="relative backdrop-blur-md bg-white/20 rounded-3xl shadow-2xl w-[80vw] max-w-4xl px-[4vw] py-[5vh] flex flex-col items-center z-10"
               initial={{ scale: 0.95, y: 30 }}
@@ -122,9 +114,6 @@ export default function Diagnostico() {
 
       {/* Contenido principal */}
       <div className="flex-1 flex flex-col h-full">
-        {/* Header fijo */}
-    
-
         {/* Contenedor del chat */}
         <div className="flex-1">
           <div className="w-full h-full flex flex-col">

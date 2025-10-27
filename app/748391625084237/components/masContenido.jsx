@@ -180,7 +180,7 @@ export default function PlusMenu({ onRefresh }) {
               exit="hidden"
             >
               {[
-                { icon: <FaMicrophoneAlt />, text: 'Conversación por voz', type: 'voice' },
+                // { icon: <FaMicrophoneAlt />, text: 'Conversación por voz', type: 'voice' }, // 👈 Opción comentada
                 { icon: <FaDatabase />, text: 'Analiza tu base', type: 'db' },
                 { icon: <FaFileSignature />, text: 'Auditoría empresarial', type: 'audit' },
                 { icon: <FaUserTie />, text: 'Asistente de Talento', type: 'talento' },

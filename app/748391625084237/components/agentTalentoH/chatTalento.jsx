@@ -79,7 +79,7 @@ export default function ChatSimple() {
     setInput('');
     setIsLoading(true);
     try {
-      const response = await fetch('http://0.0.0.0:8000/chat2', {
+      const response = await fetch('https://glynne-ecosistem.onrender.com/chat2', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mensaje: input, user_id: userId }),

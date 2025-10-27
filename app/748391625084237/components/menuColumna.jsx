@@ -1,8 +1,7 @@
 'use client';
-
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mic, Database, FileSignature, RefreshCcw, X, Newspaper, BookOpen,UserCircle2 } from 'lucide-react'; // 📘 Nuevo ícono BookOpen
+import { Mic, Database, FileSignature, RefreshCcw, X, Newspaper, BookOpen, UserCircle2 } from 'lucide-react'; // 📘 Nuevo ícono BookOpen
 import ChatTTS from './LLM';
 import ChatLLM from './ChatAuditoria';
 import DB from '../../CSVanaliza/components/panel';
@@ -15,14 +14,13 @@ export default function PlusMenu({ onRefresh }) {
   const [showLogo, setShowLogo] = useState(false);
   const [showContent, setShowContent] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-
   const closeButtonRef = useRef(null);
   const logoTimerRef = useRef(null);
   const contentTimerRef = useRef(null);
 
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsVisible(window.innerWidth >=900);
+      setIsVisible(window.innerWidth >= 900);
     };
     checkScreenSize();
     window.addEventListener('resize', checkScreenSize);
@@ -73,8 +71,8 @@ export default function PlusMenu({ onRefresh }) {
     <>
       {/* 🔹 BARRA LATERAL */}
       <div className="fixed left-0 top-0 h-screen w-12 bg-none flex flex-col items-center justify-center py-6 space-y-7 z-20">
-
         {/* 🎙️ Voz */}
+        {/*
         <button
           onClick={() => openService('voice')}
           className="p-2 rounded-md hover:scale-110 transition-all"
@@ -85,6 +83,7 @@ export default function PlusMenu({ onRefresh }) {
             strokeWidth={1.4}
           />
         </button>
+        */}
 
         {/* 📰 Noticias */}
         <button
@@ -135,7 +134,6 @@ export default function PlusMenu({ onRefresh }) {
               className="fixed inset-0 z-10 hidden"
               onClick={handleClosePopup}
             />
-
             <motion.div
               initial={{ opacity: 0, scale: 0.995 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -180,6 +178,7 @@ export default function PlusMenu({ onRefresh }) {
 
                 <AnimatePresence>
                   {/* 🎙️ Voz */}
+                  {/*
                   {showContent && contentType === 'voice' && (
                     <motion.div
                       key="voice"
@@ -192,6 +191,7 @@ export default function PlusMenu({ onRefresh }) {
                       <ChatTTS onStop={handleClosePopup} />
                     </motion.div>
                   )}
+                  */}
 
                   {/* 📰 Noticias */}
                   {showContent && contentType === 'news' && (
@@ -224,29 +224,27 @@ export default function PlusMenu({ onRefresh }) {
                   )}
 
                   {/* 📘 Documentación */}
-                  {/* 📘 Documentación */}
-{showContent && contentType === 'docs' && (
-  <motion.div
-    key="docs"
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    exit={{ opacity: 0 }}
-    transition={{ duration: 0.3 }}
-    className="absolute inset-0 w-screen h-screen overflow-auto"
-  >
-    {/* Imagen de fondo con <img> normal */}
-    <div className="absolute inset-0 -z-10">
-    
-      <div className="absolute inset-0 bg-white" /> {/* Overlay para legibilidad */}
-    </div>
+                  {showContent && contentType === 'docs' && (
+                    <motion.div
+                      key="docs"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="absolute inset-0 w-screen h-screen overflow-auto"
+                    >
+                      {/* Imagen de fondo con <img> normal */}
+                      <div className="absolute inset-0 -z-10">
+                        <div className="absolute inset-0 bg-white" />
+                        {/* Overlay para legibilidad */}
+                      </div>
 
-    {/* Contenido de DocsSection */}
-    <div className="relative w-full h-full p-10">
-      <DocsSection className="w-full h-full" />
-    </div>
-  </motion.div>
-)}
-
+                      {/* Contenido de DocsSection */}
+                      <div className="relative w-full h-full p-10">
+                        <DocsSection className="w-full h-full" />
+                      </div>
+                    </motion.div>
+                  )}
                 </AnimatePresence>
               </div>
             </motion.div>
