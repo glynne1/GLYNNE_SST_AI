@@ -24,7 +24,7 @@ export default function DiscoverGlyAI() {
           <span className="absolute inset-0 blur-[2px] bg-gradient-to-r from-pink-500 via-blue-500 to-green-400 opacity-60 animate-gradient rounded-full"></span>
         </span>
 
-        <span className="font-medium">Descubre quién es GLYNNE</span>
+        <span className="font-medium">Descubre quién es GLYNNE!</span>
       </button>
 
       <style jsx>{`
