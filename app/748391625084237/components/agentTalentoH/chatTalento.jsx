@@ -21,7 +21,7 @@ export default function ChatSimple() {
 
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
-  const API_URL = 'http://0.0.0.0:8000 ';
+  const API_URL = 'https://glynne-ecosistem.onrender.com';
 
 
   const quickQuestions = [

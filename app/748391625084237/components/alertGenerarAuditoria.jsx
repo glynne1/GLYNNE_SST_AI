@@ -16,7 +16,7 @@ export default function AuditAlert({ onClose, userId }) {
   const generarAuditoria = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`https://gly-chat-v1-2.onrender.com/generar_auditoria?user_id=${userId}`, {
+      const res = await fetch(`https://glynne-ecosistem.onrender.com/generar_auditoria?user_id=${userId}`, {
         method: "POST",
       });
 
