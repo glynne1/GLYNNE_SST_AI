@@ -5,7 +5,7 @@ import { Star } from 'lucide-react';
 
 export default function DiscoverGlyAI() {
   const handleClick = () => {
-    window.open('https://www.glynneai.com/somos', '_blank');
+    window.open('https://www.linkedin.com/in/alexander-quiroga-a992452b4/', '_blank');
   };
 
   return (

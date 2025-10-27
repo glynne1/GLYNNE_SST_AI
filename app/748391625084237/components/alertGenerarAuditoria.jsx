@@ -19,12 +19,10 @@ export default function AuditAlert({ onClose, userId }) {
       const res = await fetch(`https://glynne-ecosistem.onrender.com/generar_auditoria?user_id=${userId}`, {
         method: "POST",
       });
-
       if (!res.ok) throw new Error("Error al generar la auditoría");
 
       const data = await res.json();
       setAuditoria(data);
-      setOpenResult(true);
 
       const temporal = {
         userId: userId || 'desconocido',
@@ -38,6 +36,12 @@ export default function AuditAlert({ onClose, userId }) {
       };
       setTempJson(temporal);
       console.log("✅ JSON temporal generado:", temporal);
+
+      // 🧩 FIX: Espera un instante a que React actualice los estados antes de abrir el modal
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      setOpenResult(true);
+
     } catch (err) {
       console.error("❌ Error:", err);
       alert("Hubo un problema generando la auditoría");
@@ -137,7 +141,6 @@ export default function AuditAlert({ onClose, userId }) {
         // SELLO y FIRMA
         const selloSrc = jsonData.contenido?.sello || '/celloGLY.png';
         const firmaSrc = jsonData.contenido?.firma || '/firma.png';
-
         const imgSelloWidth = 140;
         const imgSelloHeight = 140;
         const imgFirmaWidth = 140;
@@ -198,20 +201,15 @@ export default function AuditAlert({ onClose, userId }) {
           animate={{ scale: 1, opacity: 1 }}
           className="bg-white p-6 rounded-2xl shadow-xl text-center max-w-md w-full relative"
         >
-          {/* Botón X */}
           <button
             onClick={onClose}
             className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 font-bold text-lg"
           >
             ×
           </button>
-
-          <h2 className="text-xl font-semibold mb-4">
-            Es momento de realizar la auditoría
-          </h2>
+          <h2 className="text-xl font-semibold mb-4">Es momento de realizar la auditoría</h2>
           <p className="text-gray-600 mb-6">
-            GLYai ya cuenta con información clave para auditarte.  
-            ¿Quieres generar la auditoría ahora o continuar chateando?
+            GLYai ya cuenta con información clave para auditarte. ¿Quieres generar la auditoría ahora o continuar chateando?
           </p>
           <div className="flex flex-col gap-3">
             <button
@@ -221,16 +219,6 @@ export default function AuditAlert({ onClose, userId }) {
             >
               {loading ? "Generando..." : "Generar Auditoría"}
             </button>
-
-            {/* 🚫 Botón azul de crear mapa comentado
-            <button
-              onClick={() => setOpenStructure(true)}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
-            >
-              Visualizar estructura de negocio
-            </button>
-            */}
-
             <button
               onClick={onClose}
               className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition"
@@ -249,40 +237,29 @@ export default function AuditAlert({ onClose, userId }) {
             animate={{ scale: 1, opacity: 1 }}
             className="bg-white p-8 rounded-2xl shadow-xl max-w-3xl w-full max-h-[85vh] overflow-y-auto relative"
           >
-            {/* Botón X */}
             <button
               onClick={() => setOpenResult(false)}
               className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 font-bold text-lg"
             >
               ×
             </button>
-
             <div ref={pdfRef} className="p-6">
-              <h2 className="text-2xl font-bold mb-2 text-center border-b pb-2">
-                Informe de Auditoría
-              </h2>
-
+              <h2 className="text-2xl font-bold mb-2 text-center border-b pb-2">Informe de Auditoría</h2>
               <div className="flex justify-center mb-8">
                 <img src="/logo2.png" alt="Logo" className="h-10" />
               </div>
-
               <div
                 className="text-gray-700 whitespace-pre-line leading-relaxed text-justify mb-10"
                 dangerouslySetInnerHTML={{ __html: formatText(auditoria.auditoria) }}
               />
-
               <div className="text-sm text-gray-600 mb-10">
                 <p>
-                  GLYNNE TECH S.A.S. es una <strong>sociedad por acciones simplificada (SAS)</strong> 
-                  constituida bajo la Ley 1258 de 2008, con domicilio principal en 
-                  <strong> Madrid (Cundinamarca)</strong>.
+                  GLYNNE TECH S.A.S. es una <strong>sociedad por acciones simplificada (SAS)</strong> constituida bajo la Ley 1258 de 2008, con domicilio principal en <strong>Madrid (Cundinamarca)</strong>.
                 </p>
                 <p className="mt-2">
-                  Su objeto social se centra en el <strong>diseño, desarrollo e implementación de soluciones tecnológicas avanzadas</strong>, 
-                  con énfasis en <strong>arquitectura de software, automatización e inteligencia artificial</strong>.
+                  Su objeto social se centra en el <strong>diseño, desarrollo e implementación de soluciones tecnológicas avanzadas</strong>, con énfasis en <strong>arquitectura de software, automatización e inteligencia artificial</strong>.
                 </p>
               </div>
-
               <div className="mt-8 flex justify-center gap-16">
                 <div className="flex flex-col items-center">
                   <img src="/celloGLY.png" alt="Sello" className="h-52 opacity-90" />
@@ -296,14 +273,10 @@ export default function AuditAlert({ onClose, userId }) {
                     Firma Autorizada
                   </div>
                   <div className="text-center text-sm text-gray-700 mt-1">
-                    Alexander Quiroga <br />
-                    CC 1073176755 <br />
-                    CEO & Director de GLYNNE
+                    Alexander Quiroga <br /> CC 1073176755 <br /> CEO & Director de GLYNNE
                   </div>
                 </div>
               </div>
-
-              {/* Botón de descarga PDF */}
               <div className="mt-8 flex justify-center">
                 <AuditPDF userId={userId} />
               </div>
@@ -312,12 +285,6 @@ export default function AuditAlert({ onClose, userId }) {
           </motion.div>
         </div>
       )}
-
-      {/* 🚫 Popup del mapa completamente comentado
-      {openStructure && (
-        <MapaRutaAlert onClose={() => setOpenStructure(false)} />
-      )}
-      */}
     </>
   );
 }

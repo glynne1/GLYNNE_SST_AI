@@ -20,7 +20,7 @@ export default function ChatSimple() {
 
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
-  const API_URL = 'https://gly-chat-v1-2.onrender.com';
+  const API_URL = 'https://glynne-ecosistem.onrender.com/chat3';
 
   // 🎤 Configuración de reconocimiento de voz
   useEffect(() => {
@@ -88,7 +88,7 @@ export default function ChatSimple() {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${API_URL}/chat`, {
+      const response = await fetch(`${API_URL}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mensaje: input, user_id: userId }),
