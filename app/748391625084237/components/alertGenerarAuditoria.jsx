@@ -1,5 +1,5 @@
 'use client';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import jsPDF from 'jspdf';
 import SaveAudit from './saveJSON';
@@ -12,6 +12,13 @@ export default function AuditAlert({ onClose, userId }) {
   const [loading, setLoading] = useState(false);
   const [tempJson, setTempJson] = useState(null);
   const pdfRef = useRef();
+
+  // 🧩 FIX: abrir modal solo cuando auditoria tenga contenido
+  useEffect(() => {
+    if (auditoria) {
+      setOpenResult(true);
+    }
+  }, [auditoria]);
 
   const generarAuditoria = async () => {
     try {
@@ -36,11 +43,6 @@ export default function AuditAlert({ onClose, userId }) {
       };
       setTempJson(temporal);
       console.log("✅ JSON temporal generado:", temporal);
-
-      // 🧩 FIX: Espera un instante a que React actualice los estados antes de abrir el modal
-      await new Promise(resolve => setTimeout(resolve, 100));
-
-      setOpenResult(true);
 
     } catch (err) {
       console.error("❌ Error:", err);
