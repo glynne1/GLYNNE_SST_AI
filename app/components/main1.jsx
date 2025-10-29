@@ -6,7 +6,7 @@ import { LoginPopup } from './LoginPopup';
 export default function Main1() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showLogo, setShowLogo] = useState(false);
-  const [bgImage, setBgImage] = useState('/main-2.jpg');
+  const [bgImage, setBgImage] = useState('https://i.pinimg.com/originals/8f/f8/66/8ff8667b888e69fe37a636312a55d2e9.gif');
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
