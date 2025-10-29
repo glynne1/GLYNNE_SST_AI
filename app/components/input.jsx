@@ -5,6 +5,7 @@ import { Mic, Send } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { LoginPopup } from './LoginPopup';
 import ServiceCards from './cards'; // 👈 Importamos el componente de tarjetas
+import Carrucel from './carrucel'
 
 export default function VoiceInput() {
   const [input, setInput] = useState('');
@@ -159,6 +160,7 @@ export default function VoiceInput() {
       <div className="w-full mt-10">
         <ServiceCards />
       </div>
+      
 
       {/* 🔹 MODAL DE LOGIN */}
       <LoginPopup visible={showLoginModal} onClose={() => setShowLoginModal(false)} />
