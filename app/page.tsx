@@ -4,9 +4,9 @@ import { useRef, useEffect } from 'react';
 import { motion, useAnimation, useInView } from 'framer-motion';
 import Head from 'next/head';
 
-import Header from './components/header'
-import Main1 from './components/main1';
 
+import Main1 from './components/main1';
+import Main2 from './components/main2';
 
 function AnimatedSection({
   children,
@@ -83,12 +83,15 @@ export default function Home() {
 
 
       <div
-        className="h-screen w-full overflow-y-scroll snap-y snap-mandatory scroll-smooth bg-white text-black no-scrollbar"
-        style={{ scrollSnapType: 'y mandatory', WebkitOverflowScrolling: 'touch' }}
+        className="h-screen w-full  bg-white text-black no-scrollbar"
+
       >
-        <Header />
+
         <AnimatedSection>
           <Main1 />
+        </AnimatedSection>
+        <AnimatedSection>
+          <Main2 />
         </AnimatedSection>
       </div>
     </>

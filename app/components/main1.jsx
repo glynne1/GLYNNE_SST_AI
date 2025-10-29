@@ -6,18 +6,21 @@ import { LoginPopup } from './LoginPopup';
 export default function Main1() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showLogo, setShowLogo] = useState(false);
-  const [bgImage, setBgImage] = useState('/main-2.jpg'); // Imagen por defecto (pantallas grandes)
+  const [bgImage, setBgImage] = useState('/main-2.jpg');
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 700) {
-        setBgImage('https://i.pinimg.com/1200x/13/02/bf/1302bf9f5ff2a41e5f1bd7d4de5373f4.jpg'); // Imagen alternativa para móviles
-      } else {
-        setBgImage('/main-2.jpg');
-      }
+      const mobile = window.innerWidth < 700;
+      setIsMobile(mobile);
+      setBgImage(
+        mobile
+          ? 'https://i.pinimg.com/originals/5f/37/df/5f37dfeb8007f33e29f4137d072462fb.gif'
+          : 'https://i.pinimg.com/originals/8f/f8/66/8ff8667b888e69fe37a636312a55d2e9.gif'
+      );
     };
 
-    handleResize(); // Ejecutar una vez al cargar
+    handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -28,8 +31,8 @@ export default function Main1() {
   }, []);
 
   return (
-    <main className="relative w-full h-screen overflow-hidden font-inter">
-      {/* Imagen de fondo */}
+    <main className="relative w-full h-[100vh] overflow-hidden font-inter">
+      {/* 🔹 Imagen de fondo */}
       <div className="absolute top-0 left-0 w-full h-full">
         <img
           src={bgImage}
@@ -38,57 +41,98 @@ export default function Main1() {
         />
       </div>
 
-      {/* Capa oscura */}
-      <div className="absolute inset-0 bg-black/60 z-10" />
+      {/* 🔹 Capa oscura */}
+      <div className="absolute inset-0 bg-black/70 z-10" />
 
-      {/* Contenido principal */}
-      <div className="relative z-20 w-full h-full flex items-center justify-center px-4 sm:px-6">
-        <div className="w-full max-w-xl p-6 sm:p-8 bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-xl text-white text-center space-y-4">
-          
-          {/* Logo */}
-          <img
-            src="/logo.png"
-            alt="Logo GLYNNE Framework"
-            className={`w-20 sm:w-24 mx-auto transition-all duration-1000 ${
-              showLogo ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
-            }`}
-          />
+      {/* 🔹 CONTENIDO PRINCIPAL */}
+      <div className="relative z-40 w-full h-full flex items-center justify-center px-4 sm:px-16">
+        {isMobile ? (
+          // 🔹 VERSIÓN MÓVIL
+          <div className="w-full max-w-xl p-6 sm:p-8 bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl text-white text-center space-y-4">
+            <img
+              src="/logo.png"
+              alt="Logo GLYNNE Framework"
+              className={`w-20 sm:w-24 mx-auto transition-all duration-1000 ${
+                showLogo ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
+              }`}
+            />
+            <h2 className="text-2xl sm:text-3xl font-semibold mt-2 uppercase">
+              CONSTRUYE TU IA.{' '}
+              <span className={isMobile ? 'text-white' : 'text-red-500'}>
+                MOLDEA TU FUTURO.
+              </span>
+            </h2>
 
-          {/* Texto principal */}
-          <h2 className="text-lg sm:text-xl font-semibold mt-2">
-  Bienvenido a GLYNNE 
-</h2>
+            <button
+              onClick={() => {
+                localStorage.removeItem('glyiaChatClosed');
+                setShowLoginModal(true);
+              }}
+              className="relative mt-3 px-6 py-2 text-sm font-semibold bg-white text-black rounded-lg group overflow-hidden transition-all hover:scale-105 z-[9999]"
+            >
+              <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-black/10 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
+              <span className="relative z-10">EXPLORAR GLYNNE FRAMEWORK</span>
+            </button>
+          </div>
+        ) : (
+          // 🔹 VERSIÓN DESKTOP
+          <div className="w-full h-full flex flex-col sm:flex-row items-center justify-between">
+            {/* TEXTO PRINCIPAL */}
+            <div className="w-full sm:w-1/2 text-left text-white space-y-6">
+              <h2 className="text-5xl sm:text-6xl font-bold leading-tight mt-6 ">
+                EN GLYNNE CONSTRUYE TU IA.{' '}
+                <span className={isMobile ? 'text-purple-500' : 'text-red-800'}>
+                  MOLDEA TU FUTURO.
+                </span>
+              </h2>
 
-<p className="text-sm sm:text-base text-white/80 leading-relaxed">
-  La plataforma ideal para descubrir cómo integrar la Inteligencia Artificial en tus proyectos, tu empresa y tu vida.
-</p>
+              <button
+                onClick={() => {
+                  localStorage.removeItem('glyiaChatClosed');
+                  setShowLoginModal(true);
+                }}
+                className="relative mt-4 px-6 py-2 text-sm font-semibold bg-white text-black rounded-lg group overflow-hidden transition-all hover:scale-105 z-[9999]"
+              >
+                <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-black/10 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
+                <span className="relative z-10">Explora GLYNNE</span>
+              </button>
+            </div>
 
-<p className="text-sm sm:text-base text-white/80 leading-relaxed">
-  Aprende, crea y experimenta con herramientas que hacen que la IA sea accesible, potente y parte de tu desarrollo.
-</p>
-
-<p className="text-sm sm:text-base text-white/90 leading-relaxed mt-2">
-  <strong>Audita, Indaga, Construye y Crea.</strong>
-</p>
-
-
-     
-
-          {/* Botón principal */}
-          <button
-            onClick={() => {
-              localStorage.removeItem('glyiaChatClosed');
-              setShowLoginModal(true);
-            }}
-            className="relative mt-4 px-8 py-3 text-sm sm:text-base font-semibold bg-white text-black rounded-xl shadow-xl group overflow-hidden transition-all"
-          >
-            <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-black/10 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
-            <span className="relative z-10">Explorar GLYNNE Framework</span>
-          </button>
-        </div>
+            {/* IMAGEN MOCKUP */}
+            <div className="hidden sm:flex w-full sm:w-1/2 justify-center items-center">
+              <img
+                src="/mokup.png"
+                alt="Imagen lateral GLYNNE"
+                className="w-full h-auto object-contain"
+              />
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Popup */}
+      {/* 🔹 CURVA INFERIOR */}
+      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-20 pointer-events-none border-none shadow-none bg-transparent">
+        <svg
+          viewBox="0 -50 1440 320"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-full h-[60vh] border-none shadow-none"
+          preserveAspectRatio="none"
+          style={{ filter: 'none' }}
+        >
+          <path
+            fill="#fff"
+            fillOpacity="1"
+            d="
+              M0,250 
+              C360,230 720,260 1080,220 
+              C1260,200 1380,180 1440,160 
+              L1440,320 L0,320Z
+            "
+          />
+        </svg>
+      </div>
+
+      {/* 🔹 MODAL DE LOGIN */}
       <LoginPopup visible={showLoginModal} onClose={() => setShowLoginModal(false)} />
     </main>
   );
