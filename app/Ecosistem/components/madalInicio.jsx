@@ -8,6 +8,10 @@ export default function ModalInicio({ onComplete }) {
   const [showModal, setShowModal] = useState(true);
 
   const handleClose = () => {
+    // 🔊 Reproducir el sonido al hacer clic
+    const audio = new Audio('/piano.mp3'); // <-- tu archivo en /public
+    audio.play().catch((err) => console.error('Error reproduciendo sonido:', err));
+
     setShowModal(false);
     onComplete?.({ nombreEmpresa: '', rol: '' });
   };
@@ -50,17 +54,18 @@ export default function ModalInicio({ onComplete }) {
                 className="mt-[-8px]"
               />
 
-<p
-  className="text-center text-gray-600 max-w-[70ch]"
-  style={{
-    fontSize: 'clamp(0.75rem, 1.2vw, 1rem)',
-    lineHeight: '1.6',
-  }}
->
-  Soy una inteligencia artificial diseñada para entender los desafíos clave en tu organización y transformar esa información en oportunidades reales de automatización.  
-  <br /><br />
-  Mi misión es auditar tus procesos y ayudarte a construir soluciones basadas en IA que se integren de forma natural con tu operación actual. Junto a GLYNNE, podemos convertir cualquier reto en un sistema escalable y eficiente.
-</p>
+              <p
+                className="text-center text-gray-600 max-w-[70ch]"
+                style={{
+                  fontSize: 'clamp(0.75rem, 1.2vw, 1rem)',
+                  lineHeight: '1.6',
+                }}
+              >
+                Soy una inteligencia artificial diseñada para entender los desafíos clave en tu organización y transformar esa información en oportunidades reales de automatización.  
+                <br /><br />
+                Mi misión es auditar tus procesos y ayudarte a construir soluciones basadas en IA que se integren de forma natural con tu operación actual. Junto a GLYNNE, podemos convertir cualquier reto en un sistema escalable y eficiente.
+              </p>
+
               <div className="pt-4">
                 <motion.button
                   whileTap={{ scale: 0.97 }}

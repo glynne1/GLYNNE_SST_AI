@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import AlertRotator from '../Ecosistem/components/alert'; // <-- Importamos el componente de alerts
 
 export default function VentanaIncrustada() {
   return (
@@ -37,6 +38,9 @@ export default function VentanaIncrustada() {
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
       />
+
+      {/* 🔹 Alertas flotantes */}
+      <AlertRotator />
     </motion.div>
   );
 }
