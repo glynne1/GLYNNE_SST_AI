@@ -22,6 +22,10 @@ export default function AuditAlert({ onClose, userId }) {
 
   const generarAuditoria = async () => {
     try {
+      // 🎵 Reproducir sonido cuando presionan "Generar Auditoría"
+      const audio = new Audio('/tonoAu.mp3');
+      audio.play().catch(err => console.log("No se pudo reproducir audio", err));
+
       setLoading(true);
       const res = await fetch(`https://glynne-ecosistem.onrender.com/generar_auditoria?user_id=${userId}`, {
         method: "POST",
