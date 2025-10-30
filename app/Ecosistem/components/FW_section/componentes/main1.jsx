@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { ArrowLeft, ArrowRight, Copy } from 'lucide-react';
 
 export default function TextSection() {
-  const repoURL = 'https://github.com/GLYNNE-AI/GLYNNE-Framework';
+  const repoURL = 'https://github.com/glynnethec/GLYNNE-FWK';
   const examples = [
     {
       lang: 'bash',

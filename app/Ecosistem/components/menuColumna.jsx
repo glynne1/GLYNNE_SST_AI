@@ -1,12 +1,13 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RefreshCcw, X, BookOpen, UserCircle2, Brain } from 'lucide-react';
+import { RefreshCcw, X, BookOpen, UserCircle2, Brain, FileText } from 'lucide-react';
 import ChatTTS from './LLM';
 import ChatLLM from './ChatAuditoria';
 import DB from '../../CSVanaliza/components/panel';
 import News from './muroSocial/page';
 import DocsSection from './FW_section/page';
+import DocumentacionOff from '../components/DocumentacionOff'; // <-- Nuevo import
 import TransformerAnimation from '../../components/TransformerAnimation';
 
 export default function PlusMenu({ onRefresh }) {
@@ -42,6 +43,13 @@ export default function PlusMenu({ onRefresh }) {
   const openService = (type) => {
     clearTimeout(logoTimerRef.current);
     clearTimeout(contentTimerRef.current);
+
+    // 🚀 Si es Documentación, abrimos en otra pestaña y no mostramos popup
+    if (type === 'documentacion') {
+      window.open('https://deepwiki.com/glynnethec/GLYNNE-FWK', '_blank'); // Aquí colocas la ruta que renderiza DocumentacionOff.jsx
+      return;
+    }
+
     setContentType(type);
     setPopupOpen(true);
     setShowLogo(true);
@@ -74,19 +82,24 @@ export default function PlusMenu({ onRefresh }) {
       <div className="fixed left-0 top-0 h-screen w-12 bg-none flex flex-col items-center justify-center py-6 space-y-7 z-20">
 
         <button onClick={() => openService('news')} className="p-2 rounded-md hover:scale-110 transition-all" title="Muro Social AI">
-          <UserCircle2 className="w-5 h-5 text-gray-400 hover:text-black" strokeWidth={1.4} />
+          <UserCircle2 className="w-4 h-4 text-gray-400 hover:text-black" strokeWidth={1.4} />
         </button>
 
         <button onClick={() => openService('docs')} className="p-2 rounded-md hover:scale-110 transition-all" title="Docs Framework AI">
-          <BookOpen className="w-5 h-5 text-gray-400 hover:text-black" strokeWidth={1.4} />
+          <BookOpen className="w-4 h-4 text-gray-400 hover:text-black" strokeWidth={1.4} />
         </button>
 
         <button onClick={() => openService('nn')} className="p-2 rounded-md hover:scale-110 transition-all" title="Neural Network">
-          <Brain className="w-5 h-5 text-gray-400 hover:text-black" strokeWidth={1.4} />
+          <Brain className="w-4 h-4 text-gray-400 hover:text-black" strokeWidth={1.4} />
+        </button>
+
+        {/* 🔹 Documentación abre otra pestaña */}
+        <button onClick={() => openService('documentacion')} className="p-2 rounded-md hover:scale-110 transition-all" title="Documentación Completa">
+          <FileText className="w-4 h-4 text-gray-400 hover:text-black" strokeWidth={1.4} />
         </button>
 
         <button onClick={handleRefresh} className="p-2 rounded-md hover:scale-110 transition-all" title="Refrescar chat">
-          <RefreshCcw className="w-5 h-5 text-gray-400 hover:text-black" strokeWidth={1.4} />
+          <RefreshCcw className="w-4 h-4 text-gray-400 hover:text-black" strokeWidth={1.4} />
         </button>
       </div>
 
