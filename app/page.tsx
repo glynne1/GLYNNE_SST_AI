@@ -7,6 +7,7 @@ import Head from 'next/head';
 import Main1 from './components/main1';
 import Main2 from './components/main2';
 import Main4 from './components/main5';
+
 import Footer from './components/footer';
 
 /**
@@ -95,7 +96,9 @@ export default function Home() {
         <AnimatedSection className="min-h-screen flex items-center justify-center">
           <Main2 />
         </AnimatedSection>
+    
 
+ 
         <AnimatedSection className="min-h-screen flex items-center justify-center">
           <Main4 />
         </AnimatedSection>

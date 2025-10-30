@@ -192,7 +192,7 @@ export default function ChatSimple() {
           <div className="hidden md:block">
             <DiscoverG />
           </div>
-          <AlertUpgrade />
+        
         </div>
       ) : (
         <>

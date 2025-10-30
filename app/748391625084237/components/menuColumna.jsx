@@ -1,12 +1,13 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mic, Database, FileSignature, RefreshCcw, X, Newspaper, BookOpen, UserCircle2 } from 'lucide-react'; // 📘 Nuevo ícono BookOpen
+import { RefreshCcw, X, BookOpen, UserCircle2, Brain } from 'lucide-react';
 import ChatTTS from './LLM';
 import ChatLLM from './ChatAuditoria';
 import DB from '../../CSVanaliza/components/panel';
 import News from './muroSocial/page';
-import DocsSection from './FW_section/page'; // 🆕 Importamos la nueva sección
+import DocsSection from './FW_section/page';
+import TransformerAnimation from '../../components/TransformerAnimation';
 
 export default function PlusMenu({ onRefresh }) {
   const [popupOpen, setPopupOpen] = useState(false);
@@ -14,7 +15,7 @@ export default function PlusMenu({ onRefresh }) {
   const [showLogo, setShowLogo] = useState(false);
   const [showContent, setShowContent] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  const closeButtonRef = useRef(null);
+
   const logoTimerRef = useRef(null);
   const contentTimerRef = useRef(null);
 
@@ -69,94 +70,53 @@ export default function PlusMenu({ onRefresh }) {
 
   return (
     <>
-      {/* 🔹 BARRA LATERAL */}
+      {/* ✅ Barra lateral */}
       <div className="fixed left-0 top-0 h-screen w-12 bg-none flex flex-col items-center justify-center py-6 space-y-7 z-20">
-        {/* 🎙️ Voz */}
-        {/*
-        <button
-          onClick={() => openService('voice')}
-          className="p-2 rounded-md hover:scale-110 transition-all"
-          title="Conversación por voz"
-        >
-          <Mic
-            className="w-5 h-5 text-gray-400 hover:text-black transition-colors duration-1000 ease-in-out"
-            strokeWidth={1.4}
-          />
-        </button>
-        */}
 
-        {/* 📰 Noticias */}
-        <button
-          onClick={() => openService('news')}
-          className="p-2 rounded-md hover:scale-110 transition-all"
-          title="Noticias IA"
-        >
-          <UserCircle2
-            className="w-5 h-5 text-gray-400 hover:text-black transition-colors duration-1000 ease-in-out"
-            strokeWidth={1.4}
-          />
+        <button onClick={() => openService('news')} className="p-2 rounded-md hover:scale-110 transition-all" title="Muro Social AI">
+          <UserCircle2 className="w-5 h-5 text-gray-400 hover:text-black" strokeWidth={1.4} />
         </button>
 
-        {/* 📘 Documentación */}
-        <button
-          onClick={() => openService('docs')}
-          className="p-2 rounded-md hover:scale-110 transition-all"
-          title="Documentación Framework IA"
-        >
-          <BookOpen
-            className="w-5 h-5 text-gray-400 hover:text-black transition-colors duration-1000 ease-in-out"
-            strokeWidth={1.4}
-          />
+        <button onClick={() => openService('docs')} className="p-2 rounded-md hover:scale-110 transition-all" title="Docs Framework AI">
+          <BookOpen className="w-5 h-5 text-gray-400 hover:text-black" strokeWidth={1.4} />
         </button>
 
-        {/* 🔄 Refrescar */}
-        <button
-          onClick={handleRefresh}
-          className="p-2 rounded-md hover:scale-110 transition-all"
-          title="Refrescar chat"
-        >
-          <RefreshCcw
-            className="w-5 h-5 text-gray-400 hover:text-black transition-colors duration-1000 ease-in-out"
-            strokeWidth={1.4}
-          />
+        <button onClick={() => openService('nn')} className="p-2 rounded-md hover:scale-110 transition-all" title="Neural Network">
+          <Brain className="w-5 h-5 text-gray-400 hover:text-black" strokeWidth={1.4} />
+        </button>
+
+        <button onClick={handleRefresh} className="p-2 rounded-md hover:scale-110 transition-all" title="Refrescar chat">
+          <RefreshCcw className="w-5 h-5 text-gray-400 hover:text-black" strokeWidth={1.4} />
         </button>
       </div>
 
-      {/* 🔹 POPUP DE CONTENIDO */}
       <AnimatePresence>
         {popupOpen && (
           <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0 }}
-              className="fixed inset-0 z-10 hidden"
-              onClick={handleClosePopup}
-            />
-            <motion.div
+            <motion.div className="fixed inset-0 z-10 hidden" onClick={handleClosePopup} />
+
+            <motion.div 
               initial={{ opacity: 0, scale: 0.995 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.995 }}
               transition={{ duration: 0.28 }}
               className="fixed inset-0 z-30 bg-white w-screen h-screen"
             >
-              {/* ❌ Botón de cerrar */}
-              <div className="absolute top-4 right-4 z-40">
+
+              {/* ✅ BOTÓN CERRAR SUPERIOR CON Z-INDEX EXTREMO */}
+              <div className="absolute top-4 right-4 z-[9999]">
                 <motion.button
                   whileHover={{ rotate: 90, scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  ref={closeButtonRef}
                   onClick={handleClosePopup}
-                  aria-label="Cerrar"
-                  className="inline-flex items-center justify-center p-2 rounded-full bg-gray-100 hover:bg-gray-200"
+                  className="inline-flex items-center mt-[-10px] justify-center p-2 rounded-full bg-gray-100 hover:bg-gray-200 shadow-lg"
                 >
-                  <X className="w-4 h-4 text-gray-600" strokeWidth={1.8} />
+                  <X className="w-5 h-5 text-gray-600" strokeWidth={1.8} />
                 </motion.button>
               </div>
 
-              {/* Contenido dinámico */}
               <div className="relative w-full h-full overflow-hidden">
+
                 <AnimatePresence>
                   {showLogo && (
                     <motion.div
@@ -167,84 +127,36 @@ export default function PlusMenu({ onRefresh }) {
                       transition={{ duration: 0.05 }}
                       className="absolute inset-0 z-30 flex items-center justify-center pointer-events-none"
                     >
-                      <img
-                        src="/logo2.png"
-                        alt="Logo"
-                        className="w-20 h-20 object-contain opacity-90"
-                      />
+                      <img src="/logo2.png" alt="Logo" className="w-20 h-20 opacity-90" />
                     </motion.div>
                   )}
                 </AnimatePresence>
 
                 <AnimatePresence>
-                  {/* 🎙️ Voz */}
-                  {/*
-                  {showContent && contentType === 'voice' && (
-                    <motion.div
-                      key="voice"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="absolute inset-0 overflow-auto"
-                    >
-                      <ChatTTS onStop={handleClosePopup} />
-                    </motion.div>
-                  )}
-                  */}
 
-                  {/* 📰 Noticias */}
                   {showContent && contentType === 'news' && (
-                    <motion.div
-                      key="news"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="absolute inset-0 overflow-auto"
-                    >
+                    <motion.div key="news" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 overflow-auto">
                       <News />
                     </motion.div>
                   )}
 
-                  {/* 🧩 Base de datos */}
-                  {showContent && contentType === 'db' && (
-                    <motion.div
-                      key="db"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="absolute inset-0 overflow-auto"
-                    >
-                      <div className="w-full h-[100vh] overflow-y-auto">
-                        <DB />
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {/* 📘 Documentación */}
                   {showContent && contentType === 'docs' && (
-                    <motion.div
-                      key="docs"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="absolute inset-0 w-screen h-screen overflow-auto"
-                    >
-                      {/* Imagen de fondo con <img> normal */}
-                      <div className="absolute inset-0 -z-10">
-                        <div className="absolute inset-0 bg-white" />
-                        {/* Overlay para legibilidad */}
-                      </div>
-
-                      {/* Contenido de DocsSection */}
+                    <motion.div key="docs" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 w-screen h-screen overflow-auto">
+                      <div className="absolute inset-0 bg-white" />
                       <div className="relative w-full h-full p-10">
                         <DocsSection className="w-full h-full" />
                       </div>
                     </motion.div>
                   )}
+
+                  {showContent && contentType === 'nn' && (
+                    <motion.div key="nn" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 flex items-center justify-center bg-white">
+                      <div className="w-full h-full flex items-center justify-center">
+                        <TransformerAnimation />
+                      </div>
+                    </motion.div>
+                  )}
+
                 </AnimatePresence>
               </div>
             </motion.div>
