@@ -7,7 +7,7 @@ import ChatLLM from './ChatAuditoria';
 import DB from '../../CSVanaliza/components/panel';
 import News from './muroSocial/page';
 import DocsSection from './FW_section/page';
-import DocumentacionOff from '../components/DocumentacionOff'; // <-- Nuevo import
+import DocumentacionOff from '../components/DocumentacionOff';
 import TransformerAnimation from '../../components/TransformerAnimation';
 
 export default function PlusMenu({ onRefresh }) {
@@ -16,14 +16,13 @@ export default function PlusMenu({ onRefresh }) {
   const [showLogo, setShowLogo] = useState(false);
   const [showContent, setShowContent] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+  const [tooltip, setTooltip] = useState(''); // <-- estado para tooltip
 
   const logoTimerRef = useRef(null);
   const contentTimerRef = useRef(null);
 
   useEffect(() => {
-    const checkScreenSize = () => {
-      setIsVisible(window.innerWidth >= 900);
-    };
+    const checkScreenSize = () => setIsVisible(window.innerWidth >= 900);
     checkScreenSize();
     window.addEventListener('resize', checkScreenSize);
     return () => window.removeEventListener('resize', checkScreenSize);
@@ -44,9 +43,8 @@ export default function PlusMenu({ onRefresh }) {
     clearTimeout(logoTimerRef.current);
     clearTimeout(contentTimerRef.current);
 
-    // 🚀 Si es Documentación, abrimos en otra pestaña y no mostramos popup
     if (type === 'documentacion') {
-      window.open('https://deepwiki.com/glynnethec/GLYNNE-FWK', '_blank'); // Aquí colocas la ruta que renderiza DocumentacionOff.jsx
+      window.open('https://deepwiki.com/glynnethec/GLYNNE-FWK', '_blank');
       return;
     }
 
@@ -76,47 +74,65 @@ export default function PlusMenu({ onRefresh }) {
 
   if (!isVisible) return null;
 
+  const iconData = [
+    { type: 'news', icon: UserCircle2, title: 'Muro Social AI', tooltip: 'Quienes somos' },
+    { type: 'docs', icon: BookOpen, title: 'Docs Framework AI', tooltip: 'instala nuestro framework GLYNNE' },
+    { type: 'nn', icon: Brain, title: 'Neural Network', tooltip: 'Visualización de la red neuronal T' },
+    { type: 'documentacion', icon: FileText, title: 'Documentación Completa', tooltip: 'documentación SENIOR' },
+    { type: 'refresh', icon: RefreshCcw, title: 'Refrescar chat', tooltip: 'refresh' }
+  ];
+
   return (
     <>
       {/* ✅ Barra lateral */}
-      <div className="fixed left-0 top-0 h-screen w-12 bg-none flex flex-col items-center justify-center py-6 space-y-7 z-20">
+      <div className="fixed left-0 top-0 h-screen w-12 flex flex-col items-center justify-center py-6 space-y-7 z-20">
+        {iconData.map((item) => {
+          const IconComponent = item.icon;
+          return (
+            <div key={item.type} className="relative">
+              <button
+                onClick={() => {
+                  if(item.type === 'refresh') handleRefresh();
+                  else openService(item.type);
+                }}
+                onMouseEnter={() => setTooltip(item.tooltip)}
+                onMouseLeave={() => setTooltip('')}
+                className="p-2 rounded-md hover:scale-110 transition-all"
+              >
+                <IconComponent className="w-4 h-4 text-gray-400 hover:text-black" strokeWidth={1.4} />
+              </button>
 
-        <button onClick={() => openService('news')} className="p-2 rounded-md hover:scale-110 transition-all" title="Muro Social AI">
-          <UserCircle2 className="w-4 h-4 text-gray-400 hover:text-black" strokeWidth={1.4} />
-        </button>
-
-        <button onClick={() => openService('docs')} className="p-2 rounded-md hover:scale-110 transition-all" title="Docs Framework AI">
-          <BookOpen className="w-4 h-4 text-gray-400 hover:text-black" strokeWidth={1.4} />
-        </button>
-
-        <button onClick={() => openService('nn')} className="p-2 rounded-md hover:scale-110 transition-all" title="Neural Network">
-          <Brain className="w-4 h-4 text-gray-400 hover:text-black" strokeWidth={1.4} />
-        </button>
-
-        {/* 🔹 Documentación abre otra pestaña */}
-        <button onClick={() => openService('documentacion')} className="p-2 rounded-md hover:scale-110 transition-all" title="Documentación Completa">
-          <FileText className="w-4 h-4 text-gray-400 hover:text-black" strokeWidth={1.4} />
-        </button>
-
-        <button onClick={handleRefresh} className="p-2 rounded-md hover:scale-110 transition-all" title="Refrescar chat">
-          <RefreshCcw className="w-4 h-4 text-gray-400 hover:text-black" strokeWidth={1.4} />
-        </button>
+              {/* 🔹 Tooltip */}
+              <AnimatePresence>
+                {tooltip === item.tooltip && (
+                  <motion.div
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -10 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 rounded bg-black text-white text-xs whitespace-nowrap z-50 shadow-md"
+                  >
+                    {item.tooltip}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          );
+        })}
       </div>
 
       <AnimatePresence>
         {popupOpen && (
           <>
             <motion.div className="fixed inset-0 z-10 hidden" onClick={handleClosePopup} />
-
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.995 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.995 }}
               transition={{ duration: 0.28 }}
               className="fixed inset-0 z-30 bg-white w-screen h-screen"
             >
-
-              {/* ✅ BOTÓN CERRAR SUPERIOR CON Z-INDEX EXTREMO */}
+              {/* ✅ BOTÓN CERRAR SUPERIOR */}
               <div className="absolute top-4 right-4 z-[9999]">
                 <motion.button
                   whileHover={{ rotate: 90, scale: 1.05 }}
@@ -129,7 +145,6 @@ export default function PlusMenu({ onRefresh }) {
               </div>
 
               <div className="relative w-full h-full overflow-hidden">
-
                 <AnimatePresence>
                   {showLogo && (
                     <motion.div
@@ -146,13 +161,11 @@ export default function PlusMenu({ onRefresh }) {
                 </AnimatePresence>
 
                 <AnimatePresence>
-
                   {showContent && contentType === 'news' && (
                     <motion.div key="news" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 overflow-auto">
                       <News />
                     </motion.div>
                   )}
-
                   {showContent && contentType === 'docs' && (
                     <motion.div key="docs" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 w-screen h-screen overflow-auto">
                       <div className="absolute inset-0 bg-white" />
@@ -161,7 +174,6 @@ export default function PlusMenu({ onRefresh }) {
                       </div>
                     </motion.div>
                   )}
-
                   {showContent && contentType === 'nn' && (
                     <motion.div key="nn" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 flex items-center justify-center bg-white">
                       <div className="w-full h-full flex items-center justify-center">
@@ -169,7 +181,6 @@ export default function PlusMenu({ onRefresh }) {
                       </div>
                     </motion.div>
                   )}
-
                 </AnimatePresence>
               </div>
             </motion.div>
