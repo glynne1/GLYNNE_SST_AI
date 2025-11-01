@@ -76,36 +76,32 @@ export default function PlusMenu({ onRefresh }) {
   if (!isVisible) return null;
 
   const iconData = [
-   
     { 
       type: 'docs', 
       title: 'Crea tu propio Agente de IA', 
-      description: `Con GLYNNE FRAMEWORK contaras con una arquitectura completa que sera el motor de cada agentes de IA, ajustando solo su 
-      personalidad, integralos fácil y rápido en  cualquier stack tecnologico o experiencia digital, 
-     `,
-      bg: '/GFWIMGCARD.jpg' 
+      description: `Framework listo para crear agentes inteligentes personalizables e integrarlos en cualquier sistema.`,
+      bg: 'https://i.pinimg.com/originals/fc/08/bc/fc08bcf6a17f001f3cf0267374839f06.gif' 
     },
-    { 
-      type: 'nn', 
-      title: 'Mira cómo funciona una IA desde cero', 
-      description: `Explora cómo funciona un GPT (Large Language Model). 
-      La IA no es magia: es matemática y arquitectura moderna visualizada para entenderla desde dentro.`,
-      bg: '/redIMG.jpg' 
-    },
+  
     { 
       type: 'documentacion', 
       title: 'Documentación Completa GLYNNE Framework', 
-      description: `Accede a la guía completa del ecosistema GLYNNE: 
-      arquitectura, agentes, automatización y nodos inteligentes para construir sistemas autónomos.`,
-      bg: '/documentacionIMG.jpg' 
+      description: `Guía completa para construir sistemas inteligentes: arquitectura, nodos y automatización avanzada.`,
+      bg: 'https://i.pinimg.com/1200x/03/4e/ff/034eff7335f134eced337dfab36df2c3.jpg' 
     },
+  
+    { 
+      type: 'nn', 
+      title: 'Mira cómo funciona una IA desde cero', 
+      description: `Aprende cómo opera un modelo tipo GPT: arquitectura, razonamiento y entrenamiento visualizado.`,
+      bg: 'https://i.pinimg.com/736x/15/97/21/15972177e2c07a646e0f5fa5d7591654.jpg' 
+    },
+  
     { 
       type: 'news', 
       title: 'Conoce quiénes son GLYNNE', 
-      description: `Explora nuestra identidad como empresa, nuestros principios 
-      y la visión que impulsa GLYNNE hacia un futuro donde la IA y la arquitectura 
-      tecnológica transforman industrias.`,
-      bg: '/perfilCardF.jpg' 
+      description: `Nuestra visión, principios y misión para transformar industrias con IA y software escalable.`,
+      bg: 'https://i.pinimg.com/736x/2a/f4/ad/2af4ad1da3e8caaf60577c2fcfa190b9.jpg' 
     }
   ];
   
