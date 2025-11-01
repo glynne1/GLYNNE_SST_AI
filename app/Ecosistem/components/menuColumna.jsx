@@ -80,14 +80,14 @@ export default function PlusMenu({ onRefresh }) {
       type: 'docs', 
       title: 'Crea tu propio Agente de IA', 
       description: `Framework listo para crear agentes inteligentes personalizables e integrarlos en cualquier sistema.`,
-      bg: 'https://i.pinimg.com/originals/fc/08/bc/fc08bcf6a17f001f3cf0267374839f06.gif' 
+      bg: 'https://i.pinimg.com/originals/a3/e9/d6/a3e9d61815b6ed53d26f17861f1f6e34.gif' 
     },
   
     { 
       type: 'documentacion', 
       title: 'Documentación Completa GLYNNE Framework', 
       description: `Guía completa para construir sistemas inteligentes: arquitectura, nodos y automatización avanzada.`,
-      bg: 'https://i.pinimg.com/1200x/03/4e/ff/034eff7335f134eced337dfab36df2c3.jpg' 
+      bg: 'https://i.pinimg.com/1200x/62/6f/f9/626ff9594f5b73ab149e804cf233c1e1.jpg' 
     },
   
     { 
@@ -139,7 +139,7 @@ export default function PlusMenu({ onRefresh }) {
       initial={{ x: "-20%", opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: "-20%", opacity: 0 }}
-      className="fixed left-0 top-0 h-screen w-[40vw] bg-white/90 backdrop-blur-xl shadow-xl border-r border-gray-200 
+      className="fixed left-0 top-0 h-screen w-[40vw] bg-black backdrop-blur-xl shadow-xl border-r border-gray-200 
                  z-20 flex flex-row items-center justify-between p-12"
       onMouseEnter={() => setHoverMenu(true)}
       onMouseLeave={() => setHoverMenu(false)}
@@ -176,11 +176,11 @@ export default function PlusMenu({ onRefresh }) {
       </div>
 
    {/* Info Column (actualizado) */}
-<div className="flex flex-col  ml-[30px] justify-center items-center h-[70vh] w-[200px] p-6 bg-white/60 backdrop-blur-lg rounded-2xl border border-gray-200 shadow-lg text-gray-800">
+<div className="flex flex-col  ml-[30px] justify-center items-center h-[70vh] w-[200px] p-6 bg-black backdrop-blur-lg rounded-2xl  shadow-lg text-gray-200">
 
 {/* Logo Superior */}
 <img 
-  src="/logo2.png" 
+  src="/logo.png" 
   alt="GLYNNE Logo" 
   className="w-20 h-auto mb-2"
 />
@@ -192,7 +192,7 @@ export default function PlusMenu({ onRefresh }) {
 {/* --- NUEVA SECCIÓN EN EL CENTRO --- */}
 <div className="flex flex-col items-center justify-center flex-grow">
   {/* 🔹 Título sobre el QR */}
-  <h2 className="text-sm font-semibold mb-2 text-gray-900 tracking-wide">
+  <h2 className="text-sm font-semibold mb-2 text-gray-100 tracking-wide">
     QR GLY MV
   </h2>
 
@@ -209,7 +209,7 @@ export default function PlusMenu({ onRefresh }) {
 {/* --- FIN NUEVA SECCIÓN --- */}
 
 {/* Footer */}
-<div className="text-[9px] font-medium text-gray-600 opacity-70 tracking-wider text-center mt-4">
+<div className="text-[9px] font-medium text-gray-400 opacity-70 tracking-wider text-center mt-4">
   © GLYNNE 2025 - IA MCP
 </div>
 </div>
