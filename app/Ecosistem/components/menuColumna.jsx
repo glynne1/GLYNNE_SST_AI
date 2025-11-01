@@ -82,21 +82,18 @@ export default function PlusMenu({ onRefresh }) {
       description: `Framework listo para crear agentes inteligentes personalizables e integrarlos en cualquier sistema.`,
       bg: 'https://i.pinimg.com/originals/a3/e9/d6/a3e9d61815b6ed53d26f17861f1f6e34.gif' 
     },
-  
     { 
       type: 'documentacion', 
       title: 'Documentación Completa GLYNNE Framework', 
       description: `Guía completa para construir sistemas inteligentes: arquitectura, nodos y automatización avanzada.`,
       bg: 'https://i.pinimg.com/1200x/95/4f/cb/954fcb1857901306dc74d09908569765.jpg' 
     },
-  
     { 
       type: 'nn', 
       title: 'Mira cómo funciona una IA desde cero', 
       description: `Aprende cómo opera un modelo tipo GPT: arquitectura, razonamiento y entrenamiento visualizado.`,
       bg: 'https://i.pinimg.com/736x/15/97/21/15972177e2c07a646e0f5fa5d7591654.jpg' 
     },
-  
     { 
       type: 'news', 
       title: 'Conoce quiénes son GLYNNE', 
@@ -104,8 +101,7 @@ export default function PlusMenu({ onRefresh }) {
       bg: 'https://i.pinimg.com/736x/2a/f4/ad/2af4ad1da3e8caaf60577c2fcfa190b9.jpg' 
     }
   ];
-  
-  
+
   return (
     <>
       {/* Left floating menu */}
@@ -113,7 +109,6 @@ export default function PlusMenu({ onRefresh }) {
         className={`fixed left-0 top-1/2 -translate-y-1/2 w-15 flex flex-col items-center justify-center space-y-6 
         ${popupOpen ? 'pointer-events-none opacity-40' : ''} z-30`}
       >
-        {/* CircuitBoard Icon */}
         <motion.div
           onMouseEnter={() => !popupOpen && setHoverMenu(true)}
           onMouseLeave={() => setHoverMenu(false)}
@@ -123,7 +118,6 @@ export default function PlusMenu({ onRefresh }) {
           <CircuitBoard className="w-6 h-6 text-gray-700 hover:text-black transition-all" />
         </motion.div>
 
-        {/* Refresh */}
         <button
           onClick={handleRefresh}
           className="p-2 rounded-md hover:scale-110 transition-all"
@@ -132,94 +126,82 @@ export default function PlusMenu({ onRefresh }) {
         </button>
       </div>
 
-     {/* Hover Sidebar */}
-<AnimatePresence>
-  {hoverMenu && !popupOpen && (
-    <motion.div
-      initial={{ x: "-20%", opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      exit={{ x: "-20%", opacity: 0 }}
-      className="fixed left-0 top-0 h-screen w-[40vw] bg-black backdrop-blur-xl shadow-xl border-r border-gray-200 
-                 z-20 flex flex-row items-center justify-between p-12"
-      onMouseEnter={() => setHoverMenu(true)}
-      onMouseLeave={() => setHoverMenu(false)}
-    >
-
-      {/* Cards Column (90% width) */}
-      <div className="flex flex-col justify-center space-y-8 h-[100vh] w-[70%]">
-        {iconData.map((item) => (
+      {/* Hover Sidebar */}
+      <AnimatePresence>
+        {hoverMenu && !popupOpen && (
           <motion.div
-            key={item.type}
-            onClick={() => openService(item.type)}
-            className="relative cursor-pointer rounded-2xl overflow-hidden shadow-lg group h-32 flex items-end w-full"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.97 }}
+            initial={{ x: "-20%", opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: "-20%", opacity: 0 }}
+            className="fixed left-0 top-0 h-screen w-[60vw] bg-black backdrop-blur-xl shadow-xl border-r border-gray-200 
+                       z-40 flex flex-row items-center justify-between p-12"
+            onMouseEnter={() => setHoverMenu(true)}
+            onMouseLeave={() => setHoverMenu(false)}
           >
-            <div
-              className="absolute inset-0 bg-cover bg-center transition-all group-hover:scale-110"
-              style={{ backgroundImage: `url(${item.bg})` }}
-            />
-            <div className="absolute inset-0 bg-black/60 group-hover:bg-black/25 transition-all" />
-            <div className="relative z-10 p-4">
-              <span className="text-white text-[14px] font-semibold text-base drop-shadow-xl tracking-wide">
-                {item.title}
-              </span>
-              {item.description && (
-              <p className="text-white text-[10px] opacity-80 mt-1 leading-tight drop-shadow-lg">
-              {item.description}
-            </p>
-            
-              )}
+            {/* Cards */}
+            <div className="flex flex-col justify-center space-y-8 h-[100vh] w-[70%]">
+              {iconData.map((item) => (
+                <motion.div
+                  key={item.type}
+                  onClick={() => openService(item.type)}
+                  className="relative cursor-pointer rounded-2xl overflow-hidden shadow-lg group h-32 flex items-end w-full"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.97 }}
+                >
+                  <div
+                    className="absolute inset-0 bg-cover bg-center transition-all group-hover:scale-110"
+                    style={{ backgroundImage: `url(${item.bg})` }}
+                  />
+                  <div className="absolute inset-0 bg-black/60 group-hover:bg-black/25 transition-all" />
+                  <div className="relative z-10 p-4">
+                    <span className="text-white text-[14px] font-semibold text-base drop-shadow-xl tracking-wide">
+                      {item.title}
+                    </span>
+                    {item.description && (
+                      <p className="text-white text-[10px] opacity-80 mt-1 leading-tight drop-shadow-lg">
+                        {item.description}
+                      </p>
+                    )}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Info Card */}
+            <div className="flex flex-col  ml-[30px] justify-center items-center h-[70vh] w-[200px] p-6 bg-black backdrop-blur-lg rounded-2xl  shadow-lg text-gray-200">
+              <img src="/logo.png" className="w-20 h-auto mb-2" />
+              <p className="text-[10px] text-center opacity-80 tracking-wide leading-snug mb-6">
+                Aprende y adáptate a la era IA
+              </p>
+
+              <div className="flex flex-col items-center justify-center flex-grow">
+                <h2 className="text-sm font-semibold mb-2 text-gray-100 tracking-wide">
+                  QR GLY MV
+                </h2>
+
+                <img src="/qrMenuH.png" className="w-24 h-auto mb-2" />
+                <p className="text-[10px] text-center font-medium opacity-90">visita GLYNNE mobile</p>
+              </div>
+
+              <div className="text-[9px] font-medium text-gray-400 opacity-70 tracking-wider text-center mt-4">
+                © GLYNNE 2025 - IA MCP
+              </div>
             </div>
           </motion.div>
-        ))}
-      </div>
+        )}
+      </AnimatePresence>
 
-   {/* Info Column (actualizado) */}
-<div className="flex flex-col  ml-[30px] justify-center items-center h-[70vh] w-[200px] p-6 bg-black backdrop-blur-lg rounded-2xl  shadow-lg text-gray-200">
-
-{/* Logo Superior */}
-<img 
-  src="/logo.png" 
-  alt="GLYNNE Logo" 
-  className="w-20 h-auto mb-2"
-/>
-
-<p className="text-[10px] text-center opacity-80 tracking-wide leading-snug mb-6">
-  Aprende y adáptate a la era IA
-</p>
-
-{/* --- NUEVA SECCIÓN EN EL CENTRO --- */}
-<div className="flex flex-col items-center justify-center flex-grow">
-  {/* 🔹 Título sobre el QR */}
-  <h2 className="text-sm font-semibold mb-2 text-gray-100 tracking-wide">
-    QR GLY MV
-  </h2>
-
-  <img 
-    src="/qrMenuH.png"
-    alt="GLYNNE Mobile"
-    className="w-24 h-auto mb-2"
-  />
-
-  <p className="text-[10px] text-center font-medium opacity-90">
-    visita GLYNNE mobile
-  </p>
-</div>
-{/* --- FIN NUEVA SECCIÓN --- */}
-
-{/* Footer */}
-<div className="text-[9px] font-medium text-gray-400 opacity-70 tracking-wider text-center mt-4">
-  © GLYNNE 2025 - IA MCP
-</div>
-</div>
-
-
-    </motion.div>
-  )}
-</AnimatePresence>
-
-
+      {/* ✅ BLUR DE 60% RESTANTE DEL VIEWPORT */}
+      <AnimatePresence>
+        {hoverMenu && !popupOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed right-0 top-0 w-[60vw] h-screen bg-black/20 backdrop-blur-md pointer-events-none z-30"
+          />
+        )}
+      </AnimatePresence>
 
       {/* Popups */}
       <AnimatePresence>
@@ -244,7 +226,7 @@ export default function PlusMenu({ onRefresh }) {
             <div className="relative w-full h-full overflow-hidden">
               {showLogo && (
                 <motion.div className="absolute inset-0 flex items-center justify-center">
-                  <img src="/logo2.png" alt="Logo" className="w-20 h-20 opacity-90" />
+                  <img src="/logo2.png" className="w-20 h-20 opacity-90" />
                 </motion.div>
               )}
 
