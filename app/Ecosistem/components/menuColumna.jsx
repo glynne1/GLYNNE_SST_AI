@@ -143,7 +143,7 @@ export default function PlusMenu({ onRefresh }) {
       initial={{ x: "-20%", opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: "-20%", opacity: 0 }}
-      className="fixed left-0 top-0 h-screen w-[60vw] bg-white/90 backdrop-blur-xl shadow-xl border-r border-gray-200 
+      className="fixed left-0 top-0 h-screen w-[40vw] bg-white/90 backdrop-blur-xl shadow-xl border-r border-gray-200 
                  z-20 flex flex-row items-center justify-between p-12"
       onMouseEnter={() => setHoverMenu(true)}
       onMouseLeave={() => setHoverMenu(false)}
@@ -165,13 +165,14 @@ export default function PlusMenu({ onRefresh }) {
             />
             <div className="absolute inset-0 bg-black/60 group-hover:bg-black/25 transition-all" />
             <div className="relative z-10 p-4">
-              <span className="text-white font-semibold text-base drop-shadow-xl tracking-wide">
+              <span className="text-white text-[14px] font-semibold text-base drop-shadow-xl tracking-wide">
                 {item.title}
               </span>
               {item.description && (
-                <p className="text-white text-xs opacity-80 mt-1 leading-tight drop-shadow-lg">
-                  {item.description}
-                </p>
+              <p className="text-white text-[10px] opacity-80 mt-1 leading-tight drop-shadow-lg">
+              {item.description}
+            </p>
+            
               )}
             </div>
           </motion.div>
@@ -179,7 +180,7 @@ export default function PlusMenu({ onRefresh }) {
       </div>
 
    {/* Info Column (actualizado) */}
-<div className="flex flex-col justify-center items-center h-[70vh] w-[200px] p-6 bg-white/60 backdrop-blur-lg rounded-2xl border border-gray-200 shadow-lg text-gray-800">
+<div className="flex flex-col  ml-[30px] justify-center items-center h-[70vh] w-[200px] p-6 bg-white/60 backdrop-blur-lg rounded-2xl border border-gray-200 shadow-lg text-gray-800">
 
 {/* Logo Superior */}
 <img 
