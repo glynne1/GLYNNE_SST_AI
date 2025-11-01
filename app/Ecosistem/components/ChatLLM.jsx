@@ -191,8 +191,9 @@ export default function ChatSimple() {
 
           <div className="hidden md:block">
             <DiscoverG />
+           
           </div>
-        
+          <AlertUpgrade />
         </div>
       ) : (
         <>
@@ -282,6 +283,7 @@ export default function ChatSimple() {
 
           <div className="hidden md:flex justify-center items-center w-full">
             <DiscoverG />
+       
           </div>
         </>
       )}

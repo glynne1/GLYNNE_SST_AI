@@ -76,32 +76,40 @@ export default function PlusMenu({ onRefresh }) {
   if (!isVisible) return null;
 
   const iconData = [
-    { 
-      type: 'news', 
-      title: 'Muro Social AI', 
-      description: 'Tendencias y contenido en automatización avanzada.',
-      bg: '/perfilCardF.jpg' 
-    },
+   
     { 
       type: 'docs', 
-      title: 'Docs Framework AI', 
-      description: 'Documentación técnica del ecosistema GLYNNE.',
+      title: 'Crea tu propio Agente de IA', 
+      description: `Con GLYNNE FRAMEWORK contaras con una arquitectura completa que sera el motor de cada agentes de IA, ajustando solo su 
+      personalidad, integralos fácil y rápido en  cualquier stack tecnologico o experiencia digital, 
+     `,
       bg: '/GFWIMGCARD.jpg' 
     },
     { 
       type: 'nn', 
-      title: 'Neural Network', 
-      description: 'Visualización animada del núcleo neuronal GLY-IA.',
+      title: 'Mira cómo funciona una IA desde cero', 
+      description: `Explora cómo funciona un GPT (Large Language Model). 
+      La IA no es magia: es matemática y arquitectura moderna visualizada para entenderla desde dentro.`,
       bg: '/redIMG.jpg' 
     },
     { 
       type: 'documentacion', 
-      title: 'Documentación Completa', 
-      description: 'DeepWiki — toda la arquitectura del sistema.',
+      title: 'Documentación Completa GLYNNE Framework', 
+      description: `Accede a la guía completa del ecosistema GLYNNE: 
+      arquitectura, agentes, automatización y nodos inteligentes para construir sistemas autónomos.`,
       bg: '/documentacionIMG.jpg' 
+    },
+    { 
+      type: 'news', 
+      title: 'Conoce quiénes son GLYNNE', 
+      description: `Explora nuestra identidad como empresa, nuestros principios 
+      y la visión que impulsa GLYNNE hacia un futuro donde la IA y la arquitectura 
+      tecnológica transforman industrias.`,
+      bg: '/perfilCardF.jpg' 
     }
   ];
-
+  
+  
   return (
     <>
       {/* Left floating menu */}
@@ -155,7 +163,7 @@ export default function PlusMenu({ onRefresh }) {
               className="absolute inset-0 bg-cover bg-center transition-all group-hover:scale-110"
               style={{ backgroundImage: `url(${item.bg})` }}
             />
-            <div className="absolute inset-0 bg-black/40 group-hover:bg-black/25 transition-all" />
+            <div className="absolute inset-0 bg-black/60 group-hover:bg-black/25 transition-all" />
             <div className="relative z-10 p-4">
               <span className="text-white font-semibold text-base drop-shadow-xl tracking-wide">
                 {item.title}
@@ -186,11 +194,17 @@ export default function PlusMenu({ onRefresh }) {
 
 {/* --- NUEVA SECCIÓN EN EL CENTRO --- */}
 <div className="flex flex-col items-center justify-center flex-grow">
+  {/* 🔹 Título sobre el QR */}
+  <h2 className="text-sm font-semibold mb-2 text-gray-900 tracking-wide">
+    QR GLY MV
+  </h2>
+
   <img 
     src="/qrMenuH.png"
     alt="GLYNNE Mobile"
     className="w-24 h-auto mb-2"
   />
+
   <p className="text-[10px] text-center font-medium opacity-90">
     visita GLYNNE mobile
   </p>
@@ -202,6 +216,7 @@ export default function PlusMenu({ onRefresh }) {
   © GLYNNE 2025 - IA MCP
 </div>
 </div>
+
 
     </motion.div>
   )}
