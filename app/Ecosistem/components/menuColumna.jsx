@@ -87,7 +87,7 @@ export default function PlusMenu({ onRefresh }) {
       type: 'documentacion', 
       title: 'Documentación Completa GLYNNE Framework', 
       description: `Guía completa para construir sistemas inteligentes: arquitectura, nodos y automatización avanzada.`,
-      bg: 'https://i.pinimg.com/1200x/62/6f/f9/626ff9594f5b73ab149e804cf233c1e1.jpg' 
+      bg: 'https://i.pinimg.com/1200x/95/4f/cb/954fcb1857901306dc74d09908569765.jpg' 
     },
   
     { 
