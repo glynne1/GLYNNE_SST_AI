@@ -6,7 +6,7 @@ import { RefreshCcw, X, CircuitBoard } from 'lucide-react';
 import ChatTTS from './LLM';
 import ChatLLM from './ChatAuditoria';
 import DB from '../../CSVanaliza/components/panel';
-import News from './muroSocial/page';
+import News from '../components/panelBuildAgent.jsx/page';
 import DocsSection from './FW_section/page';
 import DocumentacionOff from '../components/DocumentacionOff';
 import TransformerAnimation from '../../components/TransformerAnimation';
