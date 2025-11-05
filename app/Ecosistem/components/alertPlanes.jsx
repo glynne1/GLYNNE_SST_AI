@@ -82,7 +82,7 @@ Pueden contactarme al número ${formData.telefono} o al correo ${formData.correo
       `}</style>
 
       {/* Banner inferior */}
-      <div className="absolute bottom-4 w-full flex justify-center z-[80]">
+      <div className="absolute bottom-4 w-full flex justify-center z-[10]">
         <div className="relative max-w-xs text-[11px] text-black bg-white px-3 py-2 rounded-lg shadow-sm overflow-hidden border border-gray-200 flex items-center justify-between gap-2">
           <p className="relative z-10 whitespace-nowrap">
             <strong>Optimiza tu negocio</strong>

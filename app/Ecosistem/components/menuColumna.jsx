@@ -77,10 +77,17 @@ export default function PlusMenu({ onRefresh }) {
 
   const iconData = [
     { 
+      type: 'news', 
+      title: 'Explora el Panel de Desarrollo IA', 
+      description: `Accede al entorno donde se configuran y prueban los modelos de inteligencia artificial de GLYNNE. Diseña roles, ajusta parámetros y observa cómo evoluciona tu agente dentro del framework.`,
+      bg: 'https://i.pinimg.com/originals/a3/e9/d6/a3e9d61815b6ed53d26f17861f1f6e34.gif ' 
+    }
+,    
+    { 
       type: 'docs', 
       title: 'Crea tu propio Agente de IA', 
       description: `Framework listo para crear agentes inteligentes personalizables e integrarlos en cualquier sistema.`,
-      bg: 'https://i.pinimg.com/originals/a3/e9/d6/a3e9d61815b6ed53d26f17861f1f6e34.gif' 
+      bg: 'https://i.pinimg.com/736x/2a/f4/ad/2af4ad1da3e8caaf60577c2fcfa190b9.jpg' 
     },
     { 
       type: 'documentacion', 
@@ -94,12 +101,7 @@ export default function PlusMenu({ onRefresh }) {
       description: `Aprende cómo opera un modelo tipo GPT: arquitectura, razonamiento y entrenamiento visualizado.`,
       bg: 'https://i.pinimg.com/736x/15/97/21/15972177e2c07a646e0f5fa5d7591654.jpg' 
     },
-    { 
-      type: 'news', 
-      title: 'Conoce quiénes son GLYNNE', 
-      description: `Nuestra visión, principios y misión para transformar industrias con IA y software escalable.`,
-      bg: 'https://i.pinimg.com/736x/2a/f4/ad/2af4ad1da3e8caaf60577c2fcfa190b9.jpg' 
-    }
+   
   ];
 
   return (
