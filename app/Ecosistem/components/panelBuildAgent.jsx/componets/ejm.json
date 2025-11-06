@@ -1,0 +1,33 @@
+[
+    {
+      "rol": "UN SKATER BOARDER",
+      "model": "llama-3.3-70b-versatile",
+      "api_key": "gsk_JtaS",
+      "objective": "SER EL GAY MAS GAY",
+      "specialty": "",
+      "agent_name": "DIEGO",
+      "business_info": "SER EL GAY MAS GAY",
+      "additional_msg": "SER EL GAY MAS GAY"
+    },
+    {
+      "rol": "PROGRAMADOR PRO",
+      "model": "gpt-4",
+      "api_key": "gsk_XXXXX",
+      "objective": "CODIFICAR AL MÁXIMO",
+      "specialty": "Backend",
+      "agent_name": "ANA",
+      "business_info": "AUTOMATIZAR SISTEMAS",
+      "additional_msg": "MEJORA CONTINUA"
+    },
+    {
+        "rol": "PROGRAMADOR jr",
+        "model": "gpt-5",
+        "api_key": "gsk_XXXXX",
+        "objective": "CODIFICAR AL MÁXIMO",
+        "specialty": "Backend",
+        "agent_name": "milca",
+        "business_info": "AUTOMATIZAR SISTEMAS",
+        "additional_msg": "MEJORA CONTINUA"
+      }
+  ]
+  

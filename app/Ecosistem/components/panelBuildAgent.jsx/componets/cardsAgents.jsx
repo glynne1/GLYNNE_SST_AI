@@ -1,0 +1,231 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { MessageSquareText, Settings2, Trash2, RotateCcw } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import AgentForm from "./AgentEditModal";
+import { supabase, getCurrentUser } from "../../../../lib/supabaseClient";
+
+export default function AgentCards() {
+  const [agents, setAgents] = useState([]);
+  const [selectedAgent, setSelectedAgent] = useState(null);
+  const [openChatPopup, setOpenChatPopup] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  // 🔹 Cargar agentes desde Supabase
+  const fetchAgents = async () => {
+    try {
+      setLoading(true);
+      const user = await getCurrentUser();
+      if (!user) throw new Error("Usuario no autenticado");
+
+      const { data, error } = await supabase
+        .from("auditorias")
+        .select("user_config")
+        .eq("user_id", user.id)
+        .order("id", { ascending: false });
+
+      if (error) throw error;
+
+      // ✅ Extraer la info del campo user_config
+      const formattedAgents =
+        data?.map((item) => item.user_config).filter(Boolean) || [];
+
+      setAgents(formattedAgents);
+    } catch (err) {
+      console.error("Error al cargar agentes:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 🔁 Al montar el componente
+  useEffect(() => {
+    fetchAgents();
+  }, []);
+
+  // 🔁 Botón de recargar
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchAgents();
+    setTimeout(() => setIsRefreshing(false), 600);
+  };
+
+  // 🗑️ Eliminar un agente (solo en frontend)
+  const handleDelete = (index) => {
+    setAgents((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  // ✏️ Editar un agente
+  const handleEdit = (agent, index) => {
+    setSelectedAgent({ index, agent });
+  };
+
+  // 💾 Guardar los cambios del agente
+  const handleSave = (updatedAgent) => {
+    setAgents((prev) =>
+      prev.map((a, i) => (i === selectedAgent.index ? updatedAgent : a))
+    );
+    setSelectedAgent(null);
+  };
+
+  // 💬 Render
+  return (
+    <div className="w-full p-6 bg-white rounded-2xl border border-gray-300 shadow-md relative">
+      {/* 🔹 Header con botón de refrescar */}
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xl font-bold text-gray-800">Agentes GLYNNE creados</h2>
+        <button
+          onClick={handleRefresh}
+          className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-300 hover:bg-gray-100 transition-all"
+          title="Actualizar lista"
+        >
+          <motion.div
+            animate={{ rotate: isRefreshing ? 360 : 0 }}
+            transition={{
+              duration: 0.6,
+              ease: "easeInOut",
+              repeat: isRefreshing ? Infinity : 0,
+            }}
+          >
+            <RotateCcw
+              className={`w-5 h-5 ${
+                isRefreshing ? "text-blue-600" : "text-gray-600"
+              }`}
+            />
+          </motion.div>
+        </button>
+      </div>
+
+      {/* 🔹 Contenido principal */}
+      {loading ? (
+        <div className="flex items-center justify-center h-[200px]">
+          <p className="text-sm text-gray-400 italic text-center">
+            Cargando agentes...
+          </p>
+        </div>
+      ) : !agents || agents.length === 0 ? (
+        <div className="flex items-center justify-center h-[200px]">
+          <p className="text-sm text-gray-400 italic text-center">
+            Aquí podrás visualizar tus modelos IA creados.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {agents.map((agent, idx) => (
+            <div
+              key={idx}
+              className="bg-white shadow-lg rounded-xl p-5 border border-gray-200 flex flex-col justify-between w-full h-[200px] hover:shadow-2xl transition-all duration-300 text-left"
+            >
+              <div className="space-y-1 overflow-hidden">
+                <h2 className="text-lg font-semibold text-gray-800 truncate">
+                  {agent.agent_name || "Agente sin nombre"}
+                </h2>
+                <p className="text-xs text-gray-500 truncate">
+                  <strong>Rol:</strong> {agent.rol || "-"}
+                </p>
+                <p className="text-xs text-gray-500 truncate">
+                  <strong>Objetivo:</strong> {agent.objective || "-"}
+                </p>
+                {agent.specialty && (
+                  <p className="text-xs text-gray-500 truncate">
+                    <strong>Especialidad:</strong> {agent.specialty}
+                  </p>
+                )}
+                <p className="text-xs text-gray-500 truncate">
+                  <strong>Información del negocio:</strong>{" "}
+                  {agent.business_info || "-"}
+                </p>
+                <p className="text-xs text-gray-500 truncate">
+                  <strong>Mensaje adicional:</strong>{" "}
+                  {agent.additional_msg || "-"}
+                </p>
+              </div>
+
+              <div className="mt-3 flex justify-end space-x-4 text-gray-400">
+                <MessageSquareText
+                  className="w-5 h-5 cursor-pointer hover:text-gray-700 transition-colors duration-200"
+                  onClick={() => setOpenChatPopup(true)}
+                />
+                <Settings2
+                  className="w-5 h-5 cursor-pointer hover:text-gray-700 transition-colors duration-200"
+                  onClick={() => handleEdit(agent, idx)}
+                />
+                <Trash2
+                  className="w-5 h-5 cursor-pointer text-transparent stroke-red-500 hover:stroke-red-600 transition-all duration-200"
+                  onClick={() => handleDelete(idx)}
+                  strokeWidth={1.8}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* 🧩 Modal de edición */}
+      <AnimatePresence>
+        {selectedAgent && (
+          <motion.div
+            className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50"
+            onClick={() => setSelectedAgent(null)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="relative bg-white rounded-2xl shadow-xl p-8 w-[85vw] h-[85vh] overflow-y-auto flex flex-col"
+              onClick={(e) => e.stopPropagation()}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+            >
+              <button
+                onClick={() => setSelectedAgent(null)}
+                className="absolute top-4 right-6 text-gray-500 hover:text-gray-700 text-xl"
+              >
+                ✖
+              </button>
+              <AgentForm
+                agentData={selectedAgent.agent}
+                onSave={handleSave}
+                onCancel={() => setSelectedAgent(null)}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 💬 Popup de chat */}
+      <AnimatePresence>
+        {openChatPopup && (
+          <motion.div
+            className="fixed inset-0 bg-black/30 backdrop-blur-md flex justify-center items-center z-50"
+            onClick={() => setOpenChatPopup(false)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="relative bg-white rounded-2xl shadow-xl p-8 w-[80vw] h-[80vh] flex items-center justify-center"
+              onClick={(e) => e.stopPropagation()}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+            >
+              <button
+                onClick={() => setOpenChatPopup(false)}
+                className="absolute top-4 right-6 text-gray-500 hover:text-gray-700 text-xl"
+              >
+                ✖
+              </button>
+              <p className="text-gray-500 text-sm text-center">
+                💬 Aquí se mostrará tu componente de conversación o vista dinámica.
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}

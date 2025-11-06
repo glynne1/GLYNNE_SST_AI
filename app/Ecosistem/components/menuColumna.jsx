@@ -1,7 +1,7 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RefreshCcw, X, CircuitBoard } from 'lucide-react';
+import { RefreshCcw, X,  ChevronRight } from 'lucide-react';
 
 import ChatTTS from './LLM';
 import ChatLLM from './ChatAuditoria';
@@ -117,14 +117,14 @@ export default function PlusMenu({ onRefresh }) {
           whileHover={{ scale: 1.15, rotate: 8 }}
           className="cursor-pointer"
         >
-          <CircuitBoard className="w-6 h-6 text-gray-700 hover:text-black transition-all" />
+          <ChevronRight className="w-6 h-6 text-gray-700 hover:text-black transition-all" />
         </motion.div>
 
         <button
           onClick={handleRefresh}
           className="p-2 rounded-md hover:scale-110 transition-all"
         >
-          <RefreshCcw className="w-5 h-5 text-gray-500 hover:text-black" />
+          <RefreshCcw className="w-4 h-4 text-gray-500 hover:text-black" />
         </button>
       </div>
 

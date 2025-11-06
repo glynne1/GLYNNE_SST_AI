@@ -91,13 +91,7 @@ export default function Page() {
               transition={{ duration: 0.3 }}
               className="relative w-full max-w-[90%] h-[100vh] rounded-2xl p-8"
             >
-              {/* Botón de cerrar */}
-              <button
-                onClick={() => setOpen(false)}
-                className="absolute top-4 right-4 text-gray-600 hover:text-black text-xl transition-all"
-              >
-                <FaTimes />
-              </button>
+          
 
               {/* Descripción del panel */}
               <motion.div
@@ -106,13 +100,7 @@ export default function Page() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.6 }}
               >
-                <h2 className="text-neutral-800 text-3xl md:text-4xl font-extrabold mb-2 tracking-widest">
-                  PANEL DE <span className="text-gray-500">DESARROLLO IA</span>
-                </h2>
-                <p className="text-gray-600 text-xs md:text-sm leading-relaxed max-w-2xl">
-                  Configura y prueba tus <strong>modelos de inteligencia artificial</strong> antes del despliegue.  
-                  Define <strong>roles, personalidades</strong> y <strong>llaves de acceso</strong> para cada agente del ecosistema GLYNNE.
-                </p>
+              
               </motion.div>
 
               {/* Contenedor del componente */}
@@ -122,7 +110,10 @@ export default function Page() {
             </motion.div>
           </motion.div>
         )}
+
+      
       </AnimatePresence>
+
     </main>
   );
 }

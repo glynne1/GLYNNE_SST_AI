@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaCopy, FaTrash, FaTimes } from "react-icons/fa";
 import { saveUserAgentConfig } from "./saveSupabaseAgent"; 
-
+import CardsAgent from './cardsAgents'
 export default function AgentConfigPanel() {
   const [form, setForm] = useState({
     api_key: "",
@@ -182,8 +182,15 @@ Entrega recomendaciones concretas, claras y accionables.
 <div className="w-full p-8  bg-white rounded-2xl">
 
 {/* Contenedor principal */}
+<h2 className="text-neutral-800 text-3xl md:text-4xl font-extrabold mb-2 tracking-widest">
+                  PANEL DE <span className="text-gray-500">DESARROLLO IA</span>
+                </h2>
+            
+<div className="w-full h-[70vh] p-8 bg-white rounded-2xl overflow-y-hidden">
 
-  
+    {/* Contenedor principal */}
+    <CardsAgent />
+  </div>
 
 
 
