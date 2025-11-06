@@ -22,15 +22,17 @@ export default function AgentCards() {
 
       const { data, error } = await supabase
         .from("auditorias")
-        .select("user_config")
+        .select("id, user_config")
         .eq("user_id", user.id)
         .order("id", { ascending: false });
 
       if (error) throw error;
 
-      // ✅ Extraer la info del campo user_config
       const formattedAgents =
-        data?.map((item) => item.user_config).filter(Boolean) || [];
+        data?.map((item) => ({
+          id: item.id, // Guardamos ID para poder eliminar luego
+          ...item.user_config,
+        })) || [];
 
       setAgents(formattedAgents);
     } catch (err) {
@@ -40,29 +42,45 @@ export default function AgentCards() {
     }
   };
 
-  // 🔁 Al montar el componente
   useEffect(() => {
     fetchAgents();
   }, []);
 
-  // 🔁 Botón de recargar
   const handleRefresh = async () => {
     setIsRefreshing(true);
     await fetchAgents();
     setTimeout(() => setIsRefreshing(false), 600);
   };
 
-  // 🗑️ Eliminar un agente (solo en frontend)
-  const handleDelete = (index) => {
-    setAgents((prev) => prev.filter((_, i) => i !== index));
+  // 🗑️ Eliminar agente tanto en Supabase como en el frontend
+  const handleDelete = async (agentId) => {
+    try {
+      const confirmDelete = window.confirm(
+        "¿Seguro que deseas eliminar este agente? Esta acción no se puede deshacer."
+      );
+      if (!confirmDelete) return;
+
+      const { error } = await supabase
+        .from("auditorias")
+        .delete()
+        .eq("id", agentId);
+
+      if (error) throw error;
+
+      // Actualiza la vista local
+      setAgents((prev) => prev.filter((a) => a.id !== agentId));
+
+      console.log("✅ Agente eliminado correctamente:", agentId);
+    } catch (err) {
+      console.error("❌ Error al eliminar agente:", err);
+      alert("Hubo un error al eliminar el agente. Revisa la consola.");
+    }
   };
 
-  // ✏️ Editar un agente
   const handleEdit = (agent, index) => {
     setSelectedAgent({ index, agent });
   };
 
-  // 💾 Guardar los cambios del agente
   const handleSave = (updatedAgent) => {
     setAgents((prev) =>
       prev.map((a, i) => (i === selectedAgent.index ? updatedAgent : a))
@@ -70,12 +88,13 @@ export default function AgentCards() {
     setSelectedAgent(null);
   };
 
-  // 💬 Render
   return (
     <div className="w-full p-6 bg-white rounded-2xl border border-gray-300 shadow-md relative">
-      {/* 🔹 Header con botón de refrescar */}
+      {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold text-gray-800">Agentes GLYNNE creados</h2>
+        <h2 className="text-xl font-bold text-gray-800">
+          Agentes GLYNNE creados
+        </h2>
         <button
           onClick={handleRefresh}
           className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-300 hover:bg-gray-100 transition-all"
@@ -98,7 +117,7 @@ export default function AgentCards() {
         </button>
       </div>
 
-      {/* 🔹 Contenido principal */}
+      {/* Contenido */}
       {loading ? (
         <div className="flex items-center justify-center h-[200px]">
           <p className="text-sm text-gray-400 italic text-center">
@@ -115,7 +134,7 @@ export default function AgentCards() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {agents.map((agent, idx) => (
             <div
-              key={idx}
+              key={agent.id || idx}
               className="bg-white shadow-lg rounded-xl p-5 border border-gray-200 flex flex-col justify-between w-full h-[200px] hover:shadow-2xl transition-all duration-300 text-left"
             >
               <div className="space-y-1 overflow-hidden">
@@ -153,8 +172,8 @@ export default function AgentCards() {
                   onClick={() => handleEdit(agent, idx)}
                 />
                 <Trash2
-                  className="w-5 h-5 cursor-pointer text-transparent stroke-red-500 hover:stroke-red-600 transition-all duration-200"
-                  onClick={() => handleDelete(idx)}
+                  className="w-5 h-5 cursor-pointer stroke-red-500 hover:stroke-red-700 transition-all duration-200"
+                  onClick={() => handleDelete(agent.id)}
                   strokeWidth={1.8}
                 />
               </div>
@@ -163,7 +182,7 @@ export default function AgentCards() {
         </div>
       )}
 
-      {/* 🧩 Modal de edición */}
+      {/* Modal de edición */}
       <AnimatePresence>
         {selectedAgent && (
           <motion.div
@@ -196,7 +215,7 @@ export default function AgentCards() {
         )}
       </AnimatePresence>
 
-      {/* 💬 Popup de chat */}
+      {/* Popup de chat */}
       <AnimatePresence>
         {openChatPopup && (
           <motion.div

@@ -3,12 +3,26 @@
 import { useState } from "react";
 import { supabase, getCurrentUser } from "../../../../lib/supabaseClient";
 
-// ✅ Exportamos la función para reusarla
+// ✅ Función para guardar la configuración del agente
 export async function saveUserAgentConfig(configData) {
   const user = await getCurrentUser();
   if (!user) throw new Error("Usuario no autenticado");
 
-  const { error } = await supabase
+  // 🔎 Verificamos cuántos agentes tiene el usuario
+  const { data: existingAgents, error: fetchError } = await supabase
+    .from("auditorias")
+    .select("id")
+    .eq("user_id", user.id);
+
+  if (fetchError) throw new Error("Error al verificar agentes existentes");
+
+  // 🚫 Si ya tiene 3 o más, no permitir crear otro
+  if (existingAgents && existingAgents.length >= 3) {
+    throw new Error("Has alcanzado el límite máximo de 3 agentes.");
+  }
+
+  // 🧩 Guardamos la nueva configuración
+  const { error: insertError } = await supabase
     .from("auditorias")
     .insert([
       {
@@ -17,10 +31,10 @@ export async function saveUserAgentConfig(configData) {
       },
     ]);
 
-  if (error) throw error;
+  if (insertError) throw insertError;
 }
 
-// ✅ Componente sigue igual
+// ✅ Componente principal
 export default function SaveAgentConfigButton({ configData }) {
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState("");
@@ -31,11 +45,18 @@ export default function SaveAgentConfigButton({ configData }) {
       setStatus("");
 
       await saveUserAgentConfig(configData);
-
       setStatus("✅ Configuración guardada exitosamente 🎯");
+
     } catch (err) {
-      console.error(err);
-      setStatus("❌ Error al guardar.");
+      console.error(err.message);
+      // 🧠 Mensaje amigable según el error
+      if (err.message.includes("límite máximo")) {
+        setStatus("⚠️ Solo puedes crear hasta 3 agentes.");
+      } else if (err.message.includes("no autenticado")) {
+        setStatus("❌ Debes iniciar sesión para guardar agentes.");
+      } else {
+        setStatus("❌ Error al guardar el agente.");
+      }
     } finally {
       setSaving(false);
     }
@@ -46,13 +67,23 @@ export default function SaveAgentConfigButton({ configData }) {
       <button
         onClick={handleSave}
         disabled={saving}
-        className="bg-black text-white px-4 py-2 rounded-lg font-semibold hover:bg-gray-900"
+        className={`px-4 py-2 rounded-lg font-semibold text-white ${
+          saving ? "bg-gray-600" : "bg-black hover:bg-gray-900"
+        }`}
       >
         {saving ? "Guardando..." : "💾 Guardar Configuración de Agente"}
       </button>
 
       {status && (
-        <p className="text-xs text-gray-700">
+        <p
+          className={`text-sm ${
+            status.startsWith("✅")
+              ? "text-green-600"
+              : status.startsWith("⚠️")
+              ? "text-yellow-600"
+              : "text-red-600"
+          }`}
+        >
           {status}
         </p>
       )}
