@@ -16,9 +16,9 @@ export async function saveUserAgentConfig(configData) {
 
   if (fetchError) throw new Error("Error al verificar agentes existentes");
 
-  // 🚫 Si ya tiene 3 o más, no permitir crear otro
-  if (existingAgents && existingAgents.length >= 3) {
-    throw new Error("Has alcanzado el límite máximo de 3 agentes.");
+  // 🚫 Si ya tiene 6 o más, no permitir crear otro
+  if (existingAgents && existingAgents.length >= 6) {
+    throw new Error("Has alcanzado el límite máximo de 6 agentes.");
   }
 
   // 🧩 Guardamos la nueva configuración
@@ -51,7 +51,7 @@ export default function SaveAgentConfigButton({ configData }) {
       console.error(err.message);
       // 🧠 Mensaje amigable según el error
       if (err.message.includes("límite máximo")) {
-        setStatus("⚠️ Solo puedes crear hasta 3 agentes.");
+        setStatus("⚠️ Solo puedes crear hasta 6 agentes.");
       } else if (err.message.includes("no autenticado")) {
         setStatus("❌ Debes iniciar sesión para guardar agentes.");
       } else {
