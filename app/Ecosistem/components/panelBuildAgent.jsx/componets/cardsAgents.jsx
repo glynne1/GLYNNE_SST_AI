@@ -87,6 +87,7 @@ export default function AgentCards() {
 
   return (
     <div className="w-full p-6 bg-white rounded-2xl border border-gray-300 shadow-md relative">
+
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold text-gray-800">
           Agentes GLYNNE creados
@@ -158,11 +159,10 @@ export default function AgentCards() {
               </div>
 
               <div className="mt-3 flex justify-end space-x-4 text-gray-400">
-                {/* ✅ Al hacer click guardamos el agent y abrimos el chat */}
                 <MessageSquareText
                   className="w-5 h-5 cursor-pointer hover:text-gray-700 transition-colors duration-200"
                   onClick={() => {
-                    setChatAgent(agent); // 👈 guardamos agent seleccionado
+                    setChatAgent(agent);
                     setOpenChatPopup(true);
                   }}
                 />
@@ -184,7 +184,7 @@ export default function AgentCards() {
       <AnimatePresence>
         {selectedAgent && (
           <motion.div
-            className="fixed inset-0 bg-black/30   backdrop-blur-md flex justify-center items-center z-50"
+            className="fixed inset-0 bg-black/30 backdrop-blur-md flex justify-center items-center z-50"
             onClick={() => setSelectedAgent(null)}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -213,7 +213,7 @@ export default function AgentCards() {
         )}
       </AnimatePresence>
 
-      {/* ✅ POPUP CHAT ahora muestra tu componente y recibe el agent */}
+      {/* ✅ MODAL DEL CHAT MODIFICADO */}
       <AnimatePresence>
         {openChatPopup && (
           <motion.div
@@ -224,7 +224,7 @@ export default function AgentCards() {
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className="relative bg-white rounded-2xl shadow-xl w-[80vw] h-[80vh] flex"
+              className="relative bg-white rounded-2xl shadow-xl w-[90vw] h-[80vh] flex flex-col overflow-hidden"
               onClick={(e) => e.stopPropagation()}
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -237,12 +237,15 @@ export default function AgentCards() {
                 ✖
               </button>
 
-              {/* 👇 Aquí se renderiza tu chat con el agent seleccionado */}
-              <AgentsChatStyled agent={chatAgent} />
+              <div className="flex-1 w-full h-full overflow-y-auto">
+                <AgentsChatStyled agent={chatAgent} />
+              </div>
+
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
+
     </div>
   );
 }
