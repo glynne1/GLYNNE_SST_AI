@@ -201,7 +201,21 @@ Entrega recomendaciones concretas, claras y accionables.
 
 
 <div className="flex flex-col items-center w-full gap-6">
+<div className="w-[90%] h-[60vh] p-8 bg-white rounded-2xl overflow-y-hidden flex items-center justify-center">
+  {/* Contenedor estilizado como AgentPanel */}
+  <div className="w-full h-full p-6 bg-white rounded-2xl border border-gray-300 shadow-md relative">
+    {/* HEADER opcional */}
+    <div className="flex items-center justify-between mb-6">
+      <h2 className="text-xl font-bold text-gray-800">Consola de Ejecución</h2>
+      <p className="text-sm text-gray-400">Monitoreo activo</p>
+    </div>
 
+    {/* Contenido de la consola */}
+    <div className="w-full h-[80%] bg-gray-50 border border-gray-200 rounded-xl p-4 overflow-auto">
+      <Consola />
+    </div>
+  </div>
+</div>
 
 <div className="w-[90%] h-[60vh] p-8 bg-white rounded-2xl overflow-y-hidden">
   <CardsAgent />
@@ -209,19 +223,25 @@ Entrega recomendaciones concretas, claras y accionables.
 
 
 
+{/* Título */}
+<h2
+  className="text-neutral-800 text-4xl md:text-5xl lg:text-6xl font-extrabold mb-5 tracking-wider"
+>
+  GESTIÓN <span className="text-gray-500">DE API</span>
+</h2>
 
-<div className="w-screen h-100vh p-6 bg-white flex flex-col lg:flex-row gap-6 overflow-hidden">
-  {/* Contenedor de la Tabla → 98% del ancho */}
-  <div className="w-[78%] h-full bg-[#fff] overflow-hidden ">
-    <Tabla />
-  </div>
+{/* Texto descriptivo */}
+<p className="text-gray-600 text-xs md:text-sm lg:text-sm leading-relaxed mb-8 max-w-3xl">
+  Aquí podrás gestionar y controlar las API de cada agente vinculado a nuestro motor de procesamiento de Inteligencia Artificial Generativa.
+  Desde este panel tienes visibilidad completa del estado de las claves, su activación dentro del ecosistema y el uso seguro en el flujo
+  de orquestación de modelos. 
+</p>
 
-  {/* Contenedor de la Consola → 2% del ancho */}
-  <div className="w-[22%] h-full bg-[#fff] text-white p-2 overflow-auto  flex items-center justify-center">
-    <Consola />
-  </div>
+<div className="w-[90%] h-[90vh] p-8 bg-white rounded-2xl overflow-y-hidden">
+  <Tabla />
 </div>
-s
+
+
 <h2
   className="text-neutral-800 text-4xl md:text-5xl lg:text-6xl font-extrabold mb-5 tracking-wider"
 >
