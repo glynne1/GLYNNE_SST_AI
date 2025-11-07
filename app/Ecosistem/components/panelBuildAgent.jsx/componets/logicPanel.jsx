@@ -3,6 +3,8 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaCopy, FaTrash, FaTimes } from "react-icons/fa";
 import { saveUserAgentConfig } from "./saveSupabaseAgent"; 
+import Tabla from './AgentExponApi'
+
 import CardsAgent from './cardsAgents'
 export default function AgentConfigPanel() {
   const [form, setForm] = useState({
@@ -193,7 +195,11 @@ Entrega recomendaciones concretas, claras y accionables.
   </div>
 
 
+  <div className="w-full h-[70vh] p-8 bg-white rounded-2xl overflow-y-hidden">
 
+{/* Contenedor principal */}
+<Tabla />
+</div>
 
 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
