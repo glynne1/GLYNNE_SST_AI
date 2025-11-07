@@ -6,7 +6,7 @@ import { saveUserAgentConfig } from "./saveSupabaseAgent";
 import Tabla from './AgentExponApi'
 import Diagrama from './DiagramaFlujoFW'
 import CardsAgent from './cardsAgents'
-import Striming from './ageentStrriming'
+
 
 
 export default function AgentConfigPanel() {
@@ -208,9 +208,7 @@ Entrega recomendaciones concretas, claras y accionables.
 </div>
 
 
-<div className="w-[90%] h-[60vh] p-8 bg-white rounded-2xl overflow-y-hidden">
-  <Striming />
-</div>
+
 {/* Título */}
 <h2
   className="text-neutral-800 text-4xl md:text-5xl lg:text-6xl font-extrabold mb-5 tracking-wider"
