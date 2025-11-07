@@ -4,16 +4,17 @@ import { useEffect, useState } from "react";
 import { MessageSquareText, Settings2, Trash2, RotateCcw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import AgentForm from "./AgentEditModal";
+import AgentsChatStyled from "./AgentEstado"; // 👈 IMPORTAMOS el chat
 import { supabase, getCurrentUser } from "../../../../lib/supabaseClient";
 
 export default function AgentCards() {
   const [agents, setAgents] = useState([]);
   const [selectedAgent, setSelectedAgent] = useState(null);
   const [openChatPopup, setOpenChatPopup] = useState(false);
+  const [chatAgent, setChatAgent] = useState(null); // 👈 guardamos el agent del chat
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // 🔹 Cargar agentes desde Supabase
   const fetchAgents = async () => {
     try {
       setLoading(true);
@@ -30,7 +31,7 @@ export default function AgentCards() {
 
       const formattedAgents =
         data?.map((item) => ({
-          id: item.id, // Guardamos ID para poder eliminar luego
+          id: item.id,
           ...item.user_config,
         })) || [];
 
@@ -52,7 +53,6 @@ export default function AgentCards() {
     setTimeout(() => setIsRefreshing(false), 600);
   };
 
-  // 🗑️ Eliminar agente tanto en Supabase como en el frontend
   const handleDelete = async (agentId) => {
     try {
       const confirmDelete = window.confirm(
@@ -67,10 +67,7 @@ export default function AgentCards() {
 
       if (error) throw error;
 
-      // Actualiza la vista local
       setAgents((prev) => prev.filter((a) => a.id !== agentId));
-
-      console.log("✅ Agente eliminado correctamente:", agentId);
     } catch (err) {
       console.error("❌ Error al eliminar agente:", err);
       alert("Hubo un error al eliminar el agente. Revisa la consola.");
@@ -90,7 +87,6 @@ export default function AgentCards() {
 
   return (
     <div className="w-full p-6 bg-white rounded-2xl border border-gray-300 shadow-md relative">
-      {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold text-gray-800">
           Agentes GLYNNE creados
@@ -117,7 +113,6 @@ export default function AgentCards() {
         </button>
       </div>
 
-      {/* Contenido */}
       {loading ? (
         <div className="flex items-center justify-center h-[200px]">
           <p className="text-sm text-gray-400 italic text-center">
@@ -163,9 +158,13 @@ export default function AgentCards() {
               </div>
 
               <div className="mt-3 flex justify-end space-x-4 text-gray-400">
+                {/* ✅ Al hacer click guardamos el agent y abrimos el chat */}
                 <MessageSquareText
                   className="w-5 h-5 cursor-pointer hover:text-gray-700 transition-colors duration-200"
-                  onClick={() => setOpenChatPopup(true)}
+                  onClick={() => {
+                    setChatAgent(agent); // 👈 guardamos agent seleccionado
+                    setOpenChatPopup(true);
+                  }}
                 />
                 <Settings2
                   className="w-5 h-5 cursor-pointer hover:text-gray-700 transition-colors duration-200"
@@ -182,7 +181,6 @@ export default function AgentCards() {
         </div>
       )}
 
-      {/* Modal de edición */}
       <AnimatePresence>
         {selectedAgent && (
           <motion.div
@@ -215,7 +213,7 @@ export default function AgentCards() {
         )}
       </AnimatePresence>
 
-      {/* Popup de chat */}
+      {/* ✅ POPUP CHAT ahora muestra tu componente y recibe el agent */}
       <AnimatePresence>
         {openChatPopup && (
           <motion.div
@@ -226,7 +224,7 @@ export default function AgentCards() {
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className="relative bg-white rounded-2xl shadow-xl p-8 w-[80vw] h-[80vh] flex items-center justify-center"
+              className="relative bg-white rounded-2xl shadow-xl w-[80vw] h-[80vh] flex"
               onClick={(e) => e.stopPropagation()}
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -234,13 +232,13 @@ export default function AgentCards() {
             >
               <button
                 onClick={() => setOpenChatPopup(false)}
-                className="absolute top-4 right-6 text-gray-500 hover:text-gray-700 text-xl"
+                className="absolute top-4 right-6 text-gray-500 hover:text-gray-700 text-xl z-50"
               >
                 ✖
               </button>
-              <p className="text-gray-500 text-sm text-center">
-                💬 Aquí se mostrará tu componente de conversación o vista dinámica.
-              </p>
+
+              {/* 👇 Aquí se renderiza tu chat con el agent seleccionado */}
+              <AgentsChatStyled agent={chatAgent} />
             </motion.div>
           </motion.div>
         )}
