@@ -1,8 +1,14 @@
 "use client";
+
 import { useState } from "react";
 import { motion } from "framer-motion";
 import {
-  FaRobot, FaDatabase, FaProjectDiagram, FaCubes, FaMicrochip
+  FaRobot,
+  FaDatabase,
+  FaProjectDiagram,
+  FaCubes,
+  FaMicrochip,
+  FaTerminal
 } from "react-icons/fa";
 
 import CardsAgent from "./cardsAgents";
@@ -10,6 +16,7 @@ import Tabla from "./AgentExponApi";
 import Plantillas from "./AgntsCardsEjm";
 import Diagrama from "./DiagramaFlujoFW";
 import LogicPanel from "./logicPanel";
+import Consola from "./consola"; // 🆕 Nueva importación
 
 export default function SideMenuAgent() {
   const [activeSection, setActiveSection] = useState("agents");
@@ -19,7 +26,8 @@ export default function SideMenuAgent() {
     { id: "api", label: "Gestión de API", icon: <FaDatabase /> },
     { id: "plantillas", label: "Modelos predefinidos", icon: <FaCubes /> },
     { id: "motor", label: "Motor Generativo", icon: <FaProjectDiagram /> },
-    { id: "framework", label: "Crea tus agentes", icon: <FaMicrochip /> }
+    { id: "framework", label: "Crea tus agentes", icon: <FaMicrochip /> },
+    { id: "consola", label: "Consola de Control", icon: <FaTerminal /> }, // 🆕 Nueva sección
   ];
 
   const renderContent = () => {
@@ -43,6 +51,7 @@ export default function SideMenuAgent() {
             <CardsAgent />
           </motion.div>
         );
+
       case "api":
         return (
           <motion.div
@@ -62,6 +71,7 @@ export default function SideMenuAgent() {
             <Tabla />
           </motion.div>
         );
+
       case "plantillas":
         return (
           <motion.div
@@ -81,6 +91,7 @@ export default function SideMenuAgent() {
             <Plantillas />
           </motion.div>
         );
+
       case "motor":
         return (
           <motion.div
@@ -92,6 +103,7 @@ export default function SideMenuAgent() {
             <Diagrama />
           </motion.div>
         );
+
       case "framework":
         return (
           <motion.div
@@ -103,6 +115,28 @@ export default function SideMenuAgent() {
             <LogicPanel />
           </motion.div>
         );
+
+      // 🆕 Nueva sección: Consola
+      case "consola":
+        return (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="w-full mb-3 p-4"
+          >
+            <motion.h2
+              className="text-neutral-800 overflow-hidden text-2xl md:text-3xl lg:text-4xl font-extrabold mb-4 tracking-tight"
+              initial={{ opacity: 0, y: -15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+            >
+              CONSOLA DE <span className="text-gray-500">CONTROL</span>
+            </motion.h2>
+            <Consola />
+          </motion.div>
+        );
+
       default:
         return null;
     }
