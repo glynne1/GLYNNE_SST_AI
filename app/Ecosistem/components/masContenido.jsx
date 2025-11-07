@@ -182,8 +182,8 @@ export default function PlusMenu({ onRefresh }) {
               {[
                 // { icon: <FaMicrophoneAlt />, text: 'Conversación por voz', type: 'voice' }, // 👈 Opción comentada
                 { icon: <FaDatabase />, text: 'Analiza tu base', type: 'db' },
-                { icon: <FaFileSignature />, text: 'Auditoría empresarial', type: 'audit' },
-                { icon: <FaUserTie />, text: 'Asistente de Talento', type: 'talento' },
+                { icon: <FaFileSignature />, text: 'istegra IA a tu negocio', type: 'audit' },
+                { icon: <FaUserTie />, text: 'como  aplicar GLY_FW', type: 'talento' },
                 { icon: <FaSyncAlt />, text: 'Refrescar chat', type: 'refresh' },
               ].map((item, i) => (
                 <motion.div
