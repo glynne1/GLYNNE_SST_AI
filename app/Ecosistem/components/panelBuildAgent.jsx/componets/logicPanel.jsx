@@ -188,20 +188,25 @@ Entrega recomendaciones concretas, claras y accionables.
                   PANEL DE <span className="text-gray-500">DESARROLLO IA</span>
                 </h2>
             
-<div className="w-full h-[70vh] p-8 bg-white rounded-2xl overflow-y-hidden">
+                <div className="flex flex-col items-center w-full gap-6">
 
-    {/* Contenedor principal */}
-    <CardsAgent />
-  </div>
-
-
-  <div className="w-full h-[70vh] p-8 bg-white rounded-2xl overflow-y-hidden">
-
-{/* Contenedor principal */}
-<Tabla />
+<div className="w-[90%] h-[60vh] p-8 bg-white rounded-2xl overflow-y-hidden">
+  <CardsAgent />
 </div>
 
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<div className="w-[90%] h-[90vh] p-8 bg-white rounded-2xl overflow-y-hidden">
+  <Tabla />
+</div>
+
+</div>
+
+<div className="mb-2 ml-[50px]  text-start">
+          <h2 className="text-2xl font-semibold text-gray-800">
+            Lista de Agentes
+          </h2>
+          <p className="text-sm text-gray-400">Panel de visualización (solo lectura)</p>
+        </div>
+<div className="grid ml-[70px]   w-[87%] grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
   {/* API Key */}
   <div className="col-span-2 relative bg-white  p-5 border border-gray-300 shadow-sm flex items-center gap-2">

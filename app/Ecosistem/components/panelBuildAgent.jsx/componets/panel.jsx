@@ -3,7 +3,9 @@
 import { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import AgentConfigPanel from "./logicPanel";
+import Tabla from './AgentExponApi'
 
+import CardsAgent from './cardsAgents'
 export default function CreateAgentPanel() {
   const [open, setOpen] = useState(true); // abierto por defecto
 
@@ -20,7 +22,24 @@ export default function CreateAgentPanel() {
         >
           <FaTimes />
         </button>
+      
+{/* Contenedor principal */}
+<h2 className="text-neutral-800 text-3xl md:text-4xl font-extrabold mb-2 tracking-widest">
+                  PANEL DE <span className="text-gray-500">DESARROLLO IA</span>
+                </h2>
+            
+<div className="w-full h-[60vh] p-8 bg-white rounded-2xl overflow-y-hidden">
 
+    {/* Contenedor principal */}
+    <CardsAgent />
+  </div>
+
+
+  <div className="w-full h-[90vh] p-8 bg-white rounded-2xl overflow-y-hidden">
+
+{/* Contenedor principal */}
+<Tabla />
+</div>
         {/* Componente principal */}
         <AgentConfigPanel />
       </div>

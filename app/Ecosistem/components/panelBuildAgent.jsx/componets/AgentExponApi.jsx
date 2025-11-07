@@ -1,91 +1,117 @@
 "use client";
-
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { Eye, EyeOff, Activity } from "lucide-react";
 import { supabase, getCurrentUser } from "../../../../lib/supabaseClient";
-import { KeyRound } from "lucide-react";
 
-export default function AgentReadPanel() {
+export default function AgentPanel() {
   const [agents, setAgents] = useState([]);
+  const [showKey, setShowKey] = useState({});
   const [loading, setLoading] = useState(true);
 
+  const maskApiKey = (key) => {
+    if (!key) return "••••••";
+    return key.slice(0, 4) + "••••••";
+  };
+
+  const toggleKey = (index) => {
+    setShowKey((prev) => ({ ...prev, [index]: !prev[index] }));
+  };
+
+  // ✅ traer datos SOLO LECTURA desde Supabase
+  const fetchAgents = async () => {
+    try {
+      setLoading(true);
+      const user = await getCurrentUser();
+      if (!user) throw new Error("Usuario no autenticado");
+
+      const { data, error } = await supabase
+        .from("auditorias")
+        .select("user_config")
+        .eq("user_id", user.id);
+
+      if (error) throw error;
+
+      // ✅ Extraemos el JSON guardado en user_config
+      const formattedAgents =
+        data?.map((item) => ({
+          ...item.user_config,
+        })) || [];
+
+      setAgents(formattedAgents);
+    } catch (err) {
+      console.error("Error cargando agentes:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchAgents = async () => {
-      try {
-        const user = await getCurrentUser();
-        if (!user) return console.warn("Usuario no autenticado");
-
-        const { data, error } = await supabase
-          .from("auditorias")
-          .select("id, user_config")
-          .eq("user_id", user.id)
-          .not("user_config", "is", null);
-
-        if (error) throw error;
-
-        const parsed = data
-          .filter((row) => row.user_config?.api_key)
-          .map((row) => ({
-            id: row.id,
-            name: row.user_config.agent_name || "Sin nombre",
-            role: row.user_config.rol || "Sin rol",
-            apiKey: row.user_config.api_key,
-          }));
-
-        setAgents(parsed);
-      } catch (err) {
-        console.error("Error cargando agentes:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchAgents();
   }, []);
 
-  const hideKey = (key) => {
-    if (!key || key.length < 8) return "••••••••";
-    return `${key.slice(0, 4)}••••••••${key.slice(-4)}`;
-  };
-
   return (
-    <div className="w-full max-w-2xl mx-auto bg-white border border-gray-200 rounded-xl shadow-sm p-4">
+    <div className="w-full p-6 bg-white rounded-2xl border border-gray-300 shadow-md relative">
 
-      <h2 className="text-lg font-semibold text-gray-800 mb-4">
-        Modelos configurados
-      </h2>
-
-      {loading && (
-        <p className="text-sm text-gray-400 italic">Cargando datos...</p>
-      )}
-
-      {!loading && agents.length === 0 && (
-        <p className="text-sm text-gray-400 italic">No hay agentes registrados</p>
-      )}
-
-      <div className="flex flex-col gap-3">
-        {agents.map((a) => (
-          <div
-            key={a.id}
-            className="flex justify-between items-center p-3 rounded-lg border border-gray-100 hover:bg-gray-50 transition"
-          >
-            {/* Información izquierda */}
-            <div className="flex flex-col">
-              <span className="text-md font-medium text-gray-900">
-                {a.name}
-              </span>
-              <span className="text-xs text-gray-500 mt-0.5">
-                {a.role}
-              </span>
-            </div>
-
-            {/* API KEY derecha */}
-            <div className="flex items-center gap-2 text-gray-400 text-sm font-mono">
-              <KeyRound size={14} />
-              {hideKey(a.apiKey)}
-            </div>
-          </div>
-        ))}
+      {/* HEADER */}
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-bold text-gray-800">
+          API Keys por Agente
+        </h2>
+        <p className="text-sm text-gray-400">Solo lectura</p>
       </div>
+
+      {loading ? (
+        <p className="text-center text-gray-400">Cargando...</p>
+      ) : (
+        <div className="space-y-5">
+
+          {agents.map((agent, i) => (
+            <div
+              key={i}
+              className="flex justify-between items-center bg-white border border-gray-200 rounded-xl p-5 hover:shadow-lg transition-all duration-300"
+            >
+
+              {/* IZQUIERDA */}
+              <div className="flex items-center gap-3 overflow-hidden">
+
+                {/* ✅ ICONO LIVE PULSANTE */}
+                <div className="flex items-center gap-1">
+                  <Activity className="text-green-500 animate-pulse" size={16} />
+                  <span className="text-xs font-medium text-green-600 animate-pulse">
+                    Live
+                  </span>
+                </div>
+
+                {/* Nombre y rol */}
+                <div>
+                  <p className="text-lg font-semibold text-gray-800 truncate">
+                    {agent.agent_name}
+                  </p>
+                  <p className="text-xs text-gray-500 truncate">
+                    <strong>Rol:</strong> {agent.rol}
+                  </p>
+                </div>
+              </div>
+
+              {/* DERECHA */}
+              <div className="flex items-center gap-4 w-[55%] justify-end">
+                <div className="text-xs bg-gray-50 px-4 py-2 rounded-full text-gray-600 font-mono border border-gray-100 w-full text-left overflow-hidden">
+                  {showKey[i] ? agent.api_key : maskApiKey(agent.api_key)}
+                </div>
+
+                <button
+                  onClick={() => toggleKey(i)}
+                  className="text-gray-500 hover:text-gray-700 transition"
+                >
+                  {showKey[i] ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+
+            </div>
+          ))}
+
+        </div>
+      )}
 
     </div>
   );

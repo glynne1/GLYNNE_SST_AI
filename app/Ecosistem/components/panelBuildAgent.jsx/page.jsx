@@ -104,7 +104,7 @@ export default function Page() {
               </motion.div>
 
               {/* Contenedor del componente */}
-              <div className="mt-[20px]">
+              <div className="mt-[20px] ">
                 <AgentConfigPanel />
               </div>
             </motion.div>
