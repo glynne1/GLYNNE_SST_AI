@@ -3,10 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Send, Mic } from "lucide-react";
-import { supabase, getCurrentUser } from "../../../../lib/supabaseClient";
 
-export default function AgentsChatStyled() {
-  const [agents, setAgents] = useState([]);
+export default function AgentsChatStyled({ agent }) {
   const [selectedAgent, setSelectedAgent] = useState(null);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
@@ -16,46 +14,13 @@ export default function AgentsChatStyled() {
 
   const apiURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
-  // ===========================================================
-  // 👁️ Cargar agentes desde Supabase (SOLO LECTURA)
-  // ===========================================================
+  // ✅ IMPORTANTE: cada vez que abra el chat, usar el agente que viene por props
   useEffect(() => {
-    const fetchAgents = async () => {
-      try {
-        const user = await getCurrentUser();
-        if (!user) return console.warn("Usuario no autenticado");
-
-        const { data, error } = await supabase
-          .from("auditorias")
-          .select("id, user_config")
-          .eq("user_id", user.id)
-          .not("user_config", "is", null);
-
-        if (error) throw error;
-
-        const validAgents = data
-          .filter(
-            (row) =>
-              row.user_config &&
-              typeof row.user_config === "object" &&
-              Object.keys(row.user_config).length > 0 &&
-              row.user_config.agent_name &&
-              row.user_config.api_key
-          )
-          .map((row) => ({
-            id: row.id,
-            ...row.user_config,
-          }));
-
-        setAgents(validAgents);
-        if (validAgents.length > 0) setSelectedAgent(validAgents[0]);
-      } catch (err) {
-        console.error("Error al cargar agentes:", err.message);
-      }
-    };
-
-    fetchAgents();
-  }, []);
+    if (agent) {
+      setSelectedAgent(agent);
+      setMessages([]); // limpiar chat cuando se abre uno nuevo
+    }
+  }, [agent]);
 
   const scrollToBottom = () =>
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -65,10 +30,10 @@ export default function AgentsChatStyled() {
   }, [messages]);
 
   // ===========================================================
-  // 🚀 Enviar mensaje al backend (Sin guardar en Supabase)
+  // 🚀 Enviar mensaje al backend usando el agent de la card
   // ===========================================================
   const sendMessage = async () => {
-    if (!input.trim() || isLoading) return;
+    if (!input.trim() || isLoading || !selectedAgent) return;
 
     const userMessage = { from: "user", text: input };
     setMessages((prev) => [...prev, userMessage]);
@@ -81,7 +46,7 @@ export default function AgentsChatStyled() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           mensaje: input,
-          agent_config: selectedAgent,
+          agent_config: selectedAgent, // ✅ Aquí enviamos SOLO el agente de la card clickeada
         }),
       });
 
@@ -112,23 +77,16 @@ export default function AgentsChatStyled() {
     setIsRecording(!isRecording);
   };
 
-  if (!selectedAgent && agents.length === 0 && !isLoading)
+  if (!selectedAgent)
     return (
-      <div className="w-full h-screen flex items-center justify-center text-gray-500">
-        No hay agentes configurados para tu usuario. Crea uno para empezar a chatear.
-      </div>
-    );
-
-  if (!selectedAgent && agents.length > 0)
-    return (
-      <div className="w-full h-screen flex items-center justify-center text-gray-500">
+      <div className="w-full h-full flex items-center justify-center text-gray-500">
         Selecciona un agente para iniciar la conversación.
       </div>
     );
 
   return (
     <div className="w-full h-screen flex flex-col bg-white">
-      
+
       {/* 💬 MENSAJES */}
       <div className="flex-1 px-4 py-2 flex flex-col justify-end space-y-2 overflow-y-auto">
         {messages.map((msg, idx) => (
