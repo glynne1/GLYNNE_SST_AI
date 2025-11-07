@@ -182,29 +182,60 @@ Entrega recomendaciones concretas, claras y accionables.
 
       {/* PANEL PRINCIPAL */}
 <div className="w-full p-8  bg-white rounded-2xl">
+<h2
+  className="text-neutral-800 text-4xl md:text-5xl lg:text-6xl font-extrabold mb-5 tracking-wider"
+>
+  CENTRO <span className="text-gray-500">DE AGENTES</span>
+</h2>
 
-{/* Contenedor principal */}
-<h2 className="text-neutral-800 text-3xl md:text-4xl font-extrabold mb-2 tracking-widest">
-                  PANEL DE <span className="text-gray-500">DESARROLLO IA</span>
-                </h2>
-            
-                <div className="flex flex-col items-center w-full gap-6">
+{/* Texto descriptivo */}
+<p className="text-gray-600 text-center text-xs md:text-sm lg:text-sm leading-relaxed mb-8 max-w-3xl mx-auto">
+  Desde este panel podrás configurar, probar y conversar con tus agentes inteligentes en tiempo real.  
+  Aquí tienes control para ajustar comportamientos, validar respuestas, coordinar roles y preparar la exportación  
+  de tus llaves API para integrarlas fácilmente en cualquier tecnología, sistema o flujos de desarrollo.
+
+</p>
+
+
+<div className="flex flex-col items-center w-full gap-6">
+
 
 <div className="w-[90%] h-[60vh] p-8 bg-white rounded-2xl overflow-y-hidden">
   <CardsAgent />
 </div>
+{/* Título */}
+<h2
+  className="text-neutral-800 text-4xl md:text-5xl lg:text-6xl font-extrabold mb-5 tracking-wider"
+>
+  GESTIÓN <span className="text-gray-500">DE API</span>
+</h2>
+
+{/* Texto descriptivo */}
+<p className="text-gray-600 text-xs md:text-sm lg:text-sm leading-relaxed mb-8 max-w-3xl">
+  Aquí podrás gestionar y controlar las API de cada agente vinculado a nuestro motor de procesamiento de Inteligencia Artificial Generativa.
+  Desde este panel tienes visibilidad completa del estado de las claves, su activación dentro del ecosistema y el uso seguro en el flujo
+  de orquestación de modelos. Cada API representa un punto de conexión directo con agentes especializados que operan dentro del núcleo
+  de procesamiento inteligente. 
+  del motor generativo.
+</p>
 
 <div className="w-[90%] h-[90vh] p-8 bg-white rounded-2xl overflow-y-hidden">
   <Tabla />
 </div>
-
+<div className="w-screen h-screen bg-black overflow-hidden">
+  
+</div>
 </div>
 
-<div className="mb-2 ml-[50px]  text-start">
-          <h2 className="text-2xl font-semibold text-gray-800">
-            Lista de Agentes
-          </h2>
-          <p className="text-sm text-gray-400">Panel de visualización (solo lectura)</p>
+<div className="mb-2 mt-15 ml-[50px]  text-center">
+<h2
+  className="text-neutral-800 text-4xl md:text-5xl lg:text-6xl font-extrabold mb-5 tracking-wider"
+>
+ CRERA TU  <span className="text-gray-500">GLYNNE AI</span>
+</h2>
+
+{/* Texto descriptivo */}
+
         </div>
 <div className="grid ml-[70px]   w-[87%] grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
