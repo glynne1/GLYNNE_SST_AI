@@ -25,13 +25,14 @@ const NODE_TYPES = {
   ),
 };
 
+
 const nodes = [
   { id: 'root', type: 'default', position: { x: 0, y: 250 }, data: { label: 'GLYNNE_BUILD_PANEL', icon: FaFolderOpen, description: 'Root del proyecto' }},
   { id: 'core', type: 'default', position: { x: 300, y: 80 }, data: { label: ' core/', icon: FaFolderOpen, description: 'Motor del sistema' }},
   { id: 'agents', type: 'default', position: { x: 300, y: 200 }, data: { label: ' agents/', icon: FaRobot, description: 'Agentes de negocio' }},
   { id: 'user', type: 'default', position: { x: 300, y: 320 }, data: { label: ' user/', icon: FaUsers, description: 'Panel y auth user' }},
-  { id: 'dash', type: 'default', position: { x: 300, y: 440 }, data: { label: ' dashboards/', icon: FaChartLine, description: 'Métricas & monitoreo' }},
-  { id: 'scripts', type: 'default', position: { x: 300, y: 560 }, data: { label: ' scripts/', icon: FaTerminal, description: 'CLI & mantenimiento' }},
+  { id: 'dash', type: 'default', position: { x: 300, y: 440 }, data: { label: '📁 dashboards/', icon: FaChartLine, description: 'Métricas & monitoreo' }},
+  { id: 'scripts', type: 'default', position: { x: 300, y: 560 }, data: { label: '📁 scripts/', icon: FaTerminal, description: 'CLI & mantenimiento' }},
   { id: 'config', type: 'default', position: { x: 650, y: 20 }, data: { label: 'config.py', icon: FaFileAlt, description: 'Env & settings' }},
   { id: 'graph', type: 'default', position: { x: 650, y: 80 }, data: { label: 'graph_manager.py', icon: FaProjectDiagram, description: 'Gestión de flujos' }},
   { id: 'llm', type: 'default', position: { x: 650, y: 140 }, data: { label: 'llm_manager.py', icon: FaRobot, description: 'LLM engine' }},
@@ -89,10 +90,15 @@ const edges = [
   { id: 's3', source: 'scripts', target: 'maint', animated: false, style: { stroke: '#ccc' }},
   { id: 'final', source: 'api', target: 'main', animated: true, style: { stroke: '#8B0000', strokeWidth: 2 }},
 ];
-
 export default function GlynneAgentFlow() {
   return (
-    <div className="w-screen h-screen bg-white overflow-hidden select-none">
+    <div
+      className="w-screen h-screen bg-white overflow-hidden select-none"
+      style={{
+        pointerEvents: 'none', // 🚫 Desactiva toda interacción
+        cursor: 'default',     // 👆 Evita que salga la manito
+      }}
+    >
       <ReactFlowProvider>
         <ReactFlow
           nodes={nodes}
@@ -109,6 +115,10 @@ export default function GlynneAgentFlow() {
           panOnMove={false}
           zoomOnDoubleClick={false}
           proOptions={{ hideAttribution: true }}
+          style={{
+            pointerEvents: 'none', // 🔒 Reforzamos dentro del diagrama
+            cursor: 'default',
+          }}
         >
           <Background color="#f3f4f6" gap={16} />
         </ReactFlow>

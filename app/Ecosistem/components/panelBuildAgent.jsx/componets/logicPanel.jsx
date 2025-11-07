@@ -6,7 +6,7 @@ import { saveUserAgentConfig } from "./saveSupabaseAgent";
 import Tabla from './AgentExponApi'
 import Diagrama from './DiagramaFlujoFW'
 import CardsAgent from './cardsAgents'
-import Consola from './consola'
+
 import Plantillas from './AgntsCardsEjm'
 
 export default function AgentConfigPanel() {
@@ -179,243 +179,161 @@ Entrega recomendaciones concretas, claras y accionables.
   const toggleExamples = (field) => setShowExamples(prev => ({ ...prev, [field]: !prev[field] }));
 
   return (
-    <div className="flex w-full mt-[0px]   h-screen">
+   
+  <div className="flex w-full mt-[0px] h-screen">
 
-      {/* PANEL PRINCIPAL */}
-<div className="w-full p-8 bg-white rounded-2xl">
+    {/* PANEL PRINCIPAL */}
+    <div className="w-full p-8 bg-white rounded-2xl">
 
-<h2 className="text-neutral-800 text-4xl md:text-5xl lg:text-6xl font-extrabold mb-5 tracking-wider">
-  CENTRO <span className="text-gray-500">DE AGENTES</span>
-</h2>
-
-{/* Texto descriptivo */}
-<p className="text-gray-600 text-center text-xs md:text-sm lg:text-sm leading-relaxed mb-8 max-w-3xl mx-auto">
-  Desde este panel podrás configurar, probar y conversar con tus agentes inteligentes en tiempo real.  
-  Aquí tienes control para ajustar comportamientos, validar respuestas, coordinar roles y preparar la exportación  
-  de tus llaves API para integrarlas fácilmente en cualquier tecnología, sistema o flujos de desarrollo.
-</p>
-
-<div className="flex flex-col items-center w-full gap-6">
-
-  <div className="w-[90%] h-[65vh] p-8 bg-white rounded-2xl overflow-y-hidden flex items-center justify-center">
-    {/* Contenedor estilizado como AgentPanel */}
-    <div className="w-full h-full p-6 bg-white rounded-2xl border border-gray-300 shadow-md relative">
-      {/* HEADER opcional */}
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-gray-800">Consola de Ejecución</h2>
-        <p className="text-sm text-gray-400">Monitoreo activo</p>
-      </div>
-
-      {/* Contenido de la consola */}
-      <div className="w-full h-[80%] bg-gray-50 border border-gray-200 rounded-xl p-4 overflow-auto">
-        <Consola />
-      </div>
-    </div>
-  </div>
-
-  <div className="w-[90%] h-[60vh] p-8 bg-white rounded-2xl overflow-y-hidden">
-    <CardsAgent />
-  </div>
-
-  {/* Título */}
-  <h2 className="text-neutral-800 text-4xl md:text-5xl lg:text-6xl font-extrabold mb-5 tracking-wider">
-    GESTIÓN <span className="text-gray-500">DE API</span>
-  </h2>
-
-  {/* Texto descriptivo */}
-  <p className="text-gray-600 text-xs md:text-sm lg:text-sm leading-relaxed mb-8 max-w-3xl">
-    Aquí podrás gestionar y controlar las API de cada agente vinculado a nuestro motor de procesamiento de Inteligencia Artificial Generativa.
-    Desde este panel tienes visibilidad completa del estado de las claves, su activación dentro del ecosistema y el uso seguro en el flujo
-    de orquestación de modelos.
-  </p>
-
-  <div className="w-[90%] min-h-screen p-8 bg-white rounded-2xl overflow-y-auto flex flex-col gap-6">
-  <div className="w-full   p-4 overflow-hidden">
-    <Tabla />
-  </div>
-
-  <div className="w-full   p-4 overflow-hidden">
-    <Plantillas />
-  </div>
-</div>
-
-
-  <h2 className="text-neutral-800 text-4xl md:text-5xl lg:text-6xl font-extrabold mb-5 tracking-wider">
-    NUESTRO MOTOR <span className="text-gray-500">GENERATIVO</span>
-  </h2>
-
-  <div className="bg-white relative">
-    <div className="pointer-events-none">
-      <Diagrama />
-    </div>
-  </div>
-
-</div>
-
-
-<div className="mb-2 mt-15 ml-[50px]  text-center">
-<h2
-  className="text-neutral-800 text-4xl md:text-5xl lg:text-6xl font-extrabold mb-5 tracking-wider"
->
- CRERA TU  <span className="text-gray-500">GLYNNE AI</span>
-</h2>
-
-{/* Texto descriptivo */}
-
-        </div>
-<div className="grid ml-[70px]   w-[87%] grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-  {/* API Key */}
-  <div className="col-span-2 relative bg-white  p-5 border border-gray-300 shadow-sm flex items-center gap-2">
-    <div className="flex-1 flex flex-col">
-      <label className="text-xs font-semibold text-gray-700 mb-1 block">API Key</label>
-      <input
-        name="api_key"
-        type="password"
-        placeholder="Enter your API key"
-        value={form.api_key}
-        onChange={handleChange}
-        className="w-full p-3 text-xs bg-white border border-gray-200 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300"
-      />
-    {/* Texto informativo para obtener API */}
-<p className="text-gray-500 text-xs mt-2">
-  Para conseguir tu clave API, visita{' '}
-  <a 
-    href="https://console.groq.com/keys" 
-    target="_blank" 
-    rel="noopener noreferrer"
-    className="text-blue-600 hover:underline"
-  >
-     API MODEL GROQ/GLYNNE
-  </a>
-  . Copia la clave y pégala en aqui.
-</p>
-
-    </div>
-    <FaCopy onClick={handleCopyAPIKey} className="text-gray-600 hover:text-gray-800 cursor-pointer text-sm" title="Copy API Key" />
-    <FaTrash onClick={() => setForm({ ...form, api_key: "" })} className="text-red-500 hover:text-red-700 cursor-pointer text-sm" title="Delete API Key" />
-  </div>
-
-  {/* Rol del agente */}
-  <InputField
-    label="rol del agente"
-    name="rol"
-    value={form.rol}
-    onChange={handleChange}
-    placeholder="desde que vision vera tu proceso?"
-    helperText="Define el rol principal que tendrá tu agente, por ejemplo: auditor o gestor de ventas"
-  />
-
-  {/* Nombre del agente */}
-  <InputField
-    label="Nombre"
-    name="agent_name"
-    value={form.agent_name}
-    onChange={handleChange}
-    placeholder="Nombre del agente"
-    helperText="Introduce un nombre distintivo para identificar tu agente en el sistema"
-  />
-
-  {/* Especialidad */}
-  <InputField
-    label="Especialidad"
-    name="Specialty"
-    value={form.specialty}
-    onChange={handleChange}
-    placeholder="para que es bueno tu agente?"
-    helperText="Indica la especialidad principal del agente, como 'Automatización de ventas' o 'Soporte técnico'"
-  />
-
-  {/* Objetivo */}
-  <InputField
-    label="Objectivos?"
-    name="objective"
-    value={form.objective}
-    onChange={handleChange}
-    placeholder="que funciones debe tener este agente?"
-    helperText="Describe el objetivo principal que debe cumplir el agente"
-  />
-
-
-
-
-  {/* Información del negocio */}
-  <InputField
+      
   
-    label="Información del proyecto"
-    name="business_info"
-    value={form.business_info}
-    onChange={handleChange}
-    placeholder="Este agente funciona como un nuevo miembro del equipo: lo entrenas con tu visión, le explicas tus procesos y le asignas responsabilidades. A partir de ahí, actúa con autonomía para ejecutar sus tareas y ayudarte a escalar tu operación."
-    rows={3}
-    textarea
-    colSpan={3}
-    helperText="Proporciona información breve sobre la empresa o proyecto donde se desplegará el agente"
-  >
-    
-    <button onClick={() => toggleExamples("business_info")} className="mt-2 text-xs text-blue-500 hover:underline">Show Examples</button>
-    <AnimatePresence>
-      {showExamples.business_info && (
-        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="mt-2 p-3 bg-gray-50 rounded-lg border border-gray-200 text-[11px] text-gray-600 space-y-1">
-          <div>Example 1: Empresa SaaS que ofrece soluciones de automatización para pymes.</div>
-          <div>Example 2: Proyecto interno de IA para optimización de procesos de soporte y ventas.</div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  </InputField>
 
-  {/* Instrucciones adicionales */}
-  <InputField
-    label="instrucciones"
-    name="additional_msg"
-    value={form.additional_msg}
-    onChange={handleChange}
-    placeholder="Instrucciones adicionales"
-    rows={2}
-    textarea
-    colSpan={3}
-    helperText="Añade instrucciones o reglas especiales que tu agente debe seguir"
-  >
-    <button onClick={() => toggleExamples("additional_msg")} className="mt-2 text-xs text-blue-500 hover:underline">Show Examples</button>
-    <AnimatePresence>
-      {showExamples.additional_msg && (
-        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="mt-2 p-3 bg-gray-50 rounded-lg border border-gray-200 text-[11px] text-gray-600 space-y-1">
-          <div>Example 1: Priorizar procesos críticos y flujos de ventas.</div>
-          <div>Example 2: Incluir métricas de éxito y objetivos medibles.</div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  </InputField>
+      <div className="mb-2 mt-15 ml-[50px] text-center">
+        <h2 className="text-neutral-800 text-4xl md:text-5xl lg:text-6xl font-extrabold mb-5 tracking-wider">
+          CRERA TU <span className="text-gray-500">GLYNNE AI</span>
+        </h2>
 
-  <div className="col-span-3 flex justify-center items-center w-full min-h-[20vh]">
-  <div className="w-[50vw] m-5 flex justify-center items-center">
-    <button
-      onClick={async () => {
-        try {
-          // 1️⃣ Guardar configuración en Supabase
-          await saveUserAgentConfig(form);
-          addLog("✅ Configuración guardada en Supabase", "success");
-        } catch (err) {
-          addLog("⚠️ No se pudo guardar configuración: " + err.message, "error");
-        }
+        {/* Texto descriptivo */}
+      </div>
 
-        // 2️⃣ Ejecutar agente
-        await handleSend();
+      <div className="grid ml-[70px] w-[87%] grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* API Key */}
+        <div className="col-span-2 relative bg-white p-5 border border-gray-300 shadow-sm flex items-center gap-2">
+          <div className="flex-1 flex flex-col">
+            <label className="text-xs font-semibold text-gray-700 mb-1 block">API Key</label>
+            <input
+              name="api_key"
+              type="password"
+              placeholder="Enter your API key"
+              value={form.api_key}
+              onChange={handleChange}
+              className="w-full p-3 text-xs bg-white border border-gray-200 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300"
+            />
+            <p className="text-gray-500 text-xs mt-2">
+              Para conseguir tu clave API, visita{' '}
+              <a 
+                href="https://console.groq.com/keys" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline"
+              >
+                API MODEL GROQ/GLYNNE
+              </a>
+              . Copia la clave y pégala en aqui.
+            </p>
+          </div>
+          <FaCopy onClick={handleCopyAPIKey} className="text-gray-600 hover:text-gray-800 cursor-pointer text-sm" title="Copy API Key" />
+          <FaTrash onClick={() => setForm({ ...form, api_key: "" })} className="text-red-500 hover:text-red-700 cursor-pointer text-sm" title="Delete API Key" />
+        </div>
 
-        // 3️⃣ Abrir chat modal
-        setChatModalOpen(true);
-      }}
-      className="bg-black text-white px-6 py-3 text-base font-semibold rounded-xl shadow-md hover:bg-gray-900 hover:shadow-lg transition-all duration-300"
-    >
-      ⚡ Execute Agent
-    </button>
-  </div>
-</div>
+        {/* Rol del agente */}
+        <InputField
+          label="rol del agente"
+          name="rol"
+          value={form.rol}
+          onChange={handleChange}
+          placeholder="desde que vision vera tu proceso?"
+          helperText="Define el rol principal que tendrá tu agente, por ejemplo: auditor o gestor de ventas"
+        />
 
+        {/* Nombre del agente */}
+        <InputField
+          label="Nombre"
+          name="agent_name"
+          value={form.agent_name}
+          onChange={handleChange}
+          placeholder="Nombre del agente"
+          helperText="Introduce un nombre distintivo para identificar tu agente en el sistema"
+        />
 
+        {/* Especialidad */}
+        <InputField
+          label="Especialidad"
+          name="Specialty"
+          value={form.specialty}
+          onChange={handleChange}
+          placeholder="para que es bueno tu agente?"
+          helperText="Indica la especialidad principal del agente, como 'Automatización de ventas' o 'Soporte técnico'"
+        />
 
-</div>
-</div>
+        {/* Objetivo */}
+        <InputField
+          label="Objectivos?"
+          name="objective"
+          value={form.objective}
+          onChange={handleChange}
+          placeholder="que funciones debe tener este agente?"
+          helperText="Describe el objetivo principal que debe cumplir el agente"
+        />
+
+        {/* Información del negocio */}
+        <InputField
+          label="Información del proyecto"
+          name="business_info"
+          value={form.business_info}
+          onChange={handleChange}
+          placeholder="Este agente funciona como un nuevo miembro del equipo..."
+          rows={3}
+          textarea
+          colSpan={3}
+          helperText="Proporciona información breve sobre la empresa o proyecto donde se desplegará el agente"
+        >
+          <button onClick={() => toggleExamples("business_info")} className="mt-2 text-xs text-blue-500 hover:underline">Show Examples</button>
+          <AnimatePresence>
+            {showExamples.business_info && (
+              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="mt-2 p-3 bg-gray-50 rounded-lg border border-gray-200 text-[11px] text-gray-600 space-y-1">
+                <div>Example 1: Empresa SaaS que ofrece soluciones de automatización para pymes.</div>
+                <div>Example 2: Proyecto interno de IA para optimización de procesos de soporte y ventas.</div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </InputField>
+
+        {/* Instrucciones adicionales */}
+        <InputField
+          label="instrucciones"
+          name="additional_msg"
+          value={form.additional_msg}
+          onChange={handleChange}
+          placeholder="Instrucciones adicionales"
+          rows={2}
+          textarea
+          colSpan={3}
+          helperText="Añade instrucciones o reglas especiales que tu agente debe seguir"
+        >
+          <button onClick={() => toggleExamples("additional_msg")} className="mt-2 text-xs text-blue-500 hover:underline">Show Examples</button>
+          <AnimatePresence>
+            {showExamples.additional_msg && (
+              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="mt-2 p-3 bg-gray-50 rounded-lg border border-gray-200 text-[11px] text-gray-600 space-y-1">
+                <div>Example 1: Priorizar procesos críticos y flujos de ventas.</div>
+                <div>Example 2: Incluir métricas de éxito y objetivos medibles.</div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </InputField>
+
+        <div className="col-span-3 flex justify-center items-center w-full min-h-[20vh]">
+          <div className="w-[50vw] m-5 flex justify-center items-center">
+            <button
+              onClick={async () => {
+                try {
+                  await saveUserAgentConfig(form);
+                  addLog("✅ Configuración guardada en Supabase", "success");
+                } catch (err) {
+                  addLog("⚠️ No se pudo guardar configuración: " + err.message, "error");
+                }
+                await handleSend();
+                setChatModalOpen(true);
+              }}
+              className="bg-black text-white px-6 py-3 text-base font-semibold rounded-xl shadow-md hover:bg-gray-900 hover:shadow-lg transition-all duration-300"
+            >
+              ⚡ Execute Agent
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
 
       <AnimatePresence>

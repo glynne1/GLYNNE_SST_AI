@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { FaTimes } from "react-icons/fa";
-import AgentConfigPanel from "./logicPanel";
+import AgentConfigPanel from "./logicPanel2";
 
 export default function CreateAgentPanel() {
   const [open, setOpen] = useState(true); // abierto por defecto
@@ -12,7 +12,7 @@ export default function CreateAgentPanel() {
   return (
     <div className="fixed inset-0  flex flex-col items-center justify-center overflow-y-auto z-50">
       {/* Contenedor principal */}
-      <div className="relative w-full max-w-[90%] mt-0 rounded-2xl ">
+      <div className="relative w-full max-w-[100%] mt-0 rounded-2xl ">
         {/* Botón de cerrar */}
         <button
           onClick={() => setOpen(false)}

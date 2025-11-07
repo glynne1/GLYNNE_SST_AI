@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaTimes } from "react-icons/fa";
-import AgentConfigPanel from "./componets/logicPanel";
+import AgentConfigPanel from "./componets/logicPanel2";
 
 export default function Page() {
   const [open, setOpen] = useState(false);
@@ -89,13 +89,13 @@ export default function Page() {
               initial={{ y: 40, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.3 }}
-              className="relative w-full max-w-[90%] h-[100vh] rounded-2xl p-8"
+              className="relative w-full ml-[-80px] max-w-[100%] h-[100vh] rounded-2xl p-8"
             >
           
 
               {/* Descripción del panel */}
               <motion.div
-                className="max-w-3xl text-center mx-auto mb-10 mt-[40px]"
+                className="max-w-3xl text-center mx-auto "
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.6 }}
@@ -104,7 +104,7 @@ export default function Page() {
               </motion.div>
 
               {/* Contenedor del componente */}
-              <div className="mt-[20px] ">
+              <div className=" ">
                 <AgentConfigPanel />
               </div>
             </motion.div>
