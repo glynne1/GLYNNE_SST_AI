@@ -10,14 +10,12 @@ export default function AgentsChatStyled({ agents }) {
   const [isRecording, setIsRecording] = useState(false);
   const messagesEndRef = useRef(null);
 
-  const apiURL = process.env.NEXT_PUBLIC_API_URL || "https://generative-glynne-motor.onrender.com";
+  const apiURL =
+    process.env.NEXT_PUBLIC_API_URL ||
+    "https://generative-glynne-motor.onrender.com";
 
   // colores para cada agente
-  const agentColors = {
-    0: "#4ade80", // verde
-    1: "#3b82f6", // azul
-    2: "#ec4899", // rosa
-  };
+  const agentColors = ["#4ade80", "#3b82f6", "#ec4899"];
 
   const scrollToBottom = () =>
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -27,40 +25,42 @@ export default function AgentsChatStyled({ agents }) {
   }, [messages]);
 
   const sendMessage = () => {
-    if (!input.trim() || !agents || agents.length < 3) return;
+    if (!input.trim() || !agents || agents.length === 0) return;
 
     // Mensaje del usuario
     const userMessage = { from: "user", text: input };
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
 
-    // Crear 3 mensajes vacíos para streaming
+    // Crear mensajes vacíos para streaming según la cantidad de agentes
     const initialBotMessages = agents.map((agent, i) => ({
       id: `agent-${i}`,
       from: "bot",
       agent: agent.name,
       text: "",
       color: agentColors[i] || "#888",
-      done: false
+      done: false,
     }));
 
-    setMessages(prev => [...prev, ...initialBotMessages]);
+    setMessages((prev) => [...prev, ...initialBotMessages]);
 
-    // Abrir conexión SSE
+    // Abrir conexión SSE (o WebSocket) para streaming
     const eventSource = new EventSource(
-      `${apiURL}/dynamic/agent/chat/stream?message=${encodeURIComponent(input)}&agents=${encodeURIComponent(JSON.stringify(agents))}`
+      `${apiURL}/dynamic/agent/chat/stream?message=${encodeURIComponent(
+        input
+      )}&agents=${encodeURIComponent(JSON.stringify(agents))}`
     );
 
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
       const { agent, content, done } = data;
 
-      setMessages(prev =>
-        prev.map(msg => {
+      setMessages((prev) =>
+        prev.map((msg) => {
           if (msg.agent === agent && msg.from === "bot") {
             return {
               ...msg,
               text: msg.text + content,
-              done: done ?? false
+              done: done ?? false,
             };
           }
           return msg;
@@ -79,23 +79,27 @@ export default function AgentsChatStyled({ agents }) {
     setIsRecording(!isRecording);
   };
 
-  if (!agents || agents.length < 3) {
+  // Si no hay agentes, mostrar aviso
+  if (!agents || agents.length === 0) {
     return (
       <div className="w-full h-full flex items-center justify-center text-gray-500">
-        Debes seleccionar 3 agentes para iniciar la conversación.
+        Aún no tienes agentes creados. Crea uno para iniciar la conversación.
       </div>
     );
   }
 
   return (
     <div className="w-full h-screen flex flex-col bg-white">
-
       {/* 💬 MENSAJES */}
       <div className="flex-1 px-4 py-2 flex flex-col justify-end space-y-3 overflow-y-auto">
         {messages.map((msg, idx) => (
-          <div key={idx} className={`flex ${msg.from === "user" ? "justify-end" : "justify-start"}`}>
+          <div
+            key={idx}
+            className={`flex ${
+              msg.from === "user" ? "justify-end" : "justify-start"
+            }`}
+          >
             <div className="max-w-[80%]">
-
               {/* 👤 NOMBRE DEL AGENTE EN COLOR */}
               {msg.from === "bot" && (
                 <div
@@ -109,12 +113,13 @@ export default function AgentsChatStyled({ agents }) {
               {/* 💬 BURBUJA MENSAJE */}
               <div
                 className={`px-4 py-3 rounded-2xl break-words whitespace-pre-wrap ${
-                  msg.from === "user" ? "bg-black text-white" : "bg-white text-black shadow-md"
+                  msg.from === "user"
+                    ? "bg-black text-white"
+                    : "bg-white text-black shadow-md"
                 }`}
               >
                 <p>{msg.text || (!msg.done && "Escribiendo...")}</p>
               </div>
-
             </div>
           </div>
         ))}
@@ -126,7 +131,6 @@ export default function AgentsChatStyled({ agents }) {
       <div className="w-full px-4 py-4 flex justify-center">
         <div className="flex w-[70%] relative items-center gap-2">
           <div className="relative flex-1">
-
             <input
               type="text"
               value={input}
@@ -143,7 +147,8 @@ export default function AgentsChatStyled({ agents }) {
             <span
               className="absolute inset-0 rounded-full pointer-events-none"
               style={{
-                background: "linear-gradient(90deg, #4ade80, #3b82f6, #facc15, #ec4899)",
+                background:
+                  "linear-gradient(90deg, #4ade80, #3b82f6, #facc15, #ec4899)",
                 backgroundSize: "300% 300%",
                 animation: "shine 2.5s linear infinite",
                 borderRadius: "9999px",
@@ -173,7 +178,6 @@ export default function AgentsChatStyled({ agents }) {
             >
               <Mic size={18} />
             </motion.button>
-
           </div>
         </div>
       </div>
@@ -181,9 +185,15 @@ export default function AgentsChatStyled({ agents }) {
       {/* ✨ Animación borde */}
       <style jsx>{`
         @keyframes shine {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
         }
       `}</style>
     </div>
