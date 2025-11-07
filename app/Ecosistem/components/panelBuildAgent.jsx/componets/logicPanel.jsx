@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaCopy, FaTrash, FaTimes } from "react-icons/fa";
 import { saveUserAgentConfig } from "./saveSupabaseAgent"; 
 import Tabla from './AgentExponApi'
-
+import Diagrama from './DiagramaFlujoFW'
 import CardsAgent from './cardsAgents'
 export default function AgentConfigPanel() {
   const [form, setForm] = useState({
@@ -222,9 +222,27 @@ Entrega recomendaciones concretas, claras y accionables.
 <div className="w-[90%] h-[90vh] p-8 bg-white rounded-2xl overflow-y-hidden">
   <Tabla />
 </div>
-<div className="w-screen h-screen bg-black overflow-hidden">
-  
+
+<h2
+  className="text-neutral-800 text-4xl md:text-5xl lg:text-6xl font-extrabold mb-5 tracking-wider"
+>
+  GESTIÓN <span className="text-gray-500">DE API</span>
+</h2>
+
+{/* Texto descriptivo */}
+<p className="text-gray-600 text-xs md:text-sm lg:text-sm leading-relaxed mb-8 max-w-3xl">
+  Aquí podrás gestionar y controlar las API de cada agente vinculado a nuestro motor de procesamiento de Inteligencia Artificial Generativa.
+  Desde este panel tienes visibilidad completa del estado de las claves, su activación dentro del ecosistema y el uso seguro en el flujo
+  de orquestación de modelos. Cada API representa un punto de conexión directo con agentes especializados que operan dentro del núcleo
+  de procesamiento inteligente. 
+  del motor generativo.
+</p>
+<div className="bg-white relative">
+  <div className="pointer-events-none">
+    <Diagrama />
+  </div>
 </div>
+
 </div>
 
 <div className="mb-2 mt-15 ml-[50px]  text-center">
