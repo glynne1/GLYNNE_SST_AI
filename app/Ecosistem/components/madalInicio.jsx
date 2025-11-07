@@ -9,7 +9,7 @@ export default function ModalInicio({ onComplete }) {
 
   const handleClose = () => {
     // 🔊 Reproducir el sonido al hacer clic
-    const audio = new Audio('/tono3.mp3'); // <-- tu archivo en /public
+    const audio = new Audio('/tono4.mp3'); // <-- tu archivo en /public
     audio.play().catch((err) => console.error('Error reproduciendo sonido:', err));
 
     setShowModal(false);
