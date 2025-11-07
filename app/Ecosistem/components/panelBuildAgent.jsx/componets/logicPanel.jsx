@@ -30,7 +30,7 @@ export default function AgentConfigPanel() {
     additional_msg: false
   });
 
-  const apiURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  const apiURL = process.env.NEXT_PUBLIC_API_URL || "https://generative-glynne-motor.onrender.com";
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 

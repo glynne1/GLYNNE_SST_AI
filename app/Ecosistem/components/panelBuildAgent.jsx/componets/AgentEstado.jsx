@@ -12,7 +12,7 @@ export default function AgentsChatStyled({ agent }) {
   const [isRecording, setIsRecording] = useState(false);
   const messagesEndRef = useRef(null);
 
-  const apiURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  const apiURL = process.env.NEXT_PUBLIC_API_URL || "https://generative-glynne-motor.onrender.com";
 
   // ✅ IMPORTANTE: cada vez que abra el chat, usar el agente que viene por props
   useEffect(() => {
