@@ -10,14 +10,14 @@ export default function AgentsChatStyled() {
   const [selectedAgent, setSelectedAgent] = useState(null);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
-  const [isLoading] = useState(false);
-  const [isRecording] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
   const messagesEndRef = useRef(null);
 
   const apiURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
   // ===========================================================
-  // 🧠 Cargar agentes guardados (SOLO LECTURA)
+  // 👁️ Cargar agentes desde Supabase (SOLO LECTURA)
   // ===========================================================
   useEffect(() => {
     const fetchAgents = async () => {
@@ -64,9 +64,54 @@ export default function AgentsChatStyled() {
     scrollToBottom();
   }, [messages]);
 
-  // 🚫 Deshabilitamos enviar mensaje
-  const sendMessage = () => {};
-  const toggleRecording = () => {};
+  // ===========================================================
+  // 🚀 Enviar mensaje al backend (Sin guardar en Supabase)
+  // ===========================================================
+  const sendMessage = async () => {
+    if (!input.trim() || isLoading) return;
+
+    const userMessage = { from: "user", text: input };
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+    setIsLoading(true);
+
+    try {
+      const res = await fetch(`${apiURL}/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: input,
+          agent_id: selectedAgent?.id,
+          agent_config: selectedAgent,
+        }),
+      });
+
+      const data = await res.json();
+
+      const botMessage = {
+        from: "bot",
+        text: data?.response || "No recibí respuesta",
+      };
+
+      setMessages((prev) => [...prev, botMessage]);
+    } catch (err) {
+      setMessages((prev) => [
+        ...prev,
+        { from: "bot", text: "❌ Error al conectar con el servidor" },
+      ]);
+      console.error("Error enviando mensaje:", err);
+    }
+
+    setIsLoading(false);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") sendMessage();
+  };
+
+  const toggleRecording = () => {
+    setIsRecording(!isRecording);
+  };
 
   if (!selectedAgent && agents.length === 0 && !isLoading)
     return (
@@ -74,7 +119,7 @@ export default function AgentsChatStyled() {
         No hay agentes configurados para tu usuario. Crea uno para empezar a chatear.
       </div>
     );
-  
+
   if (!selectedAgent && agents.length > 0)
     return (
       <div className="w-full h-screen flex items-center justify-center text-gray-500">
@@ -84,44 +129,44 @@ export default function AgentsChatStyled() {
 
   return (
     <div className="w-full h-screen flex flex-col bg-white">
+      
       {/* 💬 Mensajes */}
       <div className="flex-1 px-4 py-2 flex flex-col justify-end space-y-2 overflow-y-auto">
         {messages.map((msg, idx) => (
           <div
             key={idx}
-            className={`flex ${
-              msg.from === "user" ? "justify-end" : "justify-start"
-            }`}
+            className={`flex ${msg.from === "user" ? "justify-end" : "justify-start"}`}
           >
             <div
               className={`px-4 py-3 rounded-2xl max-w-[80%] break-words whitespace-pre-wrap ${
-                msg.from === "user"
-                  ? "bg-black text-white"
-                  : "bg-white text-black shadow-md"
+                msg.from === "user" ? "bg-black text-white" : "bg-white text-black shadow-md"
               }`}
             >
               <p>{msg.text}</p>
             </div>
           </div>
         ))}
+        {isLoading && (
+          <div className="text-gray-400 text-sm px-2">Escribiendo...</div>
+        )}
         <div ref={messagesEndRef} />
       </div>
 
-      {/* ✍️ Input (DESHABILITADO) */}
+      {/* ✍️ Input activado */}
       <div className="w-full px-4 py-4 flex justify-center">
         <div className="flex w-[70%] relative items-center gap-2">
           <div className="relative flex-1">
             <input
               type="text"
               value={input}
-              onChange={() => {}}
-              placeholder="Modo solo lectura"
-              className="w-full px-4 py-4 rounded-full text-lg bg-white outline-none relative z-10 pr-14 opacity-50 cursor-not-allowed"
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Escribe tu mensaje..."
+              className="w-full px-4 py-4 rounded-full text-lg bg-white outline-none relative z-10 pr-14"
               style={{
                 border: "2px solid transparent",
                 backgroundClip: "padding-box",
               }}
-              disabled={true}
             />
             <span
               className="absolute inset-0 rounded-full pointer-events-none"
@@ -135,22 +180,26 @@ export default function AgentsChatStyled() {
                 zIndex: 0,
               }}
             />
-            {/* Botón enviar deshabilitado */}
+
+            {/* Enviar */}
             <motion.button
-              whileTap={{ scale: 1 }}
-              whileHover={{ scale: 1 }}
-              disabled={true}
-              className="absolute right-3 top-1/2 -translate-y-1/2 bg-gray-400 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-md z-20 cursor-not-allowed"
+              whileTap={{ scale: 0.9 }}
+              whileHover={{ scale: 1.05 }}
+              onClick={sendMessage}
+              disabled={isLoading}
+              className="absolute right-3 top-1/2 -translate-y-1/2 bg-black text-white rounded-full w-10 h-10 flex items-center justify-center shadow-md z-20"
             >
               <Send size={18} />
             </motion.button>
 
-            {/* Mic deshabilitado */}
+            {/* Mic (opcionalmente puedes conectarlo luego) */}
             <motion.button
-              whileTap={{ scale: 1 }}
-              whileHover={{ scale: 1 }}
-              disabled={true}
-              className="absolute right-14 top-1/2 -translate-y-1/2 bg-gray-400 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-md z-20 cursor-not-allowed"
+              whileTap={{ scale: 0.9 }}
+              whileHover={{ scale: 1.05 }}
+              onClick={toggleRecording}
+              className={`absolute right-14 top-1/2 -translate-y-1/2 rounded-full w-10 h-10 flex items-center justify-center shadow-md z-20 ${
+                isRecording ? "bg-red-500 text-white" : "bg-black text-white"
+              }`}
             >
               <Mic size={18} />
             </motion.button>
@@ -160,15 +209,9 @@ export default function AgentsChatStyled() {
 
       <style jsx>{`
         @keyframes shine {
-          0% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
-          100% {
-            background-position: 0% 50%;
-          }
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
         }
       `}</style>
     </div>
