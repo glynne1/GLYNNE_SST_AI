@@ -184,7 +184,7 @@ export default function AgentCards() {
       <AnimatePresence>
         {selectedAgent && (
           <motion.div
-            className="fixed inset-0 backdrop-blur-md flex justify-center items-center z-50"
+            className="fixed inset-0 bg-black/30   backdrop-blur-md flex justify-center items-center z-50"
             onClick={() => setSelectedAgent(null)}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
