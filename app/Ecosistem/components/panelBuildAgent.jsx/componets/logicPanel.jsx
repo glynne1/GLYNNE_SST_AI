@@ -210,7 +210,7 @@ Entrega recomendaciones concretas, claras y accionables.
 
 
 
-<div className="w-[100%] h-100vh p-6 bg-white flex flex-col lg:flex-row gap-6 overflow-hidden">
+<div className="w-screen h-100vh p-6 bg-white flex flex-col lg:flex-row gap-6 overflow-hidden">
   {/* Contenedor de la Tabla → 98% del ancho */}
   <div className="w-[78%] h-full bg-[#fff] overflow-hidden ">
     <Tabla />
@@ -221,7 +221,7 @@ Entrega recomendaciones concretas, claras y accionables.
     <Consola />
   </div>
 </div>
-
+s
 <h2
   className="text-neutral-800 text-4xl md:text-5xl lg:text-6xl font-extrabold mb-5 tracking-wider"
 >
