@@ -110,7 +110,7 @@ export default function ConsolePanel() {
   }, []);
 
   return (
-    <div className="flex flex-col h-[100vh] bg-white text-[12px] font-mono text-gray-800">
+    <div className="flex flex-col h-[65vh] bg-white text-[12px] font-mono text-gray-800">
 
       {/* ------------------- PANEL SUPERIOR - LOGS ------------------- */}
       <div className="flex-[0.4] p-4 border-b border-gray-200 overflow-y-auto">

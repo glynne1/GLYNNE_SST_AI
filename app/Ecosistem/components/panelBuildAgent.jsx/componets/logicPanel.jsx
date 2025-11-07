@@ -7,7 +7,7 @@ import Tabla from './AgentExponApi'
 import Diagrama from './DiagramaFlujoFW'
 import CardsAgent from './cardsAgents'
 import Consola from './consola'
-
+import Plantillas from './AgntsCardsEjm'
 
 export default function AgentConfigPanel() {
   const [form, setForm] = useState({
@@ -181,13 +181,10 @@ Entrega recomendaciones concretas, claras y accionables.
   return (
     <div className="flex w-full mt-[0px]   h-screen">
 
-        
-
       {/* PANEL PRINCIPAL */}
-<div className="w-full p-8  bg-white rounded-2xl">
-<h2
-  className="text-neutral-800 text-4xl md:text-5xl lg:text-6xl font-extrabold mb-5 tracking-wider"
->
+<div className="w-full p-8 bg-white rounded-2xl">
+
+<h2 className="text-neutral-800 text-4xl md:text-5xl lg:text-6xl font-extrabold mb-5 tracking-wider">
   CENTRO <span className="text-gray-500">DE AGENTES</span>
 </h2>
 
@@ -196,67 +193,65 @@ Entrega recomendaciones concretas, claras y accionables.
   Desde este panel podrás configurar, probar y conversar con tus agentes inteligentes en tiempo real.  
   Aquí tienes control para ajustar comportamientos, validar respuestas, coordinar roles y preparar la exportación  
   de tus llaves API para integrarlas fácilmente en cualquier tecnología, sistema o flujos de desarrollo.
-
 </p>
-
 
 <div className="flex flex-col items-center w-full gap-6">
-<div className="w-[90%] h-[60vh] p-8 bg-white rounded-2xl overflow-y-hidden flex items-center justify-center">
-  {/* Contenedor estilizado como AgentPanel */}
-  <div className="w-full h-full p-6 bg-white rounded-2xl border border-gray-300 shadow-md relative">
-    {/* HEADER opcional */}
-    <div className="flex items-center justify-between mb-6">
-      <h2 className="text-xl font-bold text-gray-800">Consola de Ejecución</h2>
-      <p className="text-sm text-gray-400">Monitoreo activo</p>
-    </div>
 
-    {/* Contenido de la consola */}
-    <div className="w-full h-[80%] bg-gray-50 border border-gray-200 rounded-xl p-4 overflow-auto">
-      <Consola />
+  <div className="w-[90%] h-[65vh] p-8 bg-white rounded-2xl overflow-y-hidden flex items-center justify-center">
+    {/* Contenedor estilizado como AgentPanel */}
+    <div className="w-full h-full p-6 bg-white rounded-2xl border border-gray-300 shadow-md relative">
+      {/* HEADER opcional */}
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-bold text-gray-800">Consola de Ejecución</h2>
+        <p className="text-sm text-gray-400">Monitoreo activo</p>
+      </div>
+
+      {/* Contenido de la consola */}
+      <div className="w-full h-[80%] bg-gray-50 border border-gray-200 rounded-xl p-4 overflow-auto">
+        <Consola />
+      </div>
     </div>
+  </div>
+
+  <div className="w-[90%] h-[60vh] p-8 bg-white rounded-2xl overflow-y-hidden">
+    <CardsAgent />
+  </div>
+
+  {/* Título */}
+  <h2 className="text-neutral-800 text-4xl md:text-5xl lg:text-6xl font-extrabold mb-5 tracking-wider">
+    GESTIÓN <span className="text-gray-500">DE API</span>
+  </h2>
+
+  {/* Texto descriptivo */}
+  <p className="text-gray-600 text-xs md:text-sm lg:text-sm leading-relaxed mb-8 max-w-3xl">
+    Aquí podrás gestionar y controlar las API de cada agente vinculado a nuestro motor de procesamiento de Inteligencia Artificial Generativa.
+    Desde este panel tienes visibilidad completa del estado de las claves, su activación dentro del ecosistema y el uso seguro en el flujo
+    de orquestación de modelos.
+  </p>
+
+  <div className="w-[90%] min-h-screen p-8 bg-white rounded-2xl overflow-y-auto flex flex-col gap-6">
+  <div className="w-full   p-4 overflow-hidden">
+    <Tabla />
+  </div>
+
+  <div className="w-full   p-4 overflow-hidden">
+    <Plantillas />
   </div>
 </div>
 
-<div className="w-[90%] h-[60vh] p-8 bg-white rounded-2xl overflow-y-hidden">
-  <CardsAgent />
-</div>
 
+  <h2 className="text-neutral-800 text-4xl md:text-5xl lg:text-6xl font-extrabold mb-5 tracking-wider">
+    NUESTRO MOTOR <span className="text-gray-500">GENERATIVO</span>
+  </h2>
 
-
-{/* Título */}
-<h2
-  className="text-neutral-800 text-4xl md:text-5xl lg:text-6xl font-extrabold mb-5 tracking-wider"
->
-  GESTIÓN <span className="text-gray-500">DE API</span>
-</h2>
-
-{/* Texto descriptivo */}
-<p className="text-gray-600 text-xs md:text-sm lg:text-sm leading-relaxed mb-8 max-w-3xl">
-  Aquí podrás gestionar y controlar las API de cada agente vinculado a nuestro motor de procesamiento de Inteligencia Artificial Generativa.
-  Desde este panel tienes visibilidad completa del estado de las claves, su activación dentro del ecosistema y el uso seguro en el flujo
-  de orquestación de modelos. 
-</p>
-
-<div className="w-[90%] h-[90vh] p-8 bg-white rounded-2xl overflow-y-hidden">
-  <Tabla />
-</div>
-
-
-<h2
-  className="text-neutral-800 text-4xl md:text-5xl lg:text-6xl font-extrabold mb-5 tracking-wider"
->
-  NUESTRO MOTOR <span className="text-gray-500">GENERATIVO</span>
-</h2>
-
-
-<div className="bg-white relative">
-  <div className="pointer-events-none">
-    <Diagrama />
-
+  <div className="bg-white relative">
+    <div className="pointer-events-none">
+      <Diagrama />
+    </div>
   </div>
-</div>
 
 </div>
+
 
 <div className="mb-2 mt-15 ml-[50px]  text-center">
 <h2
