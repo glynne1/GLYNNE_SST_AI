@@ -6,7 +6,7 @@ import { saveUserAgentConfig } from "./saveSupabaseAgent";
 import Tabla from './AgentExponApi'
 import Diagrama from './DiagramaFlujoFW'
 import CardsAgent from './cardsAgents'
-
+import Consola from './consola'
 
 
 export default function AgentConfigPanel() {
@@ -209,22 +209,17 @@ Entrega recomendaciones concretas, claras y accionables.
 
 
 
-{/* Título */}
-<h2
-  className="text-neutral-800 text-4xl md:text-5xl lg:text-6xl font-extrabold mb-5 tracking-wider"
->
-  GESTIÓN <span className="text-gray-500">DE API</span>
-</h2>
 
-{/* Texto descriptivo */}
-<p className="text-gray-600 text-xs md:text-sm lg:text-sm leading-relaxed mb-8 max-w-3xl">
-  Aquí podrás gestionar y controlar las API de cada agente vinculado a nuestro motor de procesamiento de Inteligencia Artificial Generativa.
-  Desde este panel tienes visibilidad completa del estado de las claves, su activación dentro del ecosistema y el uso seguro en el flujo
-  de orquestación de modelos. 
-</p>
+<div className="w-[100%] h-100vh p-6 bg-white flex flex-col lg:flex-row gap-6 overflow-hidden">
+  {/* Contenedor de la Tabla → 98% del ancho */}
+  <div className="w-[78%] h-full bg-[#fff] overflow-hidden ">
+    <Tabla />
+  </div>
 
-<div className="w-[90%] h-[90vh] p-8 bg-white rounded-2xl overflow-y-hidden">
-  <Tabla />
+  {/* Contenedor de la Consola → 2% del ancho */}
+  <div className="w-[22%] h-full bg-[#fff] text-white p-2 overflow-auto  flex items-center justify-center">
+    <Consola />
+  </div>
 </div>
 
 <h2
@@ -237,6 +232,7 @@ Entrega recomendaciones concretas, claras y accionables.
 <div className="bg-white relative">
   <div className="pointer-events-none">
     <Diagrama />
+
   </div>
 </div>
 

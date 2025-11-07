@@ -24,7 +24,7 @@ export default function ConsolePanel() {
 
   // --------------------- LOGS STREAM ---------------------
   useEffect(() => {
-    const events = new EventSource("http://localhost:8000/logs/stream");
+    const events = new EventSource("https://generative-glynne-motor.onrender.com/logs/stream");
 
     events.onopen = () => {
       setConnected(true);
