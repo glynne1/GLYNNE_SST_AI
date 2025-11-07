@@ -3,11 +3,14 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Send, Mic } from "lucide-react";
+import { supabase, getCurrentUser } from "../../../../lib/supabaseClient";
 
-export default function AgentsChatStyled({ agents }) {
+export default function AgentsChatStyled() {
+  const [agents, setAgents] = useState([]);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [isRecording, setIsRecording] = useState(false);
+  const [loadingAgents, setLoadingAgents] = useState(true);
   const messagesEndRef = useRef(null);
 
   const apiURL =
@@ -15,7 +18,42 @@ export default function AgentsChatStyled({ agents }) {
     "https://generative-glynne-motor.onrender.com";
 
   // colores para cada agente
-  const agentColors = ["#4ade80", "#3b82f6", "#ec4899"];
+  const agentColors = ["#4ade80", "#3b82f6", "#ec4899", "#facc15", "#f97316"];
+
+  // =============================
+  // Cargar agentes desde Supabase
+  // =============================
+  const fetchAgents = async () => {
+    try {
+      setLoadingAgents(true);
+      const user = await getCurrentUser();
+      if (!user) throw new Error("Usuario no autenticado");
+
+      const { data, error } = await supabase
+        .from("auditorias")
+        .select("id, user_config")
+        .eq("user_id", user.id)
+        .order("id", { ascending: false });
+
+      if (error) throw error;
+
+      const formattedAgents =
+        data?.map((item) => ({
+          id: item.id,
+          ...item.user_config,
+        })) || [];
+
+      setAgents(formattedAgents);
+    } catch (err) {
+      console.error("Error al cargar agentes:", err);
+    } finally {
+      setLoadingAgents(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAgents();
+  }, []);
 
   const scrollToBottom = () =>
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -24,26 +62,28 @@ export default function AgentsChatStyled({ agents }) {
     scrollToBottom();
   }, [messages]);
 
+  // =============================
+  // Enviar mensaje al backend
+  // =============================
   const sendMessage = () => {
-    if (!input.trim() || !agents || agents.length === 0) return;
+    if (!input.trim() || agents.length === 0) return;
 
-    // Mensaje del usuario
     const userMessage = { from: "user", text: input };
     setMessages((prev) => [...prev, userMessage]);
 
-    // Crear mensajes vacíos para streaming según la cantidad de agentes
+    // Crear mensajes vacíos para cada agente
     const initialBotMessages = agents.map((agent, i) => ({
       id: `agent-${i}`,
       from: "bot",
-      agent: agent.name,
+      agent: agent.agent_name || `Agente ${i + 1}`,
       text: "",
-      color: agentColors[i] || "#888",
+      color: agentColors[i % agentColors.length],
       done: false,
     }));
 
     setMessages((prev) => [...prev, ...initialBotMessages]);
 
-    // Abrir conexión SSE (o WebSocket) para streaming
+    // SSE streaming
     const eventSource = new EventSource(
       `${apiURL}/dynamic/agent/chat/stream?message=${encodeURIComponent(
         input
@@ -75,11 +115,19 @@ export default function AgentsChatStyled({ agents }) {
     setInput("");
   };
 
-  const toggleRecording = () => {
-    setIsRecording(!isRecording);
-  };
+  const toggleRecording = () => setIsRecording(!isRecording);
 
-  // Si no hay agentes, mostrar aviso
+  // =============================
+  // Render
+  // =============================
+  if (loadingAgents) {
+    return (
+      <div className="w-full h-full flex items-center justify-center text-gray-500">
+        Cargando agentes...
+      </div>
+    );
+  }
+
   if (!agents || agents.length === 0) {
     return (
       <div className="w-full h-full flex items-center justify-center text-gray-500">
@@ -100,7 +148,6 @@ export default function AgentsChatStyled({ agents }) {
             }`}
           >
             <div className="max-w-[80%]">
-              {/* 👤 NOMBRE DEL AGENTE EN COLOR */}
               {msg.from === "bot" && (
                 <div
                   className="text-sm font-bold mb-1"
@@ -110,7 +157,6 @@ export default function AgentsChatStyled({ agents }) {
                 </div>
               )}
 
-              {/* 💬 BURBUJA MENSAJE */}
               <div
                 className={`px-4 py-3 rounded-2xl break-words whitespace-pre-wrap ${
                   msg.from === "user"
@@ -123,7 +169,6 @@ export default function AgentsChatStyled({ agents }) {
             </div>
           </div>
         ))}
-
         <div ref={messagesEndRef} />
       </div>
 
@@ -138,17 +183,13 @@ export default function AgentsChatStyled({ agents }) {
               onKeyDown={(e) => e.key === "Enter" && sendMessage()}
               placeholder="Escribe tu mensaje..."
               className="w-full px-4 py-4 rounded-full text-lg bg-white outline-none relative z-10 pr-14"
-              style={{
-                border: "2px solid transparent",
-                backgroundClip: "padding-box",
-              }}
+              style={{ border: "2px solid transparent", backgroundClip: "padding-box" }}
             />
 
             <span
               className="absolute inset-0 rounded-full pointer-events-none"
               style={{
-                background:
-                  "linear-gradient(90deg, #4ade80, #3b82f6, #facc15, #ec4899)",
+                background: "linear-gradient(90deg, #4ade80, #3b82f6, #facc15, #ec4899)",
                 backgroundSize: "300% 300%",
                 animation: "shine 2.5s linear infinite",
                 borderRadius: "9999px",
@@ -157,7 +198,6 @@ export default function AgentsChatStyled({ agents }) {
               }}
             />
 
-            {/* BOTÓN ENVIAR */}
             <motion.button
               whileTap={{ scale: 0.9 }}
               whileHover={{ scale: 1.05 }}
@@ -167,7 +207,6 @@ export default function AgentsChatStyled({ agents }) {
               <Send size={18} />
             </motion.button>
 
-            {/* MIC */}
             <motion.button
               whileTap={{ scale: 0.9 }}
               whileHover={{ scale: 1.05 }}
@@ -182,18 +221,11 @@ export default function AgentsChatStyled({ agents }) {
         </div>
       </div>
 
-      {/* ✨ Animación borde */}
       <style jsx>{`
         @keyframes shine {
-          0% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
-          100% {
-            background-position: 0% 50%;
-          }
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
         }
       `}</style>
     </div>
