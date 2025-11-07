@@ -12,12 +12,13 @@ export default function AgentsChatStyled() {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  const [hasSentConfig, setHasSentConfig] = useState(false); // 🔥 Evita reenviar config
   const messagesEndRef = useRef(null);
 
   const apiURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
   // ===========================================================
-  // 👁️ Cargar agentes desde Supabase (SOLO LECTURA)
+  // 👁️ Cargar agentes desde Supabase
   // ===========================================================
   useEffect(() => {
     const fetchAgents = async () => {
@@ -65,7 +66,7 @@ export default function AgentsChatStyled() {
   }, [messages]);
 
   // ===========================================================
-  // 🚀 Enviar mensaje al backend (Sin guardar en Supabase)
+  // 🚀 Enviar mensaje al backend
   // ===========================================================
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return;
@@ -76,24 +77,30 @@ export default function AgentsChatStyled() {
     setIsLoading(true);
 
     try {
-      const res = await fetch(`${apiURL}/chat`, {
+      // ✅ Si es la primera vez, envía agent_config
+      // ✅ Si no, solo envía el mensaje
+      const payload = hasSentConfig
+        ? { mensaje: input }
+        : { agent_config: selectedAgent, mensaje: input };
+
+      const res = await fetch(`${apiURL}/dynamic/agent/chat/full`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: input,
-          agent_id: selectedAgent?.id,
-          agent_config: selectedAgent,
-        }),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
 
       const botMessage = {
         from: "bot",
-        text: data?.response || "No recibí respuesta",
+        text: data?.reply || "No recibí respuesta",
       };
 
       setMessages((prev) => [...prev, botMessage]);
+
+      // 🔥 Marcar que ya se envió la config para no volver a mandarla
+      if (!hasSentConfig) setHasSentConfig(true);
+
     } catch (err) {
       setMessages((prev) => [
         ...prev,
@@ -129,7 +136,7 @@ export default function AgentsChatStyled() {
 
   return (
     <div className="w-full h-screen flex flex-col bg-white">
-      
+
       {/* 💬 Mensajes */}
       <div className="flex-1 px-4 py-2 flex flex-col justify-end space-y-2 overflow-y-auto">
         {messages.map((msg, idx) => (
@@ -152,7 +159,7 @@ export default function AgentsChatStyled() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* ✍️ Input activado */}
+      {/* ✍️ Input */}
       <div className="w-full px-4 py-4 flex justify-center">
         <div className="flex w-[70%] relative items-center gap-2">
           <div className="relative flex-1">
@@ -192,7 +199,7 @@ export default function AgentsChatStyled() {
               <Send size={18} />
             </motion.button>
 
-            {/* Mic (opcionalmente puedes conectarlo luego) */}
+            {/* Mic */}
             <motion.button
               whileTap={{ scale: 0.9 }}
               whileHover={{ scale: 1.05 }}
