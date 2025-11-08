@@ -14,6 +14,9 @@ export default function AgentCards() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  // ✅ Guardamos historial por agente
+  const [chatHistories, setChatHistories] = useState({});
+
   const fetchAgents = async () => {
     try {
       setLoading(true);
@@ -36,7 +39,7 @@ export default function AgentCards() {
 
       setAgents(formattedAgents);
       if (formattedAgents.length > 0 && !chatAgent) {
-        setChatAgent(formattedAgents[0]); // selecciona el primero por defecto
+        setChatAgent(formattedAgents[0]); // Selecciona el primero por defecto
       }
     } catch (err) {
       console.error("Error al cargar agentes:", err);
@@ -90,11 +93,9 @@ export default function AgentCards() {
 
   return (
     <div className="w-full h-screen flex flex-col bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden">
-      {/* 🔹 HEADER SUPERIOR */}
+      {/* HEADER */}
       <div className="flex items-center justify-between p-4 border-b bg-gray-50">
-        <h2 className="text-lg font-bold text-gray-800">
-          Agentes GLYNNE
-        </h2>
+        <h2 className="text-lg font-bold text-gray-800">Agentes GLYNNE</h2>
         <button
           onClick={handleRefresh}
           className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-300 hover:bg-gray-100 transition-all"
@@ -102,29 +103,21 @@ export default function AgentCards() {
         >
           <motion.div
             animate={{ rotate: isRefreshing ? 360 : 0 }}
-            transition={{
-              duration: 0.6,
-              ease: "easeInOut",
-              repeat: isRefreshing ? Infinity : 0,
-            }}
+            transition={{ duration: 0.6, ease: "easeInOut", repeat: isRefreshing ? Infinity : 0 }}
           >
             <RotateCcw
-              className={`w-5 h-5 ${
-                isRefreshing ? "text-blue-600" : "text-gray-600"
-              }`}
+              className={`w-5 h-5 ${isRefreshing ? "text-blue-600" : "text-gray-600"}`}
             />
           </motion.div>
         </button>
       </div>
 
-      {/* 🔹 LISTA DE AGENTES (HEADER TYPE) */}
+      {/* LISTA DE AGENTES */}
       <div className="flex flex-wrap gap-2 p-3 border-b bg-white overflow-x-auto">
         {loading ? (
           <p className="text-sm text-gray-400 italic">Cargando agentes...</p>
         ) : agents.length === 0 ? (
-          <p className="text-sm text-gray-400 italic">
-            No hay agentes creados.
-          </p>
+          <p className="text-sm text-gray-400 italic">No hay agentes creados.</p>
         ) : (
           agents.map((agent, idx) => (
             <motion.div
@@ -162,10 +155,19 @@ export default function AgentCards() {
         )}
       </div>
 
-      {/* 🔹 CHAT SIEMPRE VISIBLE */}
+      {/* ✅ CHAT SIEMPRE VISIBLE con memoria por agente */}
       <div className="flex-1 overflow-hidden">
         {chatAgent ? (
-          <AgentsChatStyled agent={chatAgent} />
+          <AgentsChatStyled
+            agent={chatAgent}
+            messages={chatHistories[chatAgent.id] || []}
+            setMessages={(msgs) =>
+              setChatHistories((prev) => ({
+                ...prev,
+                [chatAgent.id]: msgs,
+              }))
+            }
+          />
         ) : (
           <div className="flex items-center justify-center h-full text-gray-400 italic">
             Selecciona un agente para iniciar chat.
@@ -173,7 +175,7 @@ export default function AgentCards() {
         )}
       </div>
 
-      {/* 🔹 MODAL DE EDICIÓN DE AGENTE */}
+      {/* MODAL EDITAR AGENTE */}
       {selectedAgent && (
         <motion.div
           className="fixed inset-0 bg-black/30 backdrop-blur-md flex justify-center items-center z-50"
