@@ -21,19 +21,22 @@ export async function saveUserAgentConfig(configData) {
     throw new Error("Has alcanzado el límite máximo de 6 agentes.");
   }
 
-  // ✅ Agregamos automáticamente el espacio para la conversación
+  // ✅ FORZAMOS la conversación desde la creación
   const agentToSave = {
     ...configData,
-    conversation: []  // 👈 Aquí se guardará el chat de ese agente
+    conversation: [], // 👈 Aseguramos que siempre exista el array
   };
 
-  // 🧩 Guardamos la nueva configuración con conversation incluido
+  // 🧩 Guardamos el agente con la conversación vacía incluida
   const { error: insertError } = await supabase
     .from("auditorias")
     .insert([
       {
         user_id: user.id,
-        user_config: agentToSave,
+        user_config: {
+          ...agentToSave,
+          conversation: [], // 👈 Se forza también dentro del JSON a guardar
+        },
       },
     ]);
 
