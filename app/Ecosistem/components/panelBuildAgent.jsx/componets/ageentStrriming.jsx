@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Settings2, Trash2, RotateCcw } from "lucide-react";
+import { Settings2, RotateCcw } from "lucide-react"; // ❌ Eliminado Trash2
 import { motion } from "framer-motion";
 import AgentForm from "./AgentEditModal";
 import AgentsChatStyled from "./AgentEstado";
@@ -11,9 +11,11 @@ export default function AgentCards() {
   const [agents, setAgents] = useState([]);
   const [selectedAgent, setSelectedAgent] = useState(null);
   const [chatAgent, setChatAgent] = useState(null);
+  const [activeChat, setActiveChat] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  // 🔹 Lectura desde Supabase (solo lectura)
   const fetchAgents = async () => {
     try {
       setLoading(true);
@@ -35,8 +37,9 @@ export default function AgentCards() {
         })) || [];
 
       setAgents(formattedAgents);
+
       if (formattedAgents.length > 0 && !chatAgent) {
-        setChatAgent(formattedAgents[0]); // selecciona el primero por defecto
+        setChatAgent(formattedAgents[0]);
       }
     } catch (err) {
       console.error("Error al cargar agentes:", err);
@@ -49,32 +52,16 @@ export default function AgentCards() {
     fetchAgents();
   }, []);
 
+  useEffect(() => {
+    const handleBeforeUnload = () => setActiveChat(null);
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, []);
+
   const handleRefresh = async () => {
     setIsRefreshing(true);
     await fetchAgents();
     setTimeout(() => setIsRefreshing(false), 600);
-  };
-
-  const handleDelete = async (agentId) => {
-    try {
-      const confirmDelete = window.confirm(
-        "¿Seguro que deseas eliminar este agente? Esta acción no se puede deshacer."
-      );
-      if (!confirmDelete) return;
-
-      const { error } = await supabase
-        .from("auditorias")
-        .delete()
-        .eq("id", agentId);
-
-      if (error) throw error;
-
-      setAgents((prev) => prev.filter((a) => a.id !== agentId));
-      if (chatAgent?.id === agentId) setChatAgent(null);
-    } catch (err) {
-      console.error("❌ Error al eliminar agente:", err);
-      alert("Hubo un error al eliminar el agente. Revisa la consola.");
-    }
   };
 
   const handleEdit = (agent, index) => {
@@ -88,13 +75,16 @@ export default function AgentCards() {
     setSelectedAgent(null);
   };
 
+  const handleAgentClick = (agent) => {
+    setChatAgent(agent);
+    setActiveChat(agent);
+  };
+
   return (
     <div className="w-full h-screen flex flex-col bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden">
-      {/* 🔹 HEADER SUPERIOR */}
+      {/* 🔹 HEADER */}
       <div className="flex items-center justify-between p-4 border-b bg-gray-50">
-        <h2 className="text-lg font-bold text-gray-800">
-          Agentes GLYNNE
-        </h2>
+        <h2 className="text-lg font-bold text-gray-800">Agentes GLYNNE</h2>
         <button
           onClick={handleRefresh}
           className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-300 hover:bg-gray-100 transition-all"
@@ -117,14 +107,12 @@ export default function AgentCards() {
         </button>
       </div>
 
-      {/* 🔹 LISTA DE AGENTES (HEADER TYPE) */}
+      {/* 🔹 LISTA DE AGENTES */}
       <div className="flex flex-wrap gap-2 p-3 border-b bg-white overflow-x-auto">
         {loading ? (
           <p className="text-sm text-gray-400 italic">Cargando agentes...</p>
         ) : agents.length === 0 ? (
-          <p className="text-sm text-gray-400 italic">
-            No hay agentes creados.
-          </p>
+          <p className="text-sm text-gray-400 italic">No hay agentes creados.</p>
         ) : (
           agents.map((agent, idx) => (
             <motion.div
@@ -135,7 +123,7 @@ export default function AgentCards() {
                   : "bg-gray-50 text-gray-700 border-gray-300 hover:bg-gray-100"
               }`}
               whileHover={{ scale: 1.03 }}
-              onClick={() => setChatAgent(agent)}
+              onClick={() => handleAgentClick(agent)}
             >
               <span className="font-medium truncate max-w-[160px]">
                 {agent.agent_name || "Agente sin nombre"}
@@ -149,23 +137,16 @@ export default function AgentCards() {
                     handleEdit(agent, idx);
                   }}
                 />
-                <Trash2
-                  className="w-4 h-4 hover:text-red-500"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDelete(agent.id);
-                  }}
-                />
               </div>
             </motion.div>
           ))
         )}
       </div>
 
-      {/* 🔹 CHAT SIEMPRE VISIBLE */}
+      {/* 🔹 CHAT */}
       <div className="flex-1 overflow-hidden">
-        {chatAgent ? (
-          <AgentsChatStyled agent={chatAgent} />
+        {activeChat ? (
+          <AgentsChatStyled agent={activeChat} />
         ) : (
           <div className="flex items-center justify-center h-full text-gray-400 italic">
             Selecciona un agente para iniciar chat.
@@ -173,7 +154,7 @@ export default function AgentCards() {
         )}
       </div>
 
-      {/* 🔹 MODAL DE EDICIÓN DE AGENTE */}
+      {/* 🔹 MODAL DE EDICIÓN */}
       {selectedAgent && (
         <motion.div
           className="fixed inset-0 bg-black/30 backdrop-blur-md flex justify-center items-center z-50"
