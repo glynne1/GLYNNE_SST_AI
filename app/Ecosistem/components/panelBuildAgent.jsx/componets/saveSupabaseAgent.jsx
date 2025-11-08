@@ -3,12 +3,12 @@
 import { useState } from "react";
 import { supabase, getCurrentUser } from "../../../../lib/supabaseClient";
 
-// ✅ Guardar la configuración del agente con conversation siempre inicializado
+// ✅ Función para guardar la configuración del agente
 export async function saveUserAgentConfig(configData) {
   const user = await getCurrentUser();
   if (!user) throw new Error("Usuario no autenticado");
 
-  // Verificar cuántos agentes tiene el usuario
+  // 🔎 Verificamos cuántos agentes tiene el usuario
   const { data: existingAgents, error: fetchError } = await supabase
     .from("auditorias")
     .select("id")
@@ -16,28 +16,25 @@ export async function saveUserAgentConfig(configData) {
 
   if (fetchError) throw new Error("Error al verificar agentes existentes");
 
-  if (existingAgents && existingAgents.length >= 6) {
-    throw new Error("Has alcanzado el límite máximo de 6 agentes.");
+  // 🚫 Si ya tiene 3 o más, no permitir crear otro
+  if (existingAgents && existingAgents.length >= 3) {
+    throw new Error("Has alcanzado el límite máximo de 3 agentes.");
   }
 
-  // Forzar array de conversación vacío
-  const agentToSave = {
-    ...configData,
-    conversation: [],
-  };
-
+  // 🧩 Guardamos la nueva configuración
   const { error: insertError } = await supabase
     .from("auditorias")
     .insert([
       {
         user_id: user.id,
-        user_config: agentToSave,
+        user_config: configData,
       },
     ]);
 
   if (insertError) throw insertError;
 }
 
+// ✅ Componente principal
 export default function SaveAgentConfigButton({ configData }) {
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState("");
@@ -49,11 +46,12 @@ export default function SaveAgentConfigButton({ configData }) {
 
       await saveUserAgentConfig(configData);
       setStatus("✅ Configuración guardada exitosamente 🎯");
+
     } catch (err) {
       console.error(err.message);
-
+      // 🧠 Mensaje amigable según el error
       if (err.message.includes("límite máximo")) {
-        setStatus("⚠️ Solo puedes crear hasta 6 agentes.");
+        setStatus("⚠️ Solo puedes crear hasta 3 agentes.");
       } else if (err.message.includes("no autenticado")) {
         setStatus("❌ Debes iniciar sesión para guardar agentes.");
       } else {

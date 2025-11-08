@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import AgentForm from "./AgentEditModal";
 import AgentsChatStyled from "./AgentEstado";
 import { supabase, getCurrentUser } from "../../../../lib/supabaseClient";
+import { updateUserAgentConfig } from "./updateAgentConfig"; // ✅ import del módulo nuevo
 
 export default function AgentCards() {
   const [agents, setAgents] = useState([]);
@@ -16,14 +17,14 @@ export default function AgentCards() {
 
   const [chatHistories, setChatHistories] = useState({});
 
-  // ✅ GUARDA 1 MENSAJE NUEVO SIN DUPLICAR NI BORRAR HISTORIAL
+  // ✅ GUARDA 1 MENSAJE NUEVO SOLO EN "conversation" DEL JSON
   const pushMessage = async (agentId, message) => {
     try {
       if (!message?.content?.trim()) return;
       const user = await getCurrentUser();
       if (!user) return;
 
-      // Traer conversación actual
+      // Obtener conversación actual del agente
       const { data } = await supabase
         .from("auditorias")
         .select("user_config")
@@ -33,21 +34,19 @@ export default function AgentCards() {
 
       const current = data?.user_config?.conversation || [];
 
-      // Evitar duplicados si el último mensaje es igual
+      // Evitar duplicados
       const lastMsg = current[current.length - 1];
       if (lastMsg?.content === message.content && lastMsg?.role === message.role) {
         return;
       }
 
+      // Agregar mensaje al array
       const updated = [...current, message];
 
-      await supabase
-        .from("auditorias")
-        .update({ user_config: { ...data.user_config, conversation: updated } })
-        .eq("id", agentId)
-        .eq("user_id", user.id);
+      // ✅ Actualiza solo la parte de conversation en Supabase
+      await updateUserAgentConfig(agentId, { conversation: updated });
 
-      // También actualizar el estado local
+      // ✅ Actualiza también el estado local
       setChatHistories(prev => ({
         ...prev,
         [agentId]: updated
@@ -156,13 +155,10 @@ export default function AgentCards() {
           <AgentsChatStyled
             agent={chatAgent}
             messages={chatHistories[chatAgent.id] || []}
-
-            // ✅ Aquí interceptamos cada mensaje que entre al chat
             onNewMessage={(msg) => {
               // msg = { role: "user"|"assistant", content: "texto" }
               pushMessage(chatAgent.id, msg);
             }}
-
             setMessages={(msgs) => {
               setChatHistories(prev => ({ ...prev, [chatAgent.id]: msgs }));
             }}
