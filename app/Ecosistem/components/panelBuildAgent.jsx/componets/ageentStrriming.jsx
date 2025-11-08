@@ -9,6 +9,7 @@ import { supabase, getCurrentUser } from "../../../../lib/supabaseClient";
 export default function AgentsWhatsAppManager() {
   const [agents, setAgents] = useState([]);
   const [selectedAgent, setSelectedAgent] = useState(null);
+  const [selectedAgentCard, setSelectedAgentCard] = useState(null); // Nueva selección de card
   const [chatAgent, setChatAgent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -192,25 +193,71 @@ export default function AgentsWhatsAppManager() {
         <p className="text-gray-400 italic text-center">Aquí podrás visualizar tus modelos IA creados.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
-          {agents.map((agent, idx) => (
-            <div
-              key={agent.id || idx}
-              className={`bg-white shadow-lg rounded-xl p-5 border flex flex-col justify-between w-full h-[200px] hover:shadow-2xl transition-all
-                ${chatAgent?.id === agent.id ? "border-blue-500" : "border-gray-200"}`}
-            >
-              <div className="space-y-1 overflow-hidden">
-                <h2 className="text-lg font-semibold text-gray-800 truncate">{agent.agent_name || "Agente sin nombre"}</h2>
-                <p className="text-xs text-gray-500 truncate"><strong>Rol:</strong> {agent.rol || "-"}</p>
-                <p className="text-xs text-gray-500 truncate"><strong>Objetivo:</strong> {agent.objective || "-"}</p>
-                <p className="text-xs text-gray-500 truncate"><strong>Mensaje adicional:</strong> {agent.additional_msg || "-"}</p>
+          {agents.map((agent, idx) => {
+            const isSelected = selectedAgentCard?.id === agent.id;
+            return (
+              <div
+                key={agent.id || idx}
+                onClick={() => setSelectedAgentCard(agent)}
+                className={`cursor-pointer bg-white shadow-lg rounded-xl p-5 border flex flex-col justify-between w-full h-[200px] transition-all
+                  ${isSelected ? "border-blue-500 shadow-2xl" : "border-gray-200 hover:shadow-xl"}`}
+              >
+                <div className="space-y-1 overflow-hidden">
+                  <h2 className="text-lg font-semibold text-gray-800 truncate">{agent.agent_name || "Agente sin nombre"}</h2>
+                  <p className="text-xs text-gray-500 truncate"><strong>Rol:</strong> {agent.rol || "-"}</p>
+                  <p className="text-xs text-gray-500 truncate"><strong>Objetivo:</strong> {agent.objective || "-"}</p>
+                  <p className="text-xs text-gray-500 truncate"><strong>Mensaje adicional:</strong> {agent.additional_msg || "-"}</p>
+                </div>
+                <div className="mt-3 flex justify-end space-x-4 text-gray-400">
+                  <MessageSquareText
+                    className="w-5 h-5 cursor-pointer hover:text-gray-700"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSelectAgent(agent);
+                    }}
+                  />
+                  <Settings2
+                    className="w-5 h-5 cursor-pointer hover:text-gray-700"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleEdit(agent, idx);
+                    }}
+                  />
+                  <Trash2
+                    className="w-5 h-5 cursor-pointer stroke-red-500 hover:stroke-red-700"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(agent.id);
+                    }}
+                  />
+                </div>
               </div>
-              <div className="mt-3 flex justify-end space-x-4 text-gray-400">
-                <MessageSquareText className="w-5 h-5 cursor-pointer hover:text-gray-700" onClick={() => handleSelectAgent(agent)} />
-                <Settings2 className="w-5 h-5 cursor-pointer hover:text-gray-700" onClick={() => handleEdit(agent, idx)} />
-                <Trash2 className="w-5 h-5 cursor-pointer stroke-red-500 hover:stroke-red-700" onClick={() => handleDelete(agent.id)} />
-              </div>
-            </div>
-          ))}
+            );
+          })}
+        </div>
+      )}
+
+      {/* ===== Botón Ejecutar Agente ===== */}
+      {selectedAgentCard && (
+        <div className="flex justify-end mt-4">
+          <button
+            onClick={async () => {
+              if (!userMeta.accessToken || !userMeta.phoneNumberId || !userMeta.toNumber) {
+                return alert("Completa la información de Meta antes de ejecutar el agente.");
+              }
+              setChatAgent(selectedAgentCard);
+              setUserMeta({
+                accessToken: selectedAgentCard.accessToken || userMeta.accessToken,
+                phoneNumberId: selectedAgentCard.phoneNumberId || userMeta.phoneNumberId,
+                toNumber: selectedAgentCard.toNumber || userMeta.toNumber,
+              });
+              setMessages([]);
+              setOpenChatPopup(true);
+            }}
+            className="bg-blue-600 text-white px-6 py-2 rounded-xl hover:bg-blue-700 transition-all"
+          >
+            Ejecutar Agente
+          </button>
         </div>
       )}
 
