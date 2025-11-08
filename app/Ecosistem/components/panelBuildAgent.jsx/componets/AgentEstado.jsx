@@ -14,13 +14,30 @@ export default function AgentsChatStyled({ agent }) {
 
   const apiURL = process.env.NEXT_PUBLIC_API_URL || "https://generative-glynne-motor.onrender.com";
 
-  // ✅ IMPORTANTE: cada vez que abra el chat, usar el agente que viene por props
+  // ✅ 1. CARGAR CHAT E INPUT guardado cuando cambia el agente
   useEffect(() => {
     if (agent) {
       setSelectedAgent(agent);
-      setMessages([]); // limpiar chat cuando se abre uno nuevo
+
+      const savedChat = sessionStorage.getItem(`chat_${agent.id}`);
+      const savedInput = sessionStorage.getItem(`input_${agent.id}`);
+
+      setMessages(savedChat ? JSON.parse(savedChat) : []);
+      setInput(savedInput || "");
     }
   }, [agent]);
+
+  // ✅ 2. Guardar mensajes en sessionStorage cada vez que cambien
+  useEffect(() => {
+    if (!selectedAgent?.id) return;
+    sessionStorage.setItem(`chat_${selectedAgent.id}`, JSON.stringify(messages));
+  }, [messages, selectedAgent]);
+
+  // ✅ 3. Guardar input en tiempo real
+  useEffect(() => {
+    if (!selectedAgent?.id) return;
+    sessionStorage.setItem(`input_${selectedAgent.id}`, input);
+  }, [input, selectedAgent]);
 
   const scrollToBottom = () =>
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -46,7 +63,7 @@ export default function AgentsChatStyled({ agent }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           mensaje: input,
-          agent_config: selectedAgent, // ✅ Aquí enviamos SOLO el agente de la card clickeada
+          agent_config: selectedAgent,
         }),
       });
 
