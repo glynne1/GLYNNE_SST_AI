@@ -4,19 +4,21 @@ import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Send, Mic } from "lucide-react";
 
-export default function AgentsChatStyled({ agent, messages, setMessages }) {
+export default function AgentsChatStyled({ agent }) {
   const [selectedAgent, setSelectedAgent] = useState(null);
   const [input, setInput] = useState("");
+  const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const messagesEndRef = useRef(null);
 
   const apiURL = process.env.NEXT_PUBLIC_API_URL || "https://generative-glynne-motor.onrender.com";
 
-  // ✅ Ahora solo selecciona el agente, NO reinicia mensajes
+  // ✅ IMPORTANTE: cada vez que abra el chat, usar el agente que viene por props
   useEffect(() => {
     if (agent) {
       setSelectedAgent(agent);
+      setMessages([]); // limpiar chat cuando se abre uno nuevo
     }
   }, [agent]);
 
@@ -27,11 +29,14 @@ export default function AgentsChatStyled({ agent, messages, setMessages }) {
     scrollToBottom();
   }, [messages]);
 
+  // ===========================================================
+  // 🚀 Enviar mensaje al backend usando el agent de la card
+  // ===========================================================
   const sendMessage = async () => {
     if (!input.trim() || isLoading || !selectedAgent) return;
 
     const userMessage = { from: "user", text: input };
-    setMessages([...messages, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsLoading(true);
 
@@ -41,7 +46,7 @@ export default function AgentsChatStyled({ agent, messages, setMessages }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           mensaje: input,
-          agent_config: selectedAgent,
+          agent_config: selectedAgent, // ✅ Aquí enviamos SOLO el agente de la card clickeada
         }),
       });
 
@@ -68,7 +73,9 @@ export default function AgentsChatStyled({ agent, messages, setMessages }) {
     if (e.key === "Enter") sendMessage();
   };
 
-  const toggleRecording = () => setIsRecording(!isRecording);
+  const toggleRecording = () => {
+    setIsRecording(!isRecording);
+  };
 
   if (!selectedAgent)
     return (
@@ -96,11 +103,9 @@ export default function AgentsChatStyled({ agent, messages, setMessages }) {
             </div>
           </div>
         ))}
-
         {isLoading && (
           <div className="text-gray-400 text-sm px-2">Escribiendo...</div>
         )}
-
         <div ref={messagesEndRef} />
       </div>
 
