@@ -25,12 +25,12 @@ export default function SideMenuAgent() {
 
   const sections = [
     { id: "agents", label: "Tus modelos creados", icon: <FaRobot /> },
+    { id: "framework", label: "Crea tus agentes", icon: <FaMicrochip /> },
     { id: "api", label: "Gestión de API", icon: <FaDatabase /> },
     { id: "plantillas", label: "Modelos predefinidos", icon: <FaCubes /> },
-    { id: "motor", label: "Motor Generativo", icon: <FaProjectDiagram /> },
-    { id: "framework", label: "Crea tus agentes", icon: <FaMicrochip /> },
     { id: "consola", label: "Consola de Control", icon: <FaTerminal /> },
-    { id: "streaming", label: "Agente Streaming", icon: <FaRocket /> }, // 🆕 Nueva sección
+    { id: "streaming", label: "Agente Streaming", icon: <FaRocket /> }, // 
+    { id: "motor", label: "Motor Generativo", icon: <FaProjectDiagram /> },
   ];
 
   const renderContent = () => {
@@ -62,18 +62,19 @@ export default function SideMenuAgent() {
             <Plantillas />
           </motion.div>
         );
+        case "framework":
+            return (
+              <motion.div className="w-full mb-3 p-4 scroll-invisible" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+                <LogicPanel />
+              </motion.div>
+            );
       case "motor":
         return (
           <motion.div className="w-[85%] ml-[40px] mt-[-30px] p-4 scroll-invisible" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }}>
             <Diagrama />
           </motion.div>
         );
-      case "framework":
-        return (
-          <motion.div className="w-full mb-3 p-4 scroll-invisible" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-            <LogicPanel />
-          </motion.div>
-        );
+   
       case "consola":
         return (
           <motion.div className="w-full mb-3 p-4 scroll-invisible" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
