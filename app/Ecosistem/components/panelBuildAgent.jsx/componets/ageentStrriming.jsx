@@ -1,31 +1,38 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
-import { Send, Mic } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Send, MessageSquareText, Settings2, Trash2, RotateCcw } from "lucide-react";
+import AgentForm from "./AgentEditModal";
 import { supabase, getCurrentUser } from "../../../../lib/supabaseClient";
 
-export default function AgentsChatStyled() {
+export default function AgentsWhatsAppManager() {
   const [agents, setAgents] = useState([]);
+  const [selectedAgent, setSelectedAgent] = useState(null); // Para editar
+  const [chatAgent, setChatAgent] = useState(null); // Para chat
+  const [loading, setLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [openChatPopup, setOpenChatPopup] = useState(false);
+
+  // Chat & Meta
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
-  const [isRecording, setIsRecording] = useState(false);
-  const [loadingAgents, setLoadingAgents] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [userMeta, setUserMeta] = useState({
+    accessToken: "",
+    phoneNumberId: "",
+    toNumber: "",
+  });
   const messagesEndRef = useRef(null);
 
-  const apiURL =
-    process.env.NEXT_PUBLIC_API_URL ||
-    "https://generative-glynne-motor.onrender.com";
+  const apiURL = process.env.NEXT_PUBLIC_API_URL || "https://tu-backend.com";
 
-  // colores para cada agente
-  const agentColors = ["#4ade80", "#3b82f6", "#ec4899", "#facc15", "#f97316"];
-
-  // =============================
-  // Cargar agentes desde Supabase
-  // =============================
+  // ============================================
+  // Fetch agentes desde Supabase
+  // ============================================
   const fetchAgents = async () => {
     try {
-      setLoadingAgents(true);
+      setLoading(true);
       const user = await getCurrentUser();
       if (!user) throw new Error("Usuario no autenticado");
 
@@ -37,17 +44,16 @@ export default function AgentsChatStyled() {
 
       if (error) throw error;
 
-      const formattedAgents =
-        data?.map((item) => ({
-          id: item.id,
-          ...item.user_config,
-        })) || [];
+      const formattedAgents = data?.map((item) => ({
+        id: item.id,
+        ...item.user_config,
+      })) || [];
 
       setAgents(formattedAgents);
     } catch (err) {
       console.error("Error al cargar agentes:", err);
     } finally {
-      setLoadingAgents(false);
+      setLoading(false);
     }
   };
 
@@ -55,179 +61,196 @@ export default function AgentsChatStyled() {
     fetchAgents();
   }, []);
 
-  const scrollToBottom = () =>
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchAgents();
+    setTimeout(() => setIsRefreshing(false), 600);
+  };
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+  const handleDelete = async (agentId) => {
+    if (!confirm("¿Seguro que deseas eliminar este agente?")) return;
+    const { error } = await supabase.from("auditorias").delete().eq("id", agentId);
+    if (error) return console.error(error);
+    setAgents((prev) => prev.filter((a) => a.id !== agentId));
+  };
 
-  // =============================
-  // Enviar mensaje al backend
-  // =============================
-  const sendMessage = () => {
-    if (!input.trim() || agents.length === 0) return;
+  const handleEdit = (agent, index) => setSelectedAgent({ agent, index });
+  const handleSave = (updatedAgent) => {
+    setAgents((prev) =>
+      prev.map((a, i) => (i === selectedAgent.index ? updatedAgent : a))
+    );
+    setSelectedAgent(null);
+  };
+
+  // ============================================
+  // Chat logic
+  // ============================================
+  const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  useEffect(() => scrollToBottom(), [messages]);
+
+  const sendMessage = async () => {
+    if (!input.trim() || isLoading || !chatAgent) return;
 
     const userMessage = { from: "user", text: input };
     setMessages((prev) => [...prev, userMessage]);
-
-    // Crear mensajes vacíos para cada agente
-    const initialBotMessages = agents.map((agent, i) => ({
-      id: `agent-${i}`,
-      from: "bot",
-      agent: agent.agent_name || `Agente ${i + 1}`,
-      text: "",
-      color: agentColors[i % agentColors.length],
-      done: false,
-    }));
-
-    setMessages((prev) => [...prev, ...initialBotMessages]);
-
-    // SSE streaming
-    const eventSource = new EventSource(
-      `${apiURL}/dynamic/agent/chat/stream?message=${encodeURIComponent(
-        input
-      )}&agents=${encodeURIComponent(JSON.stringify(agents))}`
-    );
-
-    eventSource.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      const { agent, content, done } = data;
-
-      setMessages((prev) =>
-        prev.map((msg) => {
-          if (msg.agent === agent && msg.from === "bot") {
-            return {
-              ...msg,
-              text: msg.text + content,
-              done: done ?? false,
-            };
-          }
-          return msg;
-        })
-      );
-    };
-
-    eventSource.onerror = () => {
-      eventSource.close();
-    };
-
     setInput("");
+    setIsLoading(true);
+
+    try {
+      // 1️⃣ enviar al backend
+      const res = await fetch(`${apiURL}/dynamic/agent/chat/full`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mensaje: input, agent_config: chatAgent }),
+      });
+      const data = await res.json();
+      const botReply = data?.reply || "No recibí respuesta";
+
+      setMessages((prev) => [...prev, { from: "bot", text: botReply }]);
+
+      // 2️⃣ enviar a WhatsApp
+      if (userMeta.accessToken && userMeta.phoneNumberId && userMeta.toNumber) {
+        await fetch(`https://graph.facebook.com/v22.0/${userMeta.phoneNumberId}/messages`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${userMeta.accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            messaging_product: "whatsapp",
+            to: userMeta.toNumber,
+            text: { body: botReply },
+          }),
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      setMessages((prev) => [...prev, { from: "bot", text: "❌ Error al enviar mensaje" }]);
+    }
+
+    setIsLoading(false);
   };
 
-  const toggleRecording = () => setIsRecording(!isRecording);
-
-  // =============================
-  // Render
-  // =============================
-  if (loadingAgents) {
-    return (
-      <div className="w-full h-full flex items-center justify-center text-gray-500">
-        Cargando agentes...
-      </div>
-    );
-  }
-
-  if (!agents || agents.length === 0) {
-    return (
-      <div className="w-full h-full flex items-center justify-center text-gray-500">
-        Aún no tienes agentes creados. Crea uno para iniciar la conversación.
-      </div>
-    );
-  }
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") sendMessage();
+  };
 
   return (
-    <div className="w-full h-screen flex flex-col bg-white">
-      {/* 💬 MENSAJES */}
-      <div className="flex-1 px-4 py-2 flex flex-col justify-end space-y-3 overflow-y-auto">
-        {messages.map((msg, idx) => (
-          <div
-            key={idx}
-            className={`flex ${
-              msg.from === "user" ? "justify-end" : "justify-start"
-            }`}
-          >
-            <div className="max-w-[80%]">
-              {msg.from === "bot" && (
-                <div
-                  className="text-sm font-bold mb-1"
-                  style={{ color: msg.color }}
-                >
-                  {msg.agent}
-                </div>
-              )}
+    <div className="w-full p-6 bg-white rounded-2xl border border-gray-300 shadow-md relative">
 
-              <div
-                className={`px-4 py-3 rounded-2xl break-words whitespace-pre-wrap ${
-                  msg.from === "user"
-                    ? "bg-black text-white"
-                    : "bg-white text-black shadow-md"
-                }`}
-              >
-                <p>{msg.text || (!msg.done && "Escribiendo...")}</p>
+      {/* ====== Formulario Meta ====== */}
+      <div className="mb-6 flex flex-col gap-2">
+        <input
+          type="text"
+          placeholder="Access Token"
+          value={userMeta.accessToken}
+          onChange={(e) => setUserMeta({ ...userMeta, accessToken: e.target.value })}
+          className="border p-2 rounded"
+        />
+        <input
+          type="text"
+          placeholder="Phone Number ID"
+          value={userMeta.phoneNumberId}
+          onChange={(e) => setUserMeta({ ...userMeta, phoneNumberId: e.target.value })}
+          className="border p-2 rounded"
+        />
+        <input
+          type="text"
+          placeholder="Número destino (+573...)"
+          value={userMeta.toNumber}
+          onChange={(e) => setUserMeta({ ...userMeta, toNumber: e.target.value })}
+          className="border p-2 rounded"
+        />
+      </div>
+
+      {/* ====== Cards de Agentes ====== */}
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xl font-bold text-gray-800">Agentes GLYNNE creados</h2>
+        <button onClick={handleRefresh} className="flex items-center justify-center w-9 h-9 rounded-full border hover:bg-gray-100 transition-all">
+          <motion.div animate={{ rotate: isRefreshing ? 360 : 0 }} transition={{ duration: 0.6, ease: "easeInOut", repeat: isRefreshing ? Infinity : 0 }}>
+            <RotateCcw className={`w-5 h-5 ${isRefreshing ? "text-blue-600" : "text-gray-600"}`} />
+          </motion.div>
+        </button>
+      </div>
+
+      {loading ? (
+        <p className="text-gray-400 italic text-center">Cargando agentes...</p>
+      ) : agents.length === 0 ? (
+        <p className="text-gray-400 italic text-center">Aquí podrás visualizar tus modelos IA creados.</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+          {agents.map((agent, idx) => (
+            <div key={agent.id || idx} className="bg-white shadow-lg rounded-xl p-5 border border-gray-200 flex flex-col justify-between w-full h-[200px] hover:shadow-2xl transition-all">
+              <div className="space-y-1 overflow-hidden">
+                <h2 className="text-lg font-semibold text-gray-800 truncate">{agent.agent_name || "Agente sin nombre"}</h2>
+                <p className="text-xs text-gray-500 truncate"><strong>Rol:</strong> {agent.rol || "-"}</p>
+                <p className="text-xs text-gray-500 truncate"><strong>Objetivo:</strong> {agent.objective || "-"}</p>
+                <p className="text-xs text-gray-500 truncate"><strong>Mensaje adicional:</strong> {agent.additional_msg || "-"}</p>
+              </div>
+              <div className="mt-3 flex justify-end space-x-4 text-gray-400">
+                <MessageSquareText className="w-5 h-5 cursor-pointer hover:text-gray-700" onClick={() => { setChatAgent(agent); setOpenChatPopup(true); }} />
+                <Settings2 className="w-5 h-5 cursor-pointer hover:text-gray-700" onClick={() => handleEdit(agent, idx)} />
+                <Trash2 className="w-5 h-5 cursor-pointer stroke-red-500 hover:stroke-red-700" onClick={() => handleDelete(agent.id)} />
               </div>
             </div>
-          </div>
-        ))}
-        <div ref={messagesEndRef} />
-      </div>
-
-      {/* ✍️ INPUT */}
-      <div className="w-full px-4 py-4 flex justify-center">
-        <div className="flex w-[70%] relative items-center gap-2">
-          <div className="relative flex-1">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-              placeholder="Escribe tu mensaje..."
-              className="w-full px-4 py-4 rounded-full text-lg bg-white outline-none relative z-10 pr-14"
-              style={{ border: "2px solid transparent", backgroundClip: "padding-box" }}
-            />
-
-            <span
-              className="absolute inset-0 rounded-full pointer-events-none"
-              style={{
-                background: "linear-gradient(90deg, #4ade80, #3b82f6, #facc15, #ec4899)",
-                backgroundSize: "300% 300%",
-                animation: "shine 2.5s linear infinite",
-                borderRadius: "9999px",
-                padding: "2px",
-                zIndex: 0,
-              }}
-            />
-
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              whileHover={{ scale: 1.05 }}
-              onClick={sendMessage}
-              className="absolute right-3 top-1/2 -translate-y-1/2 bg-black text-white rounded-full w-10 h-10 flex items-center justify-center shadow-md z-20"
-            >
-              <Send size={18} />
-            </motion.button>
-
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              whileHover={{ scale: 1.05 }}
-              onClick={toggleRecording}
-              className={`absolute right-14 top-1/2 -translate-y-1/2 rounded-full w-10 h-10 flex items-center justify-center shadow-md z-20 ${
-                isRecording ? "bg-red-500 text-white" : "bg-black text-white"
-              }`}
-            >
-              <Mic size={18} />
-            </motion.button>
-          </div>
+          ))}
         </div>
-      </div>
+      )}
 
-      <style jsx>{`
-        @keyframes shine {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-      `}</style>
+      {/* ====== Modal Editar Agente ====== */}
+      <AnimatePresence>
+        {selectedAgent && (
+          <motion.div className="fixed inset-0 bg-black/30 backdrop-blur-md flex justify-center items-center z-50" onClick={() => setSelectedAgent(null)} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <motion.div className="relative bg-white rounded-2xl shadow-xl p-8 w-[85vw] h-[85vh] overflow-y-auto flex flex-col" onClick={(e) => e.stopPropagation()} initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}>
+              <button onClick={() => setSelectedAgent(null)} className="absolute top-4 right-6 text-gray-500 hover:text-gray-700 text-xl">✖</button>
+              <AgentForm agentData={selectedAgent.agent} onSave={handleSave} onCancel={() => setSelectedAgent(null)} />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ====== Modal Chat ====== */}
+      <AnimatePresence>
+        {openChatPopup && (
+          <motion.div className="fixed inset-0 bg-black/30 backdrop-blur-md flex justify-center items-center z-50" onClick={() => setOpenChatPopup(false)} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <motion.div className="relative bg-white rounded-2xl shadow-xl w-[90vw] h-[80vh] flex flex-col overflow-hidden" onClick={(e) => e.stopPropagation()} initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}>
+
+              <button onClick={() => setOpenChatPopup(false)} className="absolute top-4 right-6 text-gray-500 hover:text-gray-700 text-xl z-50">✖</button>
+
+              {/* 🛠 Formulario Meta dentro del chat (para usarlo allí también) */}
+              <div className="p-4 flex flex-col gap-2">
+                <input type="text" placeholder="Access Token" value={userMeta.accessToken} onChange={(e) => setUserMeta({ ...userMeta, accessToken: e.target.value })} className="border p-2 rounded" />
+                <input type="text" placeholder="Phone Number ID" value={userMeta.phoneNumberId} onChange={(e) => setUserMeta({ ...userMeta, phoneNumberId: e.target.value })} className="border p-2 rounded" />
+                <input type="text" placeholder="Número destino (+573...)" value={userMeta.toNumber} onChange={(e) => setUserMeta({ ...userMeta, toNumber: e.target.value })} className="border p-2 rounded" />
+              </div>
+
+              {/* 💬 Mensajes */}
+              <div className="flex-1 px-2 py-2 flex flex-col justify-end space-y-2 overflow-y-auto">
+                {messages.map((msg, idx) => (
+                  <div key={idx} className={`flex ${msg.from === "user" ? "justify-end" : "justify-start"}`}>
+                    <div className={`px-4 py-2 rounded-2xl max-w-[80%] break-words ${msg.from === "user" ? "bg-black text-white" : "bg-white text-black shadow-md"}`}>
+                      <p>{msg.text}</p>
+                    </div>
+                  </div>
+                ))}
+                {isLoading && <div className="text-gray-400 text-sm px-2">Escribiendo...</div>}
+                <div ref={messagesEndRef} />
+              </div>
+
+              {/* ✍️ Input */}
+              <div className="w-full flex justify-center mt-2 p-4">
+                <div className="flex w-[70%] relative items-center gap-2">
+                  <input type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyDown} placeholder="Escribe tu mensaje..." className="w-full px-4 py-2 rounded-full border outline-none pr-14" />
+                  <motion.button whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.05 }} onClick={sendMessage} disabled={isLoading} className="absolute right-2 top-1/2 -translate-y-1/2 bg-black text-white rounded-full w-10 h-10 flex items-center justify-center">
+                    <Send size={18} />
+                  </motion.button>
+                </div>
+              </div>
+
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
