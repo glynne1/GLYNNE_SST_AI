@@ -8,8 +8,8 @@ import { supabase, getCurrentUser } from "../../../../lib/supabaseClient";
 
 export default function AgentsWhatsAppManager() {
   const [agents, setAgents] = useState([]);
-  const [selectedAgent, setSelectedAgent] = useState(null); // Para editar
-  const [chatAgent, setChatAgent] = useState(null); // Para chat
+  const [selectedAgent, setSelectedAgent] = useState(null);
+  const [chatAgent, setChatAgent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [openChatPopup, setOpenChatPopup] = useState(false);
@@ -24,12 +24,9 @@ export default function AgentsWhatsAppManager() {
     toNumber: "",
   });
   const messagesEndRef = useRef(null);
-
   const apiURL = process.env.NEXT_PUBLIC_API_URL || "https://tu-backend.com";
 
-  // ============================================
-  // Fetch agentes desde Supabase
-  // ============================================
+  // ================= Fetch Agentes =================
   const fetchAgents = async () => {
     try {
       setLoading(true);
@@ -82,10 +79,9 @@ export default function AgentsWhatsAppManager() {
     setSelectedAgent(null);
   };
 
-  // ============================================
-  // Chat logic
-  // ============================================
-  const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  // ================= Chat =================
+  const scrollToBottom = () =>
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   useEffect(() => scrollToBottom(), [messages]);
 
   const sendMessage = async () => {
@@ -97,7 +93,7 @@ export default function AgentsWhatsAppManager() {
     setIsLoading(true);
 
     try {
-      // 1️⃣ enviar al backend
+      // Backend
       const res = await fetch(`${apiURL}/dynamic/agent/chat/full`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -108,7 +104,7 @@ export default function AgentsWhatsAppManager() {
 
       setMessages((prev) => [...prev, { from: "bot", text: botReply }]);
 
-      // 2️⃣ enviar a WhatsApp
+      // WhatsApp
       if (userMeta.accessToken && userMeta.phoneNumberId && userMeta.toNumber) {
         await fetch(`https://graph.facebook.com/v22.0/${userMeta.phoneNumberId}/messages`, {
           method: "POST",
@@ -135,10 +131,21 @@ export default function AgentsWhatsAppManager() {
     if (e.key === "Enter") sendMessage();
   };
 
+  const handleSelectAgent = (agent) => {
+    setChatAgent(agent);
+    setUserMeta({
+      accessToken: agent.accessToken || "",
+      phoneNumberId: agent.phoneNumberId || "",
+      toNumber: agent.toNumber || "",
+    });
+    setMessages([]); // limpiar chat previo
+    setOpenChatPopup(true);
+  };
+
   return (
     <div className="w-full p-6 bg-white rounded-2xl border border-gray-300 shadow-md relative">
 
-      {/* ====== Formulario Meta ====== */}
+      {/* ===== Formulario Meta ===== */}
       <div className="mb-6 flex flex-col gap-2">
         <input
           type="text"
@@ -163,11 +170,17 @@ export default function AgentsWhatsAppManager() {
         />
       </div>
 
-      {/* ====== Cards de Agentes ====== */}
+      {/* ===== Cards Agentes ===== */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold text-gray-800">Agentes GLYNNE creados</h2>
-        <button onClick={handleRefresh} className="flex items-center justify-center w-9 h-9 rounded-full border hover:bg-gray-100 transition-all">
-          <motion.div animate={{ rotate: isRefreshing ? 360 : 0 }} transition={{ duration: 0.6, ease: "easeInOut", repeat: isRefreshing ? Infinity : 0 }}>
+        <button
+          onClick={handleRefresh}
+          className="flex items-center justify-center w-9 h-9 rounded-full border hover:bg-gray-100 transition-all"
+        >
+          <motion.div
+            animate={{ rotate: isRefreshing ? 360 : 0 }}
+            transition={{ duration: 0.6, ease: "easeInOut", repeat: isRefreshing ? Infinity : 0 }}
+          >
             <RotateCcw className={`w-5 h-5 ${isRefreshing ? "text-blue-600" : "text-gray-600"}`} />
           </motion.div>
         </button>
@@ -180,7 +193,11 @@ export default function AgentsWhatsAppManager() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
           {agents.map((agent, idx) => (
-            <div key={agent.id || idx} className="bg-white shadow-lg rounded-xl p-5 border border-gray-200 flex flex-col justify-between w-full h-[200px] hover:shadow-2xl transition-all">
+            <div
+              key={agent.id || idx}
+              className={`bg-white shadow-lg rounded-xl p-5 border flex flex-col justify-between w-full h-[200px] hover:shadow-2xl transition-all
+                ${chatAgent?.id === agent.id ? "border-blue-500" : "border-gray-200"}`}
+            >
               <div className="space-y-1 overflow-hidden">
                 <h2 className="text-lg font-semibold text-gray-800 truncate">{agent.agent_name || "Agente sin nombre"}</h2>
                 <p className="text-xs text-gray-500 truncate"><strong>Rol:</strong> {agent.rol || "-"}</p>
@@ -188,7 +205,7 @@ export default function AgentsWhatsAppManager() {
                 <p className="text-xs text-gray-500 truncate"><strong>Mensaje adicional:</strong> {agent.additional_msg || "-"}</p>
               </div>
               <div className="mt-3 flex justify-end space-x-4 text-gray-400">
-                <MessageSquareText className="w-5 h-5 cursor-pointer hover:text-gray-700" onClick={() => { setChatAgent(agent); setOpenChatPopup(true); }} />
+                <MessageSquareText className="w-5 h-5 cursor-pointer hover:text-gray-700" onClick={() => handleSelectAgent(agent)} />
                 <Settings2 className="w-5 h-5 cursor-pointer hover:text-gray-700" onClick={() => handleEdit(agent, idx)} />
                 <Trash2 className="w-5 h-5 cursor-pointer stroke-red-500 hover:stroke-red-700" onClick={() => handleDelete(agent.id)} />
               </div>
@@ -197,11 +214,19 @@ export default function AgentsWhatsAppManager() {
         </div>
       )}
 
-      {/* ====== Modal Editar Agente ====== */}
+      {/* ===== Modal Editar Agente ===== */}
       <AnimatePresence>
         {selectedAgent && (
-          <motion.div className="fixed inset-0 bg-black/30 backdrop-blur-md flex justify-center items-center z-50" onClick={() => setSelectedAgent(null)} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <motion.div className="relative bg-white rounded-2xl shadow-xl p-8 w-[85vw] h-[85vh] overflow-y-auto flex flex-col" onClick={(e) => e.stopPropagation()} initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}>
+          <motion.div
+            className="fixed inset-0 bg-black/30 backdrop-blur-md flex justify-center items-center z-50"
+            onClick={() => setSelectedAgent(null)}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="relative bg-white rounded-2xl shadow-xl p-8 w-[85vw] h-[85vh] overflow-y-auto flex flex-col"
+              onClick={(e) => e.stopPropagation()}
+              initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
+            >
               <button onClick={() => setSelectedAgent(null)} className="absolute top-4 right-6 text-gray-500 hover:text-gray-700 text-xl">✖</button>
               <AgentForm agentData={selectedAgent.agent} onSave={handleSave} onCancel={() => setSelectedAgent(null)} />
             </motion.div>
@@ -209,22 +234,23 @@ export default function AgentsWhatsAppManager() {
         )}
       </AnimatePresence>
 
-      {/* ====== Modal Chat ====== */}
+      {/* ===== Modal Chat ===== */}
       <AnimatePresence>
-        {openChatPopup && (
-          <motion.div className="fixed inset-0 bg-black/30 backdrop-blur-md flex justify-center items-center z-50" onClick={() => setOpenChatPopup(false)} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <motion.div className="relative bg-white rounded-2xl shadow-xl w-[90vw] h-[80vh] flex flex-col overflow-hidden" onClick={(e) => e.stopPropagation()} initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}>
+        {openChatPopup && chatAgent && (
+          <motion.div
+            className="fixed inset-0 bg-black/30 backdrop-blur-md flex justify-center items-center z-50"
+            onClick={() => setOpenChatPopup(false)}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="relative bg-white rounded-2xl shadow-xl w-[90vw] h-[80vh] flex flex-col overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+              initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
+            >
 
               <button onClick={() => setOpenChatPopup(false)} className="absolute top-4 right-6 text-gray-500 hover:text-gray-700 text-xl z-50">✖</button>
 
-              {/* 🛠 Formulario Meta dentro del chat (para usarlo allí también) */}
-              <div className="p-4 flex flex-col gap-2">
-                <input type="text" placeholder="Access Token" value={userMeta.accessToken} onChange={(e) => setUserMeta({ ...userMeta, accessToken: e.target.value })} className="border p-2 rounded" />
-                <input type="text" placeholder="Phone Number ID" value={userMeta.phoneNumberId} onChange={(e) => setUserMeta({ ...userMeta, phoneNumberId: e.target.value })} className="border p-2 rounded" />
-                <input type="text" placeholder="Número destino (+573...)" value={userMeta.toNumber} onChange={(e) => setUserMeta({ ...userMeta, toNumber: e.target.value })} className="border p-2 rounded" />
-              </div>
-
-              {/* 💬 Mensajes */}
+              {/* Mensajes */}
               <div className="flex-1 px-2 py-2 flex flex-col justify-end space-y-2 overflow-y-auto">
                 {messages.map((msg, idx) => (
                   <div key={idx} className={`flex ${msg.from === "user" ? "justify-end" : "justify-start"}`}>
@@ -237,7 +263,7 @@ export default function AgentsWhatsAppManager() {
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* ✍️ Input */}
+              {/* Input */}
               <div className="w-full flex justify-center mt-2 p-4">
                 <div className="flex w-[70%] relative items-center gap-2">
                   <input type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyDown} placeholder="Escribe tu mensaje..." className="w-full px-4 py-2 rounded-full border outline-none pr-14" />
