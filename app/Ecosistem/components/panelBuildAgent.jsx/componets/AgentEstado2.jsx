@@ -14,30 +14,21 @@ export default function AgentsChatStyled({ agent }) {
 
   const apiURL = process.env.NEXT_PUBLIC_API_URL || "https://generative-glynne-motor.onrender.com";
 
-  // ✅ 1. CARGAR CHAT E INPUT guardado cuando cambia el agente
+  // ✅ Cargar mensajes guardados al seleccionar un agente
   useEffect(() => {
     if (agent) {
       setSelectedAgent(agent);
-
-      const savedChat = sessionStorage.getItem(`chat_${agent.id}`);
-      const savedInput = sessionStorage.getItem(`input_${agent.id}`);
-
-      setMessages(savedChat ? JSON.parse(savedChat) : []);
-      setInput(savedInput || "");
+      const savedMessages = sessionStorage.getItem(`chat_${agent.agent_name}`);
+      setMessages(savedMessages ? JSON.parse(savedMessages) : []);
     }
   }, [agent]);
 
-  // ✅ 2. Guardar mensajes en sessionStorage cada vez que cambien
+  // ✅ Guardar mensajes cada vez que cambian
   useEffect(() => {
-    if (!selectedAgent?.id) return;
-    sessionStorage.setItem(`chat_${selectedAgent.id}`, JSON.stringify(messages));
+    if (selectedAgent) {
+      sessionStorage.setItem(`chat_${selectedAgent.agent_name}`, JSON.stringify(messages));
+    }
   }, [messages, selectedAgent]);
-
-  // ✅ 3. Guardar input en tiempo real
-  useEffect(() => {
-    if (!selectedAgent?.id) return;
-    sessionStorage.setItem(`input_${selectedAgent.id}`, input);
-  }, [input, selectedAgent]);
 
   const scrollToBottom = () =>
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -46,14 +37,11 @@ export default function AgentsChatStyled({ agent }) {
     scrollToBottom();
   }, [messages]);
 
-  // ===========================================================
-  // 🚀 Enviar mensaje al backend usando el agent de la card
-  // ===========================================================
   const sendMessage = async () => {
     if (!input.trim() || isLoading || !selectedAgent) return;
 
     const userMessage = { from: "user", text: input };
-    setMessages((prev) => [...prev, userMessage]);
+    setMessages(prev => [...prev, userMessage]);
     setInput("");
     setIsLoading(true);
 
@@ -74,9 +62,9 @@ export default function AgentsChatStyled({ agent }) {
         text: data?.reply || "No recibí respuesta",
       };
 
-      setMessages((prev) => [...prev, botMessage]);
+      setMessages(prev => [...prev, botMessage]);
     } catch (err) {
-      setMessages((prev) => [
+      setMessages(prev => [
         ...prev,
         { from: "bot", text: "❌ Error al conectar con el servidor" },
       ]);
@@ -104,7 +92,7 @@ export default function AgentsChatStyled({ agent }) {
   return (
     <div className="w-full h-screen flex flex-col bg-white">
 
-      {/* 💬 MENSAJES */}
+      {/* MENSAJES */}
       <div className="flex-1 px-4 py-2 flex flex-col justify-end space-y-2 overflow-y-auto">
         {messages.map((msg, idx) => (
           <div
@@ -126,7 +114,7 @@ export default function AgentsChatStyled({ agent }) {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* ✍️ INPUT */}
+      {/* INPUT */}
       <div className="w-full px-4 py-4 flex justify-center">
         <div className="flex w-[70%] relative items-center gap-2">
           <div className="relative flex-1">
@@ -156,7 +144,7 @@ export default function AgentsChatStyled({ agent }) {
               }}
             />
 
-            {/* BOTÓN ENVIAR */}
+            {/* ENVIAR */}
             <motion.button
               whileTap={{ scale: 0.9 }}
               whileHover={{ scale: 1.05 }}
@@ -167,7 +155,7 @@ export default function AgentsChatStyled({ agent }) {
               <Send size={18} />
             </motion.button>
 
-            {/* MICRÓFONO */}
+            {/* MIC */}
             <motion.button
               whileTap={{ scale: 0.9 }}
               whileHover={{ scale: 1.05 }}
