@@ -1,0 +1,226 @@
+'use client';
+
+import { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
+import { Send, Mic } from 'lucide-react';
+import { supabase } from '../../lib/supabaseClient';
+import AlertUpgrade from './alertPlanes';
+import DiscoverG from './TTSinvoke';
+import PlusMenu from './masContenido';
+import PlusMenu2 from './menuColumna';
+import { marked } from 'marked';
+
+export default function ChatContainer() {
+  const [input, setInput] = useState('');
+  const [messages, setMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [userId, setUserId] = useState('');
+  const [userInfo, setUserInfo] = useState({ nombre: 'Usuario' });
+  const [isRecording, setIsRecording] = useState(false);
+
+  const messagesEndRef = useRef(null);
+  const recognitionRef = useRef(null);
+  const API_URL = 'https://glynne-ecosistem.onrender.com/chat1';
+
+  // Inicializar STT
+  useEffect(() => {
+    if ('webkitSpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'es-ES';
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      recognition.onresult = (event) => {
+        let transcript = '';
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          transcript += event.results[i][0].transcript;
+        }
+        setInput(transcript);
+      };
+      recognition.onend = () => setIsRecording(false);
+      recognition.onerror = () => setIsRecording(false);
+
+      recognitionRef.current = recognition;
+    }
+  }, []);
+
+  const toggleRecording = () => {
+    if (!recognitionRef.current) return;
+    if (!isRecording) {
+      recognitionRef.current.start();
+      setIsRecording(true);
+    } else {
+      recognitionRef.current.stop();
+      setIsRecording(false);
+    }
+  };
+
+  // Obtener info usuario
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const { data: { user }, error } = await supabase.auth.getUser();
+      if (error || !user) return;
+      const { user_metadata } = user;
+      setUserInfo({ nombre: user_metadata?.full_name || 'Usuario' });
+    };
+    fetchUserInfo();
+  }, []);
+
+  useEffect(() => {
+    const id = `user_${Math.floor(Math.random() * 90000) + 10000}`;
+    setUserId(id);
+  }, []);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const sendMessage = async () => {
+    if (!input.trim() || isLoading) return;
+    const userMsg = { from: 'user', text: input };
+    setMessages((prev) => [...prev, userMsg]);
+    setInput('');
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mensaje: input, user_id: userId }),
+      });
+      const data = await response.json();
+      const aiMsg = { from: 'ia', text: data.respuesta || 'No se recibió respuesta' };
+      setMessages((prev) => [...prev, aiMsg]);
+    } catch (err) {
+      setMessages((prev) => [...prev, { from: 'ia', text: `⚠️ Error: ${err.message}` }]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRefresh = () => {
+    setMessages([]);
+    setInput('');
+  };
+
+  return (
+    <div className="w-full h-screen flex justify-center items-center bg-gray-100 p-4">
+      <div className="flex flex-col w-full max-w-4xl h-full bg-white rounded-2xl shadow-xl overflow-hidden">
+        {/* Header */}
+        <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+          <h2 className="text-xl font-semibold text-gray-800">
+            Chat con GLY-IA
+          </h2>
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={handleRefresh}
+            className="text-sm px-3 py-1 bg-gray-200 rounded-full hover:bg-gray-300"
+          >
+            Reiniciar
+          </motion.button>
+        </div>
+
+        {/* Mensajes */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50">
+          {messages.length === 0 ? (
+            <div className="flex flex-col items-center justify-center text-center text-gray-500 mt-16">
+              <p className="mb-4 text-lg">
+                Hola, <span className="font-semibold">{userInfo.nombre}</span>. ¿Cómo puedo ayudarte hoy?
+              </p>
+              <DiscoverG />
+              <AlertUpgrade />
+            </div>
+          ) : (
+            messages.map((msg, idx) => (
+              <div
+                key={idx}
+                className={`flex ${msg.from === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                <div
+                  className={`px-4 py-3 rounded-2xl max-w-[75%] break-words ${
+                    msg.from === 'user'
+                      ? 'bg-black text-white'
+                      : 'bg-white text-gray-800 shadow-md'
+                  }`}
+                >
+                  {msg.from === 'user' ? (
+                    <p>{msg.text}</p>
+                  ) : (
+                    <div
+                      className="prose prose-sm"
+                      dangerouslySetInnerHTML={{ __html: marked(msg.text) }}
+                    />
+                  )}
+                </div>
+              </div>
+            ))
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Input */}
+        <div className="px-4 py-4 border-t border-gray-200 flex items-center gap-2 bg-white">
+          <PlusMenu onRefresh={handleRefresh} />
+          <PlusMenu2 onRefresh={handleRefresh} />
+
+          <div className="relative flex-1">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+              placeholder="Escribe tu mensaje..."
+              disabled={isLoading}
+              className="w-full px-4 py-3 rounded-full outline-none text-gray-700 relative z-10 pr-14"
+              style={{ border: '2px solid transparent', backgroundClip: 'padding-box' }}
+            />
+            <span
+              className="absolute inset-0 rounded-full pointer-events-none"
+              style={{
+                background:
+                  'linear-gradient(90deg, #4ade80, #3b82f6, #facc15, #ec4899)',
+                backgroundSize: '300% 300%',
+                animation: 'shine 2.5s linear infinite',
+                borderRadius: '9999px',
+                padding: '2px',
+                zIndex: 0,
+              }}
+            />
+            {input.trim() ? (
+              <motion.button
+                whileTap={{ scale: 0.9 }}
+                whileHover={{ scale: 1.05 }}
+                onClick={sendMessage}
+                disabled={isLoading}
+                className="absolute right-3 top-1/2 -translate-y-1/2 bg-black text-white w-10 h-10 rounded-full flex items-center justify-center shadow-md z-20"
+              >
+                <Send size={18} />
+              </motion.button>
+            ) : (
+              <motion.button
+                whileTap={{ scale: 0.9 }}
+                whileHover={{ scale: 1.05 }}
+                onClick={toggleRecording}
+                disabled={isLoading}
+                className={`absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center shadow-md z-20 ${
+                  isRecording ? 'bg-red-600 text-white' : 'bg-black text-white'
+                }`}
+              >
+                <Mic size={18} />
+              </motion.button>
+            )}
+          </div>
+        </div>
+
+        <style jsx>{`
+          @keyframes shine {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+          }
+        `}</style>
+      </div>
+    </div>
+  );
+}

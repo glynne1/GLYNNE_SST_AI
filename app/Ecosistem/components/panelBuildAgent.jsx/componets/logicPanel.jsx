@@ -188,13 +188,7 @@ Entrega recomendaciones concretas, claras y accionables.
       
   
 
-      <div className="mb-2 mt-15 ml-[50px] text-center">
-        <h2 className="text-neutral-800 text-4xl md:text-5xl lg:text-6xl font-extrabold mb-5 tracking-wider">
-          CRERA TU <span className="text-gray-500">GLYNNE AI</span>
-        </h2>
 
-        {/* Texto descriptivo */}
-      </div>
 
       <div className="grid ml-[70px] w-[87%] grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* API Key */}
