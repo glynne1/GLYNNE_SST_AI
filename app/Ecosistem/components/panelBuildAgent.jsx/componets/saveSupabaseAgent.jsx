@@ -3,12 +3,12 @@
 import { useState } from "react";
 import { supabase, getCurrentUser } from "../../../../lib/supabaseClient";
 
-// ✅ Función para guardar la configuración del agente
+// ✅ Guardar la configuración del agente con conversation siempre inicializado
 export async function saveUserAgentConfig(configData) {
   const user = await getCurrentUser();
   if (!user) throw new Error("Usuario no autenticado");
 
-  // 🔎 Verificamos cuántos agentes tiene el usuario
+  // Verificar cuántos agentes tiene el usuario
   const { data: existingAgents, error: fetchError } = await supabase
     .from("auditorias")
     .select("id")
@@ -16,34 +16,28 @@ export async function saveUserAgentConfig(configData) {
 
   if (fetchError) throw new Error("Error al verificar agentes existentes");
 
-  // 🚫 Máximo 6 agentes
   if (existingAgents && existingAgents.length >= 6) {
     throw new Error("Has alcanzado el límite máximo de 6 agentes.");
   }
 
-  // ✅ FORZAMOS la conversación desde la creación
+  // Forzar array de conversación vacío
   const agentToSave = {
     ...configData,
-    conversation: [], // 👈 Aseguramos que siempre exista el array
+    conversation: [],
   };
 
-  // 🧩 Guardamos el agente con la conversación vacía incluida
   const { error: insertError } = await supabase
     .from("auditorias")
     .insert([
       {
         user_id: user.id,
-        user_config: {
-          ...agentToSave,
-          conversation: [], // 👈 Se forza también dentro del JSON a guardar
-        },
+        user_config: agentToSave,
       },
     ]);
 
   if (insertError) throw insertError;
 }
 
-// ✅ Componente del botón
 export default function SaveAgentConfigButton({ configData }) {
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState("");
@@ -55,7 +49,6 @@ export default function SaveAgentConfigButton({ configData }) {
 
       await saveUserAgentConfig(configData);
       setStatus("✅ Configuración guardada exitosamente 🎯");
-
     } catch (err) {
       console.error(err.message);
 
@@ -66,7 +59,6 @@ export default function SaveAgentConfigButton({ configData }) {
       } else {
         setStatus("❌ Error al guardar el agente.");
       }
-
     } finally {
       setSaving(false);
     }
