@@ -14,53 +14,48 @@ export default function AgentCards() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Guardamos mensajes localmente por agente
+  // ✅ Guardamos historial por agente localmente
   const [chatHistories, setChatHistories] = useState({});
 
-  // ✅ GUARDAR MENSAJE EN SUPABASE EN conversation[]
-  const saveMessageToAgentChat = async (agentId, newMessage) => {
+  // 🔥 NUEVO: guarda en Supabase solo la conversación del agente
+  const saveChatToSupabase = async (agentId, messages) => {
     try {
       const user = await getCurrentUser();
-      if (!user) throw new Error("Usuario no autenticado");
+      if (!user) return;
 
-      // 1️⃣ Obtener config actual del agente
-      const { data, error } = await supabase
+      // 1. Obtener el JSON actual del agente
+      const { data, error: fetchError } = await supabase
         .from("auditorias")
         .select("user_config")
         .eq("id", agentId)
-        .eq("user_id", user.id)
         .single();
 
-      if (error) throw error;
+      if (fetchError || !data) throw fetchError;
 
-      const currentConfig = data.user_config;
-
-      // 2️⃣ Agregar nuevo mensaje a conversation[]
-      const updatedConversation = [
-        ...(currentConfig.conversation || []),
-        newMessage,
-      ];
-
+      // 2. Actualizar SOLO el campo conversation
       const updatedConfig = {
-        ...currentConfig,
-        conversation: updatedConversation, // 👈 Solo modificamos esto
+        ...data.user_config,
+        conversation: messages,
       };
 
-      // 3️⃣ Guardamos el JSON actualizado
-      const { error: updateError } = await supabase
+      // 3. Guardarlo nuevamente sin cambiar el resto
+      await supabase
         .from("auditorias")
         .update({ user_config: updatedConfig })
         .eq("id", agentId);
 
-      if (updateError) throw updateError;
-
-      console.log("✅ Mensaje guardado en Supabase");
     } catch (err) {
-      console.error("❌ Error guardando mensaje:", err.message);
+      console.error("❌ Error guardando conversación:", err);
     }
   };
 
-  // ✅ CARGAR AGENTES DESDE SUPABASE
+  // 🔥 NUEVO: cada vez que cambie el chat del agente activo, lo guardamos
+  useEffect(() => {
+    if (chatAgent?.id && chatHistories[chatAgent.id]) {
+      saveChatToSupabase(chatAgent.id, chatHistories[chatAgent.id]);
+    }
+  }, [chatHistories, chatAgent]);
+
   const fetchAgents = async () => {
     try {
       setLoading(true);
@@ -82,16 +77,8 @@ export default function AgentCards() {
         })) || [];
 
       setAgents(formattedAgents);
-
-      // Seleccionar el primero por defecto
       if (formattedAgents.length > 0 && !chatAgent) {
         setChatAgent(formattedAgents[0]);
-
-        // Also load existing conversation into local state
-        setChatHistories((prev) => ({
-          ...prev,
-          [formattedAgents[0].id]: formattedAgents[0].conversation || [],
-        }));
       }
     } catch (err) {
       console.error("Error al cargar agentes:", err);
@@ -110,11 +97,10 @@ export default function AgentCards() {
     setTimeout(() => setIsRefreshing(false), 600);
   };
 
-  // ✅ ELIMINAR AGENTE
   const handleDelete = async (agentId) => {
     try {
       const confirmDelete = window.confirm(
-        "¿Seguro que deseas eliminar este agente?"
+        "¿Seguro que deseas eliminar este agente? Esta acción no se puede deshacer."
       );
       if (!confirmDelete) return;
 
@@ -129,6 +115,7 @@ export default function AgentCards() {
       if (chatAgent?.id === agentId) setChatAgent(null);
     } catch (err) {
       console.error("❌ Error al eliminar agente:", err);
+      alert("Hubo un error al eliminar el agente. Revisa la consola.");
     }
   };
 
@@ -145,19 +132,21 @@ export default function AgentCards() {
 
   return (
     <div className="w-full h-screen flex flex-col bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden">
-
       {/* HEADER */}
       <div className="flex items-center justify-between p-4 border-b bg-gray-50">
         <h2 className="text-lg font-bold text-gray-800">Agentes GLYNNE</h2>
         <button
           onClick={handleRefresh}
-          className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-300 hover:bg-gray-100"
+          className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-300 hover:bg-gray-100 transition-all"
+          title="Actualizar lista"
         >
           <motion.div
             animate={{ rotate: isRefreshing ? 360 : 0 }}
-            transition={{ duration: 0.6, repeat: isRefreshing ? Infinity : 0 }}
+            transition={{ duration: 0.6, ease: "easeInOut", repeat: isRefreshing ? Infinity : 0 }}
           >
-            <RotateCcw className="w-5 h-5 text-gray-600" />
+            <RotateCcw
+              className={`w-5 h-5 ${isRefreshing ? "text-blue-600" : "text-gray-600"}`}
+            />
           </motion.div>
         </button>
       </div>
@@ -165,70 +154,61 @@ export default function AgentCards() {
       {/* LISTA DE AGENTES */}
       <div className="flex flex-wrap gap-2 p-3 border-b bg-white overflow-x-auto">
         {loading ? (
-          <p className="text-sm text-gray-400">Cargando...</p>
+          <p className="text-sm text-gray-400 italic">Cargando agentes...</p>
         ) : agents.length === 0 ? (
-          <p className="text-sm text-gray-400">No hay agentes creados.</p>
+          <p className="text-sm text-gray-400 italic">No hay agentes creados.</p>
         ) : (
           agents.map((agent, idx) => (
             <motion.div
               key={agent.id || idx}
-              className={`flex items-center gap-3 px-4 py-2 rounded-xl border cursor-pointer ${
+              className={`flex items-center gap-3 px-4 py-2 rounded-xl border cursor-pointer transition-all ${
                 chatAgent?.id === agent.id
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-50 text-gray-700 hover:bg-gray-100"
+                  ? "bg-blue-600 text-white border-blue-600 shadow-md"
+                  : "bg-gray-50 text-gray-700 border-gray-300 hover:bg-gray-100"
               }`}
-              onClick={() => {
-                setChatAgent(agent);
-                setChatHistories((prev) => ({
-                  ...prev,
-                  [agent.id]: agent.conversation || [],
-                }));
-              }}
+              whileHover={{ scale: 1.03 }}
+              onClick={() => setChatAgent(agent)}
             >
-              <span className="font-medium truncate">
+              <span className="font-medium truncate max-w-[160px]">
                 {agent.agent_name || "Agente sin nombre"}
               </span>
 
-              <Settings2
-                className="w-4 h-4"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleEdit(agent, idx);
-                }}
-              />
-              <Trash2
-                className="w-4 h-4"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDelete(agent.id);
-                }}
-              />
+              <div className="flex gap-2 text-sm">
+                <Settings2
+                  className="w-4 h-4 hover:text-yellow-400"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEdit(agent, idx);
+                  }}
+                />
+                <Trash2
+                  className="w-4 h-4 hover:text-red-500"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(agent.id);
+                  }}
+                />
+              </div>
             </motion.div>
           ))
         )}
       </div>
 
-      {/* ✅ CHAT SIEMPRE VISIBLE */}
+      {/* ✅ CHAT CON MEMORIA + GUARDADO EN SUPABASE */}
       <div className="flex-1 overflow-hidden">
         {chatAgent ? (
           <AgentsChatStyled
             agent={chatAgent}
             messages={chatHistories[chatAgent.id] || []}
-            setMessages={(msgs) => {
+            setMessages={(msgs) =>
               setChatHistories((prev) => ({
                 ...prev,
                 [chatAgent.id]: msgs,
-              }));
-
-              // 🔥 Guardamos el último mensaje en Supabase
-              const lastMessage = msgs[msgs.length - 1];
-              if (lastMessage) {
-                saveMessageToAgentChat(chatAgent.id, lastMessage);
-              }
-            }}
+              }))
+            }
           />
         ) : (
-          <div className="flex items-center justify-center h-full text-gray-400">
+          <div className="flex items-center justify-center h-full text-gray-400 italic">
             Selecciona un agente para iniciar chat.
           </div>
         )}
@@ -237,16 +217,22 @@ export default function AgentCards() {
       {/* MODAL EDITAR AGENTE */}
       {selectedAgent && (
         <motion.div
-          className="fixed inset-0 bg-black/30 backdrop-blur-md flex justify-center items-center"
+          className="fixed inset-0 bg-black/30 backdrop-blur-md flex justify-center items-center z-50"
           onClick={() => setSelectedAgent(null)}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
         >
           <motion.div
-            className="relative bg-white rounded-2xl shadow-xl p-8 w-[85vw] h-[85vh] overflow-y-auto"
+            className="relative bg-white rounded-2xl shadow-xl p-8 w-[85vw] h-[85vh] overflow-y-auto flex flex-col"
             onClick={(e) => e.stopPropagation()}
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
           >
             <button
-              className="absolute top-4 right-6 text-xl"
               onClick={() => setSelectedAgent(null)}
+              className="absolute top-4 right-6 text-gray-500 hover:text-gray-700 text-xl"
             >
               ✖
             </button>
