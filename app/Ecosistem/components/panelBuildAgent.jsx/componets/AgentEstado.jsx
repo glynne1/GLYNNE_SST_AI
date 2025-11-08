@@ -15,10 +15,11 @@ export default function AgentsChatStyled({ agent }) {
 
   const apiURL = process.env.NEXT_PUBLIC_API_URL || "https://generative-glynne-motor.onrender.com";
 
+  // ✅ CARGAR AGENTE Y SU CHAT DESDE SUPABASE
   useEffect(() => {
     if (agent) {
       setSelectedAgent(agent);
-      setMessages([]);
+      loadConversationFromSupabase(agent.agent_name);
     }
   }, [agent]);
 
@@ -29,7 +30,28 @@ export default function AgentsChatStyled({ agent }) {
     scrollToBottom();
   }, [messages]);
 
-  // ✅ GUARDAR MENSAJE EN SUPABASE (sin alterar nada del agente)
+  // ✅ OBTENER CONVERSACIÓN GUARDADA
+  async function loadConversationFromSupabase(agentName) {
+    const user = await getCurrentUser();
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from("auditorias")
+      .select("user_config")
+      .eq("user_id", user.id)
+      .eq("user_config->>agent_name", agentName)
+      .single();
+
+    if (error || !data) {
+      console.error("No se pudo cargar conversación:", error);
+      return;
+    }
+
+    const conversation = data.user_config.conversation || [];
+    setMessages(conversation);
+  }
+
+  // ✅ GUARDAR MENSAJE EN SUPABASE
   async function saveMessageToSupabase(newMessage) {
     const user = await getCurrentUser();
     if (!user || !selectedAgent) return;
@@ -61,6 +83,7 @@ export default function AgentsChatStyled({ agent }) {
     if (updateError) console.error("Error guardando mensaje en Supabase:", updateError);
   }
 
+  // ✅ ENVIAR MENSAJE
   const sendMessage = async () => {
     if (!input.trim() || isLoading || !selectedAgent) return;
 
@@ -69,7 +92,6 @@ export default function AgentsChatStyled({ agent }) {
     setInput("");
     setIsLoading(true);
 
-    // ✅ guardar mensaje usuario
     saveMessageToSupabase(userMessage);
 
     try {
@@ -89,14 +111,10 @@ export default function AgentsChatStyled({ agent }) {
       };
 
       setMessages((prev) => [...prev, botMessage]);
-
-      // ✅ guardar mensaje bot
       saveMessageToSupabase(botMessage);
     } catch (err) {
       const errorMsg = { from: "bot", text: "❌ Error al conectar con el servidor" };
       setMessages((prev) => [...prev, errorMsg]);
-
-      // ✅ guardar mensaje error también
       saveMessageToSupabase(errorMsg);
       console.error("Error enviando mensaje:", err);
     }
@@ -174,7 +192,7 @@ export default function AgentsChatStyled({ agent }) {
               }}
             />
 
-            {/* BOTÓN ENVIAR */}
+            {/* ENVIAR */}
             <motion.button
               whileTap={{ scale: 0.9 }}
               whileHover={{ scale: 1.05 }}
@@ -185,7 +203,7 @@ export default function AgentsChatStyled({ agent }) {
               <Send size={18} />
             </motion.button>
 
-            {/* MICRÓFONO */}
+            {/* MIC */}
             <motion.button
               whileTap={{ scale: 0.9 }}
               whileHover={{ scale: 1.05 }}
