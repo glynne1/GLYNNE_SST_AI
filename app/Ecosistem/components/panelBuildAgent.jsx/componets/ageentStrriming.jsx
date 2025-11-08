@@ -1,188 +1,208 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Settings2, Trash2, RotateCcw } from "lucide-react";
 import { motion } from "framer-motion";
-import { Eye, EyeOff } from "lucide-react";
+import AgentForm from "./AgentEditModal";
+import AgentsChatStyled from "./AgentEstado";
 import { supabase, getCurrentUser } from "../../../../lib/supabaseClient";
 
-export default function AgentForm({ agentData, onSave, onCancel }) {
-  const [formData, setFormData] = useState(agentData || {});
-  const [charCounts, setCharCounts] = useState({});
-  const [showApiKey, setShowApiKey] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [status, setStatus] = useState("");
+export default function AgentCards() {
+  const [agents, setAgents] = useState([]);
+  const [selectedAgent, setSelectedAgent] = useState(null);
+  const [chatAgent, setChatAgent] = useState(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  // 🧠 Actualiza el formulario si cambia el agente seleccionado
-  useEffect(() => {
-    if (agentData) {
-      setFormData(agentData);
-      const initialCounts = {};
-      Object.keys(agentData).forEach((key) => {
-        initialCounts[key] = agentData[key]?.length || 0;
-      });
-      setCharCounts(initialCounts);
-    }
-  }, [agentData]);
-
-  // 📦 Control de cambios en inputs
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    setCharCounts((prev) => ({ ...prev, [name]: value.length }));
-  };
-
-  // 💾 Guardar cambios en Supabase
-  const handleSubmit = async () => {
-    setSaving(true);
-    setStatus("");
-
+  const fetchAgents = async () => {
     try {
+      setLoading(true);
       const user = await getCurrentUser();
       if (!user) throw new Error("Usuario no autenticado");
 
-      // 🔍 Obtener el registro correspondiente del usuario
-      const { data: userRows, error: fetchError } = await supabase
+      const { data, error } = await supabase
         .from("auditorias")
         .select("id, user_config")
         .eq("user_id", user.id)
         .order("id", { ascending: false });
 
-      if (fetchError) throw fetchError;
-      if (!userRows || userRows.length === 0)
-        throw new Error("No se encontró ningún registro para este usuario.");
+      if (error) throw error;
 
-      // 🔹 Buscar el registro que contiene el agente a editar
-      const record = userRows.find((row) => {
-        const config = row.user_config;
-        return (
-          config?.agent_name === agentData.agent_name &&
-          config?.rol === agentData.rol
-        );
-      });
+      const formattedAgents =
+        data?.map((item) => ({
+          id: item.id,
+          ...item.user_config,
+        })) || [];
 
-      if (!record) throw new Error("No se encontró el agente en la base de datos.");
-
-      // 🧱 Actualizar ese campo user_config
-      const { error: updateError } = await supabase
-        .from("auditorias")
-        .update({ user_config: formData })
-        .eq("id", record.id);
-
-      if (updateError) throw updateError;
-
-      setStatus("✅ Cambios guardados exitosamente");
-      if (onSave) onSave(formData);
+      setAgents(formattedAgents);
+      if (formattedAgents.length > 0 && !chatAgent) {
+        setChatAgent(formattedAgents[0]); // selecciona el primero por defecto
+      }
     } catch (err) {
-      console.error("Error al guardar:", err);
-      setStatus("❌ Error al guardar los cambios.");
+      console.error("Error al cargar agentes:", err);
     } finally {
-      setSaving(false);
+      setLoading(false);
     }
   };
 
+  useEffect(() => {
+    fetchAgents();
+  }, []);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchAgents();
+    setTimeout(() => setIsRefreshing(false), 600);
+  };
+
+  const handleDelete = async (agentId) => {
+    try {
+      const confirmDelete = window.confirm(
+        "¿Seguro que deseas eliminar este agente? Esta acción no se puede deshacer."
+      );
+      if (!confirmDelete) return;
+
+      const { error } = await supabase
+        .from("auditorias")
+        .delete()
+        .eq("id", agentId);
+
+      if (error) throw error;
+
+      setAgents((prev) => prev.filter((a) => a.id !== agentId));
+      if (chatAgent?.id === agentId) setChatAgent(null);
+    } catch (err) {
+      console.error("❌ Error al eliminar agente:", err);
+      alert("Hubo un error al eliminar el agente. Revisa la consola.");
+    }
+  };
+
+  const handleEdit = (agent, index) => {
+    setSelectedAgent({ index, agent });
+  };
+
+  const handleSave = (updatedAgent) => {
+    setAgents((prev) =>
+      prev.map((a, i) => (i === selectedAgent.index ? updatedAgent : a))
+    );
+    setSelectedAgent(null);
+  };
+
   return (
-    <motion.div
-      className="p-8 w-full max-w-6xl mx-auto"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-    >
-      <h3 className="text-lg font-semibold text-gray-800 mb-6 text-center">
-        Información del Agente
-      </h3>
-
-      {formData && Object.keys(formData).length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {Object.keys(formData)
-            // 🚫 Excluir campos que no quieres mostrar
-            .filter((key) => key !== "model")
-            .map((key) => (
-              <div
-                key={key}
-                className="bg-white p-4 border border-gray-200 shadow-sm rounded-xl relative"
-              >
-                <label className="text-xs font-semibold text-gray-700 mb-2 block capitalize">
-                  {key.replace(/_/g, " ")}
-                </label>
-
-                <div className="relative">
-                  <input
-                    type={
-                      key === "api_key"
-                        ? showApiKey
-                          ? "text"
-                          : "password"
-                        : "text"
-                    }
-                    name={key}
-                    value={formData[key] || ""}
-                    onChange={handleChange}
-                    placeholder={`Editar ${key.replace(/_/g, " ")}`}
-                    className="w-full p-3 text-xs bg-white border border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-800 rounded-lg pr-10"
-                  />
-
-                  {key === "api_key" && (
-                    <button
-                      type="button"
-                      onClick={() => setShowApiKey((prev) => !prev)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                    >
-                      {showApiKey ? <EyeOff size={16} /> : <Eye size={16} />}
-                    </button>
-                  )}
-                </div>
-
-                <div className="text-right mt-1 text-xs">
-                  <span
-                    className={
-                      (charCounts[key] || 0) > 700
-                        ? "text-red-500"
-                        : "text-gray-400"
-                    }
-                  >
-                    {charCounts[key] || 0}/700
-                  </span>
-                </div>
-              </div>
-            ))}
-        </div>
-      ) : (
-        <p className="text-gray-400 text-sm text-center">
-          No se encontró información del agente.
-        </p>
-      )}
-
-      {/* 🔹 Estado y botones */}
-      <div className="flex justify-end mt-6 space-x-3 items-center">
-        {status && (
-          <span
-            className={`text-xs ${
-              status.startsWith("✅") ? "text-green-600" : "text-red-500"
-            }`}
+    <div className="w-full h-screen flex flex-col bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden">
+      {/* 🔹 HEADER SUPERIOR */}
+      <div className="flex items-center justify-between p-4 border-b bg-gray-50">
+        <h2 className="text-lg font-bold text-gray-800">
+          Agentes GLYNNE
+        </h2>
+        <button
+          onClick={handleRefresh}
+          className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-300 hover:bg-gray-100 transition-all"
+          title="Actualizar lista"
+        >
+          <motion.div
+            animate={{ rotate: isRefreshing ? 360 : 0 }}
+            transition={{
+              duration: 0.6,
+              ease: "easeInOut",
+              repeat: isRefreshing ? Infinity : 0,
+            }}
           >
-            {status}
-          </span>
-        )}
-
-        <button
-          onClick={onCancel}
-          className="px-5 py-2 text-sm bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition"
-          disabled={saving}
-        >
-          Cancelar
-        </button>
-
-        <button
-          onClick={handleSubmit}
-          disabled={saving}
-          className={`px-5 py-2 text-sm rounded-lg transition ${
-            saving
-              ? "bg-gray-400 text-white"
-              : "bg-blue-600 text-white hover:bg-black"
-          }`}
-        >
-          {saving ? "Guardando..." : "Guardar cambios"}
+            <RotateCcw
+              className={`w-5 h-5 ${
+                isRefreshing ? "text-blue-600" : "text-gray-600"
+              }`}
+            />
+          </motion.div>
         </button>
       </div>
-    </motion.div>
+
+      {/* 🔹 LISTA DE AGENTES (HEADER TYPE) */}
+      <div className="flex flex-wrap gap-2 p-3 border-b bg-white overflow-x-auto">
+        {loading ? (
+          <p className="text-sm text-gray-400 italic">Cargando agentes...</p>
+        ) : agents.length === 0 ? (
+          <p className="text-sm text-gray-400 italic">
+            No hay agentes creados.
+          </p>
+        ) : (
+          agents.map((agent, idx) => (
+            <motion.div
+              key={agent.id || idx}
+              className={`flex items-center gap-3 px-4 py-2 rounded-xl border cursor-pointer transition-all ${
+                chatAgent?.id === agent.id
+                  ? "bg-blue-600 text-white border-blue-600 shadow-md"
+                  : "bg-gray-50 text-gray-700 border-gray-300 hover:bg-gray-100"
+              }`}
+              whileHover={{ scale: 1.03 }}
+              onClick={() => setChatAgent(agent)}
+            >
+              <span className="font-medium truncate max-w-[160px]">
+                {agent.agent_name || "Agente sin nombre"}
+              </span>
+
+              <div className="flex gap-2 text-sm">
+                <Settings2
+                  className="w-4 h-4 hover:text-yellow-400"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEdit(agent, idx);
+                  }}
+                />
+                <Trash2
+                  className="w-4 h-4 hover:text-red-500"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(agent.id);
+                  }}
+                />
+              </div>
+            </motion.div>
+          ))
+        )}
+      </div>
+
+      {/* 🔹 CHAT SIEMPRE VISIBLE */}
+      <div className="flex-1 overflow-hidden">
+        {chatAgent ? (
+          <AgentsChatStyled agent={chatAgent} />
+        ) : (
+          <div className="flex items-center justify-center h-full text-gray-400 italic">
+            Selecciona un agente para iniciar chat.
+          </div>
+        )}
+      </div>
+
+      {/* 🔹 MODAL DE EDICIÓN DE AGENTE */}
+      {selectedAgent && (
+        <motion.div
+          className="fixed inset-0 bg-black/30 backdrop-blur-md flex justify-center items-center z-50"
+          onClick={() => setSelectedAgent(null)}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div
+            className="relative bg-white rounded-2xl shadow-xl p-8 w-[85vw] h-[85vh] overflow-y-auto flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+          >
+            <button
+              onClick={() => setSelectedAgent(null)}
+              className="absolute top-4 right-6 text-gray-500 hover:text-gray-700 text-xl"
+            >
+              ✖
+            </button>
+            <AgentForm
+              agentData={selectedAgent.agent}
+              onSave={handleSave}
+              onCancel={() => setSelectedAgent(null)}
+            />
+          </motion.div>
+        </motion.div>
+      )}
+    </div>
   );
 }
