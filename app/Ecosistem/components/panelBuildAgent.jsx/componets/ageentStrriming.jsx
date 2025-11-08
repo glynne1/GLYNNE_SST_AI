@@ -3,28 +3,34 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Send, Mic } from "lucide-react";
-import { supabase } from "../../../../lib/supabaseClient"; // Ajusta ruta según tu proyecto
+import { supabase } from "../../../../lib/supabaseClient";
 
-export default function AgentsChatStyled({ agent }) {
+export default function AgentsChatStyled() {
+  const [agentsList, setAgentsList] = useState([]);
   const [selectedAgent, setSelectedAgent] = useState(null);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
-  const [apiKey, setApiKey] = useState(""); // API Key input
-  const [waToken, setWaToken] = useState(""); // WhatsApp Token input
-  const [toNumber, setToNumber] = useState(""); // Número de destino
+  const [apiKey, setApiKey] = useState("");
+  const [waToken, setWaToken] = useState("");
+  const [toNumber, setToNumber] = useState("");
   const messagesEndRef = useRef(null);
 
   const apiURL = process.env.NEXT_PUBLIC_API_URL || "http://0.0.0.0:8000";
 
-  // ✅ Cada vez que abra el chat, usar el agente que viene por props
+  // 🔹 Cargar agentes desde Supabase (solo lectura)
   useEffect(() => {
-    if (agent) {
-      setSelectedAgent(agent);
-      setMessages([]); // limpiar chat cuando se abre uno nuevo
-    }
-  }, [agent]);
+    const fetchAgents = async () => {
+      const { data, error } = await supabase.from("agents").select("*").order("created_at", { ascending: false });
+      if (error) {
+        console.error("Error fetching agents:", error);
+      } else {
+        setAgentsList(data || []);
+      }
+    };
+    fetchAgents();
+  }, []);
 
   // 🔄 Scroll al final de los mensajes
   const scrollToBottom = () =>
@@ -85,19 +91,29 @@ export default function AgentsChatStyled({ agent }) {
     setIsRecording(!isRecording);
   };
 
-  if (!selectedAgent)
-    return (
-      <div className="w-full h-full flex flex-col items-center justify-center text-gray-500 gap-4">
-        <p>Selecciona un agente para iniciar la conversación.</p>
-        <p>Recuerda agregar tu API Key y token de WhatsApp.</p>
-      </div>
-    );
-
   return (
     <div className="w-full h-screen flex flex-col bg-white">
 
-      {/* 💻 FORMULARIOS PARA API KEY Y WHATSAPP */}
+      {/* 🔹 SELECCIONAR AGENTE */}
       <div className="px-4 py-2 flex flex-col gap-2">
+        <select
+          className="px-4 py-2 rounded-lg border border-gray-300 outline-none"
+          value={selectedAgent?.id || ""}
+          onChange={(e) => {
+            const agent = agentsList.find(a => a.id === e.target.value);
+            setSelectedAgent(agent || null);
+            setMessages([]);
+          }}
+        >
+          <option value="">Selecciona un agente</option>
+          {agentsList.map((a) => (
+            <option key={a.id} value={a.id}>
+              {a.agent_name} - {a.specialty || "Sin especialidad"}
+            </option>
+          ))}
+        </select>
+
+        {/* FORMULARIOS PARA API KEY Y WHATSAPP */}
         <input
           type="text"
           value={apiKey}
@@ -137,9 +153,7 @@ export default function AgentsChatStyled({ agent }) {
             </div>
           </div>
         ))}
-        {isLoading && (
-          <div className="text-gray-400 text-sm px-2">Escribiendo...</div>
-        )}
+        {isLoading && <div className="text-gray-400 text-sm px-2">Escribiendo...</div>}
         <div ref={messagesEndRef} />
       </div>
 
@@ -154,17 +168,12 @@ export default function AgentsChatStyled({ agent }) {
               onKeyDown={handleKeyDown}
               placeholder="Escribe tu mensaje..."
               className="w-full px-4 py-4 rounded-full text-lg bg-white outline-none relative z-10 pr-14"
-              style={{
-                border: "2px solid transparent",
-                backgroundClip: "padding-box",
-              }}
+              style={{ border: "2px solid transparent", backgroundClip: "padding-box" }}
             />
-
             <span
               className="absolute inset-0 rounded-full pointer-events-none"
               style={{
-                background:
-                  "linear-gradient(90deg, #4ade80, #3b82f6, #facc15, #ec4899)",
+                background: "linear-gradient(90deg, #4ade80, #3b82f6, #facc15, #ec4899)",
                 backgroundSize: "300% 300%",
                 animation: "shine 2.5s linear infinite",
                 borderRadius: "9999px",
