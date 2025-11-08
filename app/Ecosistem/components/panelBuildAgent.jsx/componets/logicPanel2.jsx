@@ -18,7 +18,7 @@ import Plantillas from "./AgntsCardsEjm";
 import Diagrama from "./DiagramaFlujoFW";
 import LogicPanel from "./logicPanel";
 import Consola from "./consola";
-import AgentStreaming from "./CardsAgentt2"; // 🆕 Nueva importación
+import AgentStreaming from "./ageentStrriming"; // 🆕 Nueva importación
 
 export default function SideMenuAgent() {
   const [activeSection, setActiveSection] = useState("agents");
