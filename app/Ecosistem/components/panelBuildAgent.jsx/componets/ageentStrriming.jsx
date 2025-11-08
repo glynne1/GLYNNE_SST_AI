@@ -17,13 +17,12 @@ export default function AgentCards() {
   // ✅ Guardamos historial por agente localmente
   const [chatHistories, setChatHistories] = useState({});
 
-  // 🔥 NUEVO: guarda en Supabase solo la conversación del agente
+  // ✅ Guardar conversación COMPLETA (user + backend) en Supabase
   const saveChatToSupabase = async (agentId, messages) => {
     try {
       const user = await getCurrentUser();
       if (!user) return;
 
-      // 1. Obtener el JSON actual del agente
       const { data, error: fetchError } = await supabase
         .from("auditorias")
         .select("user_config")
@@ -32,13 +31,12 @@ export default function AgentCards() {
 
       if (fetchError || !data) throw fetchError;
 
-      // 2. Actualizar SOLO el campo conversation
+      // 🔥 Aquí garantizamos que se guarda TODO el chat sin modificar nada más
       const updatedConfig = {
         ...data.user_config,
-        conversation: messages,
+        conversation: messages, // 👈 Guarda el array completo del chat
       };
 
-      // 3. Guardarlo nuevamente sin cambiar el resto
       await supabase
         .from("auditorias")
         .update({ user_config: updatedConfig })
@@ -49,7 +47,7 @@ export default function AgentCards() {
     }
   };
 
-  // 🔥 NUEVO: cada vez que cambie el chat del agente activo, lo guardamos
+  // ✅ Cada vez que cambie el chat del agente seleccionado, se guarda
   useEffect(() => {
     if (chatAgent?.id && chatHistories[chatAgent.id]) {
       saveChatToSupabase(chatAgent.id, chatHistories[chatAgent.id]);
@@ -77,6 +75,7 @@ export default function AgentCards() {
         })) || [];
 
       setAgents(formattedAgents);
+
       if (formattedAgents.length > 0 && !chatAgent) {
         setChatAgent(formattedAgents[0]);
       }
@@ -132,7 +131,6 @@ export default function AgentCards() {
 
   return (
     <div className="w-full h-screen flex flex-col bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden">
-      {/* HEADER */}
       <div className="flex items-center justify-between p-4 border-b bg-gray-50">
         <h2 className="text-lg font-bold text-gray-800">Agentes GLYNNE</h2>
         <button
@@ -151,7 +149,6 @@ export default function AgentCards() {
         </button>
       </div>
 
-      {/* LISTA DE AGENTES */}
       <div className="flex flex-wrap gap-2 p-3 border-b bg-white overflow-x-auto">
         {loading ? (
           <p className="text-sm text-gray-400 italic">Cargando agentes...</p>
@@ -194,7 +191,6 @@ export default function AgentCards() {
         )}
       </div>
 
-      {/* ✅ CHAT CON MEMORIA + GUARDADO EN SUPABASE */}
       <div className="flex-1 overflow-hidden">
         {chatAgent ? (
           <AgentsChatStyled
@@ -203,7 +199,7 @@ export default function AgentCards() {
             setMessages={(msgs) =>
               setChatHistories((prev) => ({
                 ...prev,
-                [chatAgent.id]: msgs,
+                [chatAgent.id]: msgs, // ✅ Aquí ya guarda TODO lo que envía el componente del chat
               }))
             }
           />
@@ -214,7 +210,6 @@ export default function AgentCards() {
         )}
       </div>
 
-      {/* MODAL EDITAR AGENTE */}
       {selectedAgent && (
         <motion.div
           className="fixed inset-0 bg-black/30 backdrop-blur-md flex justify-center items-center z-50"
