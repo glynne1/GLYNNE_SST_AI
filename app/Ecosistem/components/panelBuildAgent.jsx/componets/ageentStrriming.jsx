@@ -14,91 +14,78 @@ export default function AgentCards() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Guardado local de conversaciones por agente
   const [chatHistories, setChatHistories] = useState({});
 
-  // ✅ GUARDAR MENSAJE EN SUPABASE (sin borrar lo anterior)
-  const saveMessageToAgentChat = async (agentId, newMessage) => {
+  // ✅ GUARDA 1 MENSAJE NUEVO SIN DUPLICAR NI BORRAR HISTORIAL
+  const pushMessage = async (agentId, message) => {
     try {
-      if (!newMessage?.content?.trim()) return; // no guardar mensajes vacíos
-
+      if (!message?.content?.trim()) return;
       const user = await getCurrentUser();
-      if (!user) throw new Error("Usuario no autenticado");
+      if (!user) return;
 
-      const { data, error } = await supabase
+      // Traer conversación actual
+      const { data } = await supabase
         .from("auditorias")
         .select("user_config")
         .eq("id", agentId)
         .eq("user_id", user.id)
         .single();
 
-      if (error || !data) throw new Error("No se encontró el agente.");
+      const current = data?.user_config?.conversation || [];
 
-      const currentConfig = data.user_config || {};
+      // Evitar duplicados si el último mensaje es igual
+      const lastMsg = current[current.length - 1];
+      if (lastMsg?.content === message.content && lastMsg?.role === message.role) {
+        return;
+      }
 
-      const updatedConversation = [
-        ...(Array.isArray(currentConfig.conversation) ? currentConfig.conversation : []),
-        newMessage,
-      ];
+      const updated = [...current, message];
 
-      const updatedConfig = {
-        ...currentConfig,
-        conversation: updatedConversation,
-      };
-
-      const { error: updateError } = await supabase
+      await supabase
         .from("auditorias")
-        .update({ user_config: updatedConfig })
+        .update({ user_config: { ...data.user_config, conversation: updated } })
         .eq("id", agentId)
-        .eq("user_id", user.id)
-        .select();
+        .eq("user_id", user.id);
 
-      if (updateError) throw updateError;
-
-      // ✅ Actualiza UI en tiempo real también
-      setChatHistories((prev) => ({
+      // También actualizar el estado local
+      setChatHistories(prev => ({
         ...prev,
-        [agentId]: updatedConversation,
+        [agentId]: updated
       }));
 
-      console.log("✅ Mensaje guardado en Supabase");
     } catch (err) {
-      console.error("❌ Error guardando mensaje:", err.message);
+      console.error("Error guardando mensaje:", err);
     }
   };
 
-  // ✅ CARGAR AGENTES
   const fetchAgents = async () => {
     try {
       setLoading(true);
       const user = await getCurrentUser();
-      if (!user) throw new Error("Usuario no autenticado");
+      if (!user) return;
 
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("auditorias")
         .select("id, user_config")
         .eq("user_id", user.id)
         .order("id", { ascending: false });
 
-      if (error) throw error;
+      const formatted = data?.map(item => ({
+        id: item.id,
+        ...item.user_config,
+      })) || [];
 
-      const formattedAgents =
-        data?.map((item) => ({
-          id: item.id,
-          ...item.user_config,
-        })) || [];
+      setAgents(formatted);
 
-      setAgents(formattedAgents);
-
-      if (formattedAgents.length > 0 && !chatAgent) {
-        setChatAgent(formattedAgents[0]);
-        setChatHistories((prev) => ({
+      if (formatted.length > 0 && !chatAgent) {
+        setChatAgent(formatted[0]);
+        setChatHistories(prev => ({
           ...prev,
-          [formattedAgents[0].id]: formattedAgents[0].conversation || [],
+          [formatted[0].id]: formatted[0].conversation || []
         }));
       }
     } catch (err) {
-      console.error("Error al cargar agentes:", err);
+      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -115,21 +102,10 @@ export default function AgentCards() {
   };
 
   const handleDelete = async (agentId) => {
-    try {
-      if (!window.confirm("¿Seguro que deseas eliminar este agente?")) return;
-
-      const { error } = await supabase
-        .from("auditorias")
-        .delete()
-        .eq("id", agentId);
-
-      if (error) throw error;
-
-      setAgents((prev) => prev.filter((a) => a.id !== agentId));
-      if (chatAgent?.id === agentId) setChatAgent(null);
-    } catch (err) {
-      console.error("❌ Error al eliminar agente:", err);
-    }
+    if (!confirm("¿Eliminar agente?")) return;
+    await supabase.from("auditorias").delete().eq("id", agentId);
+    setAgents(a => a.filter(x => x.id !== agentId));
+    if (chatAgent?.id === agentId) setChatAgent(null);
   };
 
   const handleEdit = (agent, index) => {
@@ -137,8 +113,8 @@ export default function AgentCards() {
   };
 
   const handleSave = (updatedAgent) => {
-    setAgents((prev) =>
-      prev.map((a, i) => (i === selectedAgent.index ? updatedAgent : a))
+    setAgents(prev =>
+      prev.map((a, i) => i === selectedAgent.index ? updatedAgent : a)
     );
     setSelectedAgent(null);
   };
@@ -146,64 +122,53 @@ export default function AgentCards() {
   return (
     <div className="w-full h-screen flex flex-col bg-white rounded-2xl border shadow-md overflow-hidden">
 
-      {/* HEADER */}
       <div className="flex items-center justify-between p-4 border-b bg-gray-50">
         <h2 className="text-lg font-bold">Agentes GLYNNE</h2>
-        <button
-          onClick={handleRefresh}
-          className="flex items-center justify-center w-9 h-9 rounded-full border"
-        >
+        <button onClick={handleRefresh} className="w-9 h-9 rounded-full border flex items-center justify-center">
           <motion.div animate={{ rotate: isRefreshing ? 360 : 0 }} transition={{ duration: 0.6, repeat: isRefreshing ? Infinity : 0 }}>
             <RotateCcw className="w-5 h-5" />
           </motion.div>
         </button>
       </div>
 
-      {/* LISTA DE AGENTES */}
       <div className="flex gap-2 p-3 border-b overflow-x-auto">
-        {loading ? (
-          <p>Cargando...</p>
-        ) : (
-          agents.map((agent, idx) => (
-            <motion.div
-              key={agent.id}
-              className={`flex items-center gap-3 px-4 py-2 rounded-xl border cursor-pointer ${
-                chatAgent?.id === agent.id ? "bg-blue-600 text-white" : "bg-gray-50"
-              }`}
-              onClick={() => {
-                setChatAgent(agent);
-                setChatHistories((prev) => ({
-                  ...prev,
-                  [agent.id]: agent.conversation || [],
-                }));
-              }}
-            >
-              <span>{agent.agent_name || "Sin nombre"}</span>
-
-              <Settings2 className="w-4" onClick={(e) => { e.stopPropagation(); handleEdit(agent, idx); }}/>
-              <Trash2 className="w-4" onClick={(e) => { e.stopPropagation(); handleDelete(agent.id); }}/>
-            </motion.div>
-          ))
-        )}
+        {loading ? "Cargando..." : agents.map((agent, i) => (
+          <motion.div
+            key={agent.id}
+            className={`flex items-center gap-3 px-4 py-2 border rounded-xl cursor-pointer ${chatAgent?.id === agent.id ? "bg-blue-600 text-white" : "bg-gray-50"}`}
+            onClick={() => {
+              setChatAgent(agent);
+              setChatHistories(prev => ({
+                ...prev,
+                [agent.id]: agent.conversation || []
+              }));
+            }}
+          >
+            {agent.agent_name || "Sin nombre"}
+            <Settings2 className="w-4" onClick={(e) => { e.stopPropagation(); handleEdit(agent, i); }} />
+            <Trash2 className="w-4" onClick={(e) => { e.stopPropagation(); handleDelete(agent.id); }} />
+          </motion.div>
+        ))}
       </div>
 
-      {/* ✅ CHAT */}
       <div className="flex-1 overflow-hidden">
         {chatAgent ? (
           <AgentsChatStyled
             agent={chatAgent}
             messages={chatHistories[chatAgent.id] || []}
+
+            // ✅ Aquí interceptamos cada mensaje que entre al chat
+            onNewMessage={(msg) => {
+              // msg = { role: "user"|"assistant", content: "texto" }
+              pushMessage(chatAgent.id, msg);
+            }}
+
             setMessages={(msgs) => {
-              setChatHistories((prev) => ({
-                ...prev,
-                [chatAgent.id]: msgs,
-              }));
-              const last = msgs[msgs.length - 1];
-              if (last) saveMessageToAgentChat(chatAgent.id, last);
+              setChatHistories(prev => ({ ...prev, [chatAgent.id]: msgs }));
             }}
           />
         ) : (
-          <div className="flex items-center justify-center h-full text-gray-400">
+          <div className="h-full flex items-center justify-center text-gray-400">
             Selecciona un agente para chatear
           </div>
         )}
