@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 import AgentForm from "./AgentEditModal";
 import AgentsChatStyled from "./AgentEstado";
 import { supabase, getCurrentUser } from "../../../../lib/supabaseClient";
-import { updateUserAgentConfig } from "./updateAgentConfig"; // ✅ import del módulo nuevo
 
 export default function AgentCards() {
   const [agents, setAgents] = useState([]);
@@ -15,76 +14,32 @@ export default function AgentCards() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const [chatHistories, setChatHistories] = useState({});
-
-  // ✅ GUARDA 1 MENSAJE NUEVO SOLO EN "conversation" DEL JSON
-  const pushMessage = async (agentId, message) => {
-    try {
-      if (!message?.content?.trim()) return;
-      const user = await getCurrentUser();
-      if (!user) return;
-
-      // Obtener conversación actual del agente
-      const { data } = await supabase
-        .from("auditorias")
-        .select("user_config")
-        .eq("id", agentId)
-        .eq("user_id", user.id)
-        .single();
-
-      const current = data?.user_config?.conversation || [];
-
-      // Evitar duplicados
-      const lastMsg = current[current.length - 1];
-      if (lastMsg?.content === message.content && lastMsg?.role === message.role) {
-        return;
-      }
-
-      // Agregar mensaje al array
-      const updated = [...current, message];
-
-      // ✅ Actualiza solo la parte de conversation en Supabase
-      await updateUserAgentConfig(agentId, { conversation: updated });
-
-      // ✅ Actualiza también el estado local
-      setChatHistories(prev => ({
-        ...prev,
-        [agentId]: updated
-      }));
-
-    } catch (err) {
-      console.error("Error guardando mensaje:", err);
-    }
-  };
-
   const fetchAgents = async () => {
     try {
       setLoading(true);
       const user = await getCurrentUser();
-      if (!user) return;
+      if (!user) throw new Error("Usuario no autenticado");
 
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("auditorias")
         .select("id, user_config")
         .eq("user_id", user.id)
         .order("id", { ascending: false });
 
-      const formatted = data?.map(item => ({
-        id: item.id,
-        ...item.user_config,
-      })) || [];
+      if (error) throw error;
 
-      setAgents(formatted);
+      const formattedAgents =
+        data?.map((item) => ({
+          id: item.id,
+          ...item.user_config,
+        })) || [];
 
-      if (formatted.length > 0 && !chatAgent) {
-        setChatAgent(formatted[0]);
-        setChatHistories(prev => ({
-          ...prev,
-          [formatted[0].id]: formatted[0].conversation || []
-        }));
+      setAgents(formattedAgents);
+      if (formattedAgents.length > 0 && !chatAgent) {
+        setChatAgent(formattedAgents[0]); // selecciona el primero por defecto
       }
     } catch (err) {
-      console.error(err);
+      console.error("Error al cargar agentes:", err);
     } finally {
       setLoading(false);
     }
@@ -101,10 +56,25 @@ export default function AgentCards() {
   };
 
   const handleDelete = async (agentId) => {
-    if (!confirm("¿Eliminar agente?")) return;
-    await supabase.from("auditorias").delete().eq("id", agentId);
-    setAgents(a => a.filter(x => x.id !== agentId));
-    if (chatAgent?.id === agentId) setChatAgent(null);
+    try {
+      const confirmDelete = window.confirm(
+        "¿Seguro que deseas eliminar este agente? Esta acción no se puede deshacer."
+      );
+      if (!confirmDelete) return;
+
+      const { error } = await supabase
+        .from("auditorias")
+        .delete()
+        .eq("id", agentId);
+
+      if (error) throw error;
+
+      setAgents((prev) => prev.filter((a) => a.id !== agentId));
+      if (chatAgent?.id === agentId) setChatAgent(null);
+    } catch (err) {
+      console.error("❌ Error al eliminar agente:", err);
+      alert("Hubo un error al eliminar el agente. Revisa la consola.");
+    }
   };
 
   const handleEdit = (agent, index) => {
@@ -112,71 +82,126 @@ export default function AgentCards() {
   };
 
   const handleSave = (updatedAgent) => {
-    setAgents(prev =>
-      prev.map((a, i) => i === selectedAgent.index ? updatedAgent : a)
+    setAgents((prev) =>
+      prev.map((a, i) => (i === selectedAgent.index ? updatedAgent : a))
     );
     setSelectedAgent(null);
   };
 
   return (
-    <div className="w-full h-screen flex flex-col bg-white rounded-2xl border shadow-md overflow-hidden">
-
+    <div className="w-full h-screen flex flex-col bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden">
+      {/* 🔹 HEADER SUPERIOR */}
       <div className="flex items-center justify-between p-4 border-b bg-gray-50">
-        <h2 className="text-lg font-bold">Agentes GLYNNE</h2>
-        <button onClick={handleRefresh} className="w-9 h-9 rounded-full border flex items-center justify-center">
-          <motion.div animate={{ rotate: isRefreshing ? 360 : 0 }} transition={{ duration: 0.6, repeat: isRefreshing ? Infinity : 0 }}>
-            <RotateCcw className="w-5 h-5" />
+        <h2 className="text-lg font-bold text-gray-800">
+          Agentes GLYNNE
+        </h2>
+        <button
+          onClick={handleRefresh}
+          className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-300 hover:bg-gray-100 transition-all"
+          title="Actualizar lista"
+        >
+          <motion.div
+            animate={{ rotate: isRefreshing ? 360 : 0 }}
+            transition={{
+              duration: 0.6,
+              ease: "easeInOut",
+              repeat: isRefreshing ? Infinity : 0,
+            }}
+          >
+            <RotateCcw
+              className={`w-5 h-5 ${
+                isRefreshing ? "text-blue-600" : "text-gray-600"
+              }`}
+            />
           </motion.div>
         </button>
       </div>
 
-      <div className="flex gap-2 p-3 border-b overflow-x-auto">
-        {loading ? "Cargando..." : agents.map((agent, i) => (
-          <motion.div
-            key={agent.id}
-            className={`flex items-center gap-3 px-4 py-2 border rounded-xl cursor-pointer ${chatAgent?.id === agent.id ? "bg-blue-600 text-white" : "bg-gray-50"}`}
-            onClick={() => {
-              setChatAgent(agent);
-              setChatHistories(prev => ({
-                ...prev,
-                [agent.id]: agent.conversation || []
-              }));
-            }}
-          >
-            {agent.agent_name || "Sin nombre"}
-            <Settings2 className="w-4" onClick={(e) => { e.stopPropagation(); handleEdit(agent, i); }} />
-            <Trash2 className="w-4" onClick={(e) => { e.stopPropagation(); handleDelete(agent.id); }} />
-          </motion.div>
-        ))}
+      {/* 🔹 LISTA DE AGENTES (HEADER TYPE) */}
+      <div className="flex flex-wrap gap-2 p-3 border-b bg-white overflow-x-auto">
+        {loading ? (
+          <p className="text-sm text-gray-400 italic">Cargando agentes...</p>
+        ) : agents.length === 0 ? (
+          <p className="text-sm text-gray-400 italic">
+            No hay agentes creados.
+          </p>
+        ) : (
+          agents.map((agent, idx) => (
+            <motion.div
+              key={agent.id || idx}
+              className={`flex items-center gap-3 px-4 py-2 rounded-xl border cursor-pointer transition-all ${
+                chatAgent?.id === agent.id
+                  ? "bg-blue-600 text-white border-blue-600 shadow-md"
+                  : "bg-gray-50 text-gray-700 border-gray-300 hover:bg-gray-100"
+              }`}
+              whileHover={{ scale: 1.03 }}
+              onClick={() => setChatAgent(agent)}
+            >
+              <span className="font-medium truncate max-w-[160px]">
+                {agent.agent_name || "Agente sin nombre"}
+              </span>
+
+              <div className="flex gap-2 text-sm">
+                <Settings2
+                  className="w-4 h-4 hover:text-yellow-400"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEdit(agent, idx);
+                  }}
+                />
+                <Trash2
+                  className="w-4 h-4 hover:text-red-500"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(agent.id);
+                  }}
+                />
+              </div>
+            </motion.div>
+          ))
+        )}
       </div>
 
+      {/* 🔹 CHAT SIEMPRE VISIBLE */}
       <div className="flex-1 overflow-hidden">
         {chatAgent ? (
-          <AgentsChatStyled
-            agent={chatAgent}
-            messages={chatHistories[chatAgent.id] || []}
-            onNewMessage={(msg) => {
-              // msg = { role: "user"|"assistant", content: "texto" }
-              pushMessage(chatAgent.id, msg);
-            }}
-            setMessages={(msgs) => {
-              setChatHistories(prev => ({ ...prev, [chatAgent.id]: msgs }));
-            }}
-          />
+          <AgentsChatStyled agent={chatAgent} />
         ) : (
-          <div className="h-full flex items-center justify-center text-gray-400">
-            Selecciona un agente para chatear
+          <div className="flex items-center justify-center h-full text-gray-400 italic">
+            Selecciona un agente para iniciar chat.
           </div>
         )}
       </div>
 
+      {/* 🔹 MODAL DE EDICIÓN DE AGENTE */}
       {selectedAgent && (
-        <div className="fixed inset-0 bg-black/30 flex justify-center items-center">
-          <div className="bg-white p-6 rounded-2xl w-[85vw] h-[85vh]">
-            <button className="absolute top-4 right-6" onClick={() => setSelectedAgent(null)}>✖</button>
-            <AgentForm agentData={selectedAgent.agent} onSave={handleSave} onCancel={() => setSelectedAgent(null)} />
-          </div>
-        </div>
+        <motion.div
+          className="fixed inset-0 bg-black/30 backdrop-blur-md flex justify-center items-center z-50"
+          onClick={() => setSelectedAgent(null)}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div
+            className="relative bg-white rounded-2xl shadow-xl p-8 w-[85vw] h-[85vh] overflow-y-auto flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+          >
+            <button
+              onClick={() => setSelectedAgent(null)}
+              className="absolute top-4 right-6 text-gray-500 hover:text-gray-700 text-xl"
+            >
+              ✖
+            </button>
+            <AgentForm
+              agentData={selectedAgent.agent}
+              onSave={handleSave}
+              onCancel={() => setSelectedAgent(null)}
+            />
+          </motion.div>
+        </motion.div>
       )}
     </div>
   );

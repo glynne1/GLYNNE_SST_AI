@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Send, Mic } from "lucide-react";
+import { supabase, getCurrentUser } from "../../../../lib/supabaseClient";
 
 export default function AgentsChatStyled({ agent }) {
   const [selectedAgent, setSelectedAgent] = useState(null);
@@ -14,11 +15,10 @@ export default function AgentsChatStyled({ agent }) {
 
   const apiURL = process.env.NEXT_PUBLIC_API_URL || "https://generative-glynne-motor.onrender.com";
 
-  // ✅ IMPORTANTE: cada vez que abra el chat, usar el agente que viene por props
   useEffect(() => {
     if (agent) {
       setSelectedAgent(agent);
-      setMessages([]); // limpiar chat cuando se abre uno nuevo
+      setMessages([]);
     }
   }, [agent]);
 
@@ -29,9 +29,38 @@ export default function AgentsChatStyled({ agent }) {
     scrollToBottom();
   }, [messages]);
 
-  // ===========================================================
-  // 🚀 Enviar mensaje al backend usando el agent de la card
-  // ===========================================================
+  // ✅ GUARDAR MENSAJE EN SUPABASE (sin alterar nada del agente)
+  async function saveMessageToSupabase(newMessage) {
+    const user = await getCurrentUser();
+    if (!user || !selectedAgent) return;
+
+    const { data, error } = await supabase
+      .from("auditorias")
+      .select("id, user_config")
+      .eq("user_id", user.id)
+      .eq("user_config->>agent_name", selectedAgent.agent_name)
+      .single();
+
+    if (error || !data) return console.error("No se encontró el agente en Supabase");
+
+    const currentConfig = data.user_config;
+    const currentConversation = currentConfig.conversation || [];
+
+    const updatedConversation = [...currentConversation, newMessage];
+
+    const updatedConfig = {
+      ...currentConfig,
+      conversation: updatedConversation,
+    };
+
+    const { error: updateError } = await supabase
+      .from("auditorias")
+      .update({ user_config: updatedConfig })
+      .eq("id", data.id);
+
+    if (updateError) console.error("Error guardando mensaje en Supabase:", updateError);
+  }
+
   const sendMessage = async () => {
     if (!input.trim() || isLoading || !selectedAgent) return;
 
@@ -40,29 +69,35 @@ export default function AgentsChatStyled({ agent }) {
     setInput("");
     setIsLoading(true);
 
+    // ✅ guardar mensaje usuario
+    saveMessageToSupabase(userMessage);
+
     try {
       const res = await fetch(`${apiURL}/dynamic/agent/chat/full`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           mensaje: input,
-          agent_config: selectedAgent, // ✅ Aquí enviamos SOLO el agente de la card clickeada
+          agent_config: selectedAgent,
         }),
       });
 
       const data = await res.json();
-
       const botMessage = {
         from: "bot",
         text: data?.reply || "No recibí respuesta",
       };
 
       setMessages((prev) => [...prev, botMessage]);
+
+      // ✅ guardar mensaje bot
+      saveMessageToSupabase(botMessage);
     } catch (err) {
-      setMessages((prev) => [
-        ...prev,
-        { from: "bot", text: "❌ Error al conectar con el servidor" },
-      ]);
+      const errorMsg = { from: "bot", text: "❌ Error al conectar con el servidor" };
+      setMessages((prev) => [...prev, errorMsg]);
+
+      // ✅ guardar mensaje error también
+      saveMessageToSupabase(errorMsg);
       console.error("Error enviando mensaje:", err);
     }
 
