@@ -25,7 +25,7 @@ export default function AgentsWhatsAppManager() {
     toNumber: "",
   });
   const messagesEndRef = useRef(null);
-  const apiURL = process.env.NEXT_PUBLIC_API_URL || "https://tu-backend.com";
+  const apiURL = process.env.NEXT_PUBLIC_API_URL || "https://generative-glynne-motor.onrender.com";
 
   // ================= Fetch Agentes =================
   const fetchAgents = async () => {
