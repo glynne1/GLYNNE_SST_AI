@@ -16,25 +16,31 @@ export async function saveUserAgentConfig(configData) {
 
   if (fetchError) throw new Error("Error al verificar agentes existentes");
 
-  // 🚫 Si ya tiene 6 o más, no permitir crear otro
+  // 🚫 Máximo 6 agentes
   if (existingAgents && existingAgents.length >= 6) {
     throw new Error("Has alcanzado el límite máximo de 6 agentes.");
   }
 
-  // 🧩 Guardamos la nueva configuración
+  // ✅ Agregamos automáticamente el espacio para la conversación
+  const agentToSave = {
+    ...configData,
+    conversation: []  // 👈 Aquí se guardará el chat de ese agente
+  };
+
+  // 🧩 Guardamos la nueva configuración con conversation incluido
   const { error: insertError } = await supabase
     .from("auditorias")
     .insert([
       {
         user_id: user.id,
-        user_config: configData,
+        user_config: agentToSave,
       },
     ]);
 
   if (insertError) throw insertError;
 }
 
-// ✅ Componente principal
+// ✅ Componente del botón
 export default function SaveAgentConfigButton({ configData }) {
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState("");
@@ -49,7 +55,7 @@ export default function SaveAgentConfigButton({ configData }) {
 
     } catch (err) {
       console.error(err.message);
-      // 🧠 Mensaje amigable según el error
+
       if (err.message.includes("límite máximo")) {
         setStatus("⚠️ Solo puedes crear hasta 6 agentes.");
       } else if (err.message.includes("no autenticado")) {
@@ -57,6 +63,7 @@ export default function SaveAgentConfigButton({ configData }) {
       } else {
         setStatus("❌ Error al guardar el agente.");
       }
+
     } finally {
       setSaving(false);
     }
