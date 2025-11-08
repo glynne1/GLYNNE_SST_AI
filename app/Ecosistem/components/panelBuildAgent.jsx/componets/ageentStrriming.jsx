@@ -14,8 +14,8 @@ export default function AgentCards() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Guardamos historial por agente
-  const [chatHistories, setChatHistories] = useState({});
+  // ✅ CHAT GLOBAL (todos los agentes comparten este)
+  const [messages, setMessages] = useState([]);
 
   const fetchAgents = async () => {
     try {
@@ -39,7 +39,7 @@ export default function AgentCards() {
 
       setAgents(formattedAgents);
       if (formattedAgents.length > 0 && !chatAgent) {
-        setChatAgent(formattedAgents[0]); // Selecciona el primero por defecto
+        setChatAgent(formattedAgents[0]); // seleccionar primero por defecto
       }
     } catch (err) {
       console.error("Error al cargar agentes:", err);
@@ -76,7 +76,7 @@ export default function AgentCards() {
       if (chatAgent?.id === agentId) setChatAgent(null);
     } catch (err) {
       console.error("❌ Error al eliminar agente:", err);
-      alert("Hubo un error al eliminar el agente. Revisa la consola.");
+      alert("Hubo un error al eliminar el agente.");
     }
   };
 
@@ -93,17 +93,17 @@ export default function AgentCards() {
 
   return (
     <div className="w-full h-screen flex flex-col bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden">
+
       {/* HEADER */}
       <div className="flex items-center justify-between p-4 border-b bg-gray-50">
         <h2 className="text-lg font-bold text-gray-800">Agentes GLYNNE</h2>
         <button
           onClick={handleRefresh}
           className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-300 hover:bg-gray-100 transition-all"
-          title="Actualizar lista"
         >
           <motion.div
             animate={{ rotate: isRefreshing ? 360 : 0 }}
-            transition={{ duration: 0.6, ease: "easeInOut", repeat: isRefreshing ? Infinity : 0 }}
+            transition={{ duration: 0.6, repeat: isRefreshing ? Infinity : 0 }}
           >
             <RotateCcw
               className={`w-5 h-5 ${isRefreshing ? "text-blue-600" : "text-gray-600"}`}
@@ -155,18 +155,13 @@ export default function AgentCards() {
         )}
       </div>
 
-      {/* ✅ CHAT SIEMPRE VISIBLE con memoria por agente */}
+      {/* ✅ CHAT GLOBAL (NO SE BORRA al cambiar de agente) */}
       <div className="flex-1 overflow-hidden">
         {chatAgent ? (
           <AgentsChatStyled
             agent={chatAgent}
-            messages={chatHistories[chatAgent.id] || []}
-            setMessages={(msgs) =>
-              setChatHistories((prev) => ({
-                ...prev,
-                [chatAgent.id]: msgs,
-              }))
-            }
+            messages={messages}
+            setMessages={setMessages}
           />
         ) : (
           <div className="flex items-center justify-center h-full text-gray-400 italic">
@@ -197,6 +192,7 @@ export default function AgentCards() {
             >
               ✖
             </button>
+
             <AgentForm
               agentData={selectedAgent.agent}
               onSave={handleSave}
