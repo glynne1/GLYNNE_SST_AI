@@ -2,225 +2,162 @@
 
 import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { User, Send, Mic } from "lucide-react";
+import { User, Send } from "lucide-react";
 import { supabase, getCurrentUser } from "../../../../lib/supabaseClient";
 
 export default function AgentsGrid() {
   const [agents, setAgents] = useState([]);
-  const [selectedIndex, setSelectedIndex] = useState(null);
-  const [selectedAgent, setSelectedAgent] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  const [input, setInput] = useState("");
+  const [selected, setSelected] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
-  const messagesEndRef = useRef(null);
+  const [input, setInput] = useState("");
+  const chatEndRef = useRef(null);
 
-  const apiURL = process.env.NEXT_PUBLIC_API_URL || "https://generative-glynne-motor.onrender.com";
-
-  // ==========================
-  // Traer agentes desde Supabase
-  // ==========================
-  const fetchAgents = async () => {
-    try {
-      setLoading(true);
+  // 🔹 Cargar agentes desde Supabase
+  useEffect(() => {
+    const fetchAgents = async () => {
       const user = await getCurrentUser();
-      if (!user) throw new Error("Usuario no autenticado");
+      if (!user) return;
 
       const { data, error } = await supabase
-        .from("auditorias")
+        .from("agents")
         .select("*")
-        .eq("user_id", user.id)
-        .order("id", { ascending: false });
+        .eq("user_id", user.id);
 
-      if (error) throw error;
+      if (!error && data) setAgents(data);
+    };
 
-      setAgents(data || []);
-    } catch (err) {
-      console.error("Error al cargar agentes:", err);
-      setAgents([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
     fetchAgents();
   }, []);
 
-  // ==========================
-  // Scroll al final del chat
-  // ==========================
-  const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  useEffect(() => { scrollToBottom(); }, [messages]);
+  // 🔹 Scroll automático en chat
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
-  // ==========================
-  // Enviar mensaje al backend
-  // ==========================
-  const sendMessage = async () => {
-    if (!input.trim() || isLoading || !selectedAgent) return;
+  // 🔹 Enviar mensaje al backend
+  const handleSend = async () => {
+    if (!input.trim() || selected === null) return;
 
-    const userMessage = { from: "user", text: input };
-    setMessages(prev => [...prev, userMessage]);
+    const currentAgent = agents[selected];
+    const userMsg = { sender: "user", text: input };
+    setMessages((prev) => [...prev, userMsg]);
     setInput("");
-    setIsLoading(true);
 
     try {
-      const res = await fetch(`${apiURL}/dynamic/agent/chat/full`, {
+      const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          mensaje: input,
-          agent_config: selectedAgent,
+          agentConfig: currentAgent, // 🔸 Enviar toda la info del agente (rol, model, api_key, etc.)
+          message: input,
         }),
       });
 
       const data = await res.json();
-      const botMessage = { from: "bot", text: data?.reply || "No recibí respuesta" };
-      setMessages(prev => [...prev, botMessage]);
+      setMessages((prev) => [...prev, { sender: "agent", text: data.reply || "Sin respuesta." }]);
     } catch (err) {
       console.error("Error enviando mensaje:", err);
-      setMessages(prev => [...prev, { from: "bot", text: "❌ Error al conectar con el servidor" }]);
     }
-
-    setIsLoading(false);
   };
 
-  const handleKeyDown = (e) => { if (e.key === "Enter") sendMessage(); };
-  const toggleRecording = () => setIsRecording(!isRecording);
-
-  // ==========================
-  // Render
-  // ==========================
   return (
-    <div className="w-full h-screen flex flex-col bg-white">
-
-      {/* HEADER AGENTES */}
-      <div className="w-full bg-white border-b border-gray-100 px-2 py-1">
-        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar">
-          {agents.map((agent, idx) => {
-            const isSelected = selectedIndex === idx;
-            return (
+    <div className="w-full bg-white border-b border-gray-100 px-2 py-1 flex flex-col">
+      {/* 🔸 Lista de Agentes */}
+      <div className="flex items-center gap-1 overflow-x-auto no-scrollbar pb-1">
+        {agents.slice(0, 5).map((agent, idx) => {
+          const isSelected = selected === idx;
+          return (
+            <motion.div
+              key={idx}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                setSelected(idx);
+                setMessages([]);
+              }}
+              className={`
+                flex items-center gap-1 px-2 py-1 rounded-md cursor-pointer min-w-fit
+                transition-all duration-200 relative text-xs
+                ${isSelected
+                  ? "bg-white border border-gray-400 shadow-sm"
+                  : "bg-white border border-gray-100 hover:border-gray-300 hover:bg-gray-100/50"}
+              `}
+            >
               <motion.div
-                key={agent.id || idx}
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => {
-                  setSelectedIndex(idx);
-                  setSelectedAgent(agent);
-                  setMessages([]); // limpiar chat al seleccionar otro agente
+                animate={{
+                  scale: isSelected ? [1, 1.15, 1] : 1,
+                  boxShadow: isSelected
+                    ? ["0 0 4px rgba(0,0,0,0)", "0 0 10px rgba(0,0,0,0.25)", "0 0 4px rgba(0,0,0,0)"]
+                    : "0 0 0 rgba(0,0,0,0)"
+                }}
+                transition={{
+                  duration: 1.6,
+                  repeat: isSelected ? Infinity : 0,
+                  ease: "easeInOut"
                 }}
                 className={`
-                  flex items-center gap-1 px-1 py-1 rounded-md cursor-pointer min-w-fit
-                  transition-all duration-200 relative
-                  ${isSelected 
-                    ? "bg-[#fff] border border-gray-400 shadow-sm" 
-                    : "bg-[#fff] border border-gray-100 hover:border-gray-300 hover:bg-gray-100/50"}
+                  w-4 h-4 rounded-full flex items-center justify-center border
+                  ${isSelected ? "bg-black border-black" : "bg-white border-gray-200"}
                 `}
               >
-                <motion.div
-                  animate={{
-                    scale: isSelected ? [1, 1.15, 1] : 1,
-                    boxShadow: isSelected
-                      ? ["0px 0px 4px rgba(0,0,0,0)", "0px 0px 10px rgba(0,0,0,0.25)", "0px 0px 4px rgba(0,0,0,0)"]
-                      : "0px 0px 0px rgba(0,0,0,0)"
-                  }}
-                  transition={{ duration: 1.6, repeat: isSelected ? Infinity : 0, ease: "easeInOut" }}
-                  whileHover={{ scale: 1.15, rotate: 5 }}
-                  whileTap={{ scale: 0.8 }}
-                  className={`
-                    w-4 h-4 rounded-full flex items-center justify-center border relative overflow-hidden
-                    ${isSelected ? "bg-black border-black" : "bg-white border-gray-200"}
-                  `}
-                >
-                  {isSelected && (
-                    <motion.div
-                      initial={{ opacity: 0.5, scale: 0.5 }}
-                      animate={{ opacity: 0, scale: 2 }}
-                      transition={{ duration: 0.6 }}
-                      className="absolute w-full h-full bg-white/30 rounded-full"
-                    />
-                  )}
-                  <User className={`w-2.5 h-2.5 ${isSelected ? "text-white" : "text-gray-500"}`} />
-                </motion.div>
-
-                <span className={`
-                  text-[10px] font-medium whitespace-nowrap transition-colors
-                  ${isSelected ? "text-gray-900" : "text-gray-600"}
-                `}>
-                  {agent.agent_name || "Sin nombre"}
-                </span>
-
-                <motion.div
-                  animate={{ scale: isSelected ? 1.2 : 1 }}
-                  className={`w-1.5 h-1.5 rounded-full border ml-1 ${isSelected ? "bg-black border-black" : "border-gray-300"}`}
-                />
+                <User className={`w-2.5 h-2.5 ${isSelected ? "text-white" : "text-gray-500"}`} />
               </motion.div>
-            );
-          })}
-        </div>
-        <style>{`
-          .no-scrollbar::-webkit-scrollbar { display: none; }
-          .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        `}</style>
+
+              <span className={`text-[10px] font-medium whitespace-nowrap ${isSelected ? "text-gray-900" : "text-gray-600"}`}>
+                {agent.agent_name || "Sin nombre"}
+              </span>
+
+              <motion.div
+                animate={{ scale: isSelected ? 1.2 : 1 }}
+                className={`w-1.5 h-1.5 rounded-full border ${isSelected ? "bg-black border-black" : "border-gray-300"} ml-1`}
+              />
+            </motion.div>
+          );
+        })}
       </div>
 
-      {/* CHAT */}
-      <div className="flex-1 flex flex-col w-full h-full overflow-hidden">
-        {!selectedAgent ? (
-          <div className="flex-1 w-full h-full flex items-center justify-center text-gray-400">
-            Selecciona un agente para iniciar el chat
-          </div>
-        ) : (
-          <>
-            {/* Mensajes */}
-            <div className="flex-1 px-4 py-2 flex flex-col justify-end space-y-2 overflow-y-auto">
-              {messages.map((msg, idx) => (
-                <div key={idx} className={`flex ${msg.from === "user" ? "justify-end" : "justify-start"}`}>
-                  <div className={`px-4 py-3 rounded-2xl max-w-[80%] break-words whitespace-pre-wrap ${msg.from === "user" ? "bg-black text-white" : "bg-white text-black shadow-md"}`}>
-                    <p>{msg.text}</p>
-                  </div>
-                </div>
-              ))}
-              {isLoading && <div className="text-gray-400 text-sm px-2">Escribiendo...</div>}
-              <div ref={messagesEndRef} />
-            </div>
-
-            {/* Input */}
-            <div className="w-full px-4 py-4 flex justify-center">
-              <div className="flex w-[70%] relative items-center gap-2">
-                <input
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Escribe tu mensaje..."
-                  className="w-full px-4 py-4 rounded-full text-lg bg-white outline-none relative z-10 pr-20"
-                  style={{ border: "2px solid transparent", backgroundClip: "padding-box" }}
-                />
-                <motion.button
-                  whileTap={{ scale: 0.9 }}
-                  whileHover={{ scale: 1.05 }}
-                  onClick={sendMessage}
-                  disabled={isLoading}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 bg-black text-white rounded-full w-10 h-10 flex items-center justify-center shadow-md z-20"
-                >
-                  <Send size={18} />
-                </motion.button>
-                <motion.button
-                  whileTap={{ scale: 0.9 }}
-                  whileHover={{ scale: 1.05 }}
-                  onClick={toggleRecording}
-                  className={`absolute right-14 top-1/2 -translate-y-1/2 rounded-full w-10 h-10 flex items-center justify-center shadow-md z-20 ${isRecording ? "bg-red-500 text-white" : "bg-black text-white"}`}
-                >
-                  <Mic size={18} />
-                </motion.button>
+      {/* 🔸 Chat */}
+      {selected !== null && (
+        <div className="mt-2 border border-gray-100 rounded-lg flex flex-col h-[40vh] bg-gray-50 p-2">
+          <div className="flex-1 overflow-y-auto space-y-1 text-xs">
+            {messages.map((msg, i) => (
+              <div
+                key={i}
+                className={`p-1.5 rounded-md max-w-[80%] ${
+                  msg.sender === "user"
+                    ? "bg-black text-white self-end ml-auto"
+                    : "bg-white border border-gray-200 text-gray-800"
+                }`}
+              >
+                {msg.text}
               </div>
-            </div>
-          </>
-        )}
-      </div>
+            ))}
+            <div ref={chatEndRef} />
+          </div>
+
+          <div className="mt-2 flex items-center gap-1">
+            <input
+              type="text"
+              placeholder="Escribe un mensaje..."
+              className="flex-1 text-xs border border-gray-300 rounded-md px-2 py-1 focus:outline-none"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            />
+            <button
+              onClick={handleSend}
+              className="p-1.5 bg-black text-white rounded-md hover:bg-gray-800"
+            >
+              <Send size={12} />
+            </button>
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
     </div>
   );
 }
