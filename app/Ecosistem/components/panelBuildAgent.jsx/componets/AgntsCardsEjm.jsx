@@ -76,7 +76,7 @@ export default function AgentsGrid() {
   };
 
   return (
-    <div className="w-full h-[80vh] p-0 bg-white rounded-2xl border border-gray-300 shadow-md relative overflow-y-auto">
+    <div className="w-full h-[90vh] p-0 bg-white rounded-2xl border border-gray-300 shadow-md relative overflow-y-auto">
       {/* Header */}
       <div className="flex items-center justify-between sticky top-0 z-20 backdrop-blur-md bg-white/50 px-4 py-2 border-b border-gray-200">
         <h2 className="text-lg font-bold text-gray-800 m-0">Agentes Predefinidos</h2>

@@ -21,7 +21,6 @@ export default function AgentsChatStyled({ agent }) {
     process.env.NEXT_PUBLIC_API_URL ||
     "https://generative-glynne-motor.onrender.com";
 
-  // ✅ CARGAR USUARIO LOGUEADO
   useEffect(() => {
     const fetchUserInfo = async () => {
       const user = await getCurrentUser();
@@ -36,7 +35,6 @@ export default function AgentsChatStyled({ agent }) {
     fetchUserInfo();
   }, []);
 
-  // ✅ CARGAR AGENTE Y CONVERSACIÓN
   useEffect(() => {
     if (agent) {
       setSelectedAgent(agent);
@@ -44,7 +42,6 @@ export default function AgentsChatStyled({ agent }) {
     }
   }, [agent]);
 
-  // ✅ Scroll automático al final
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -55,7 +52,6 @@ export default function AgentsChatStyled({ agent }) {
     scrollToBottom();
   }, [messages]);
 
-  // ✅ OBTENER CONVERSACIÓN GUARDADA
   async function loadConversationFromSupabase(agentName) {
     const user = await getCurrentUser();
     if (!user) return;
@@ -76,7 +72,6 @@ export default function AgentsChatStyled({ agent }) {
     setMessages(conversation);
   }
 
-  // ✅ GUARDAR MENSAJE EN SUPABASE
   async function saveMessageToSupabase(newMessage) {
     const user = await getCurrentUser();
     if (!user || !selectedAgent) return;
@@ -104,7 +99,6 @@ export default function AgentsChatStyled({ agent }) {
       console.error("Error guardando mensaje en Supabase:", updateError);
   }
 
-  // ✅ ENVIAR MENSAJE
   const sendMessage = async () => {
     if (!input.trim() || isLoading || !selectedAgent) return;
 
@@ -159,10 +153,10 @@ export default function AgentsChatStyled({ agent }) {
 
   return (
     <div className="w-full flex flex-col bg-white overflow-hidden">
-      {/* 🔹 Si no hay mensajes: bienvenida */}
+      {/* 🔹 Pantalla inicial centrada */}
       {messages.length === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center text-center px-4 relative">
-          <p className="text-2xl md:text-xl sm:text-lg mb-4">
+          <p className="text-sm md:text-base text-gray-600 mb-6 leading-relaxed">
             Hola, <span className="font-semibold">{userInfo.nombre}</span>.<br />
             Soy <span className="font-semibold">{selectedAgent.agent_name}</span>, tu{" "}
             {selectedAgent.rol?.toLowerCase() || "asistente"}.
@@ -170,8 +164,8 @@ export default function AgentsChatStyled({ agent }) {
             ¿En qué puedo ayudarte hoy?
           </p>
 
-          {/* Input centrado con gradiente */}
-          <div className="w-full max-w-3xl relative flex items-center justify-center">
+          {/* Input centrado */}
+          <div className="w-full max-w-2xl relative flex items-center justify-center">
             <div className="relative flex-1">
               <input
                 type="text"
@@ -180,7 +174,7 @@ export default function AgentsChatStyled({ agent }) {
                 onKeyDown={handleKeyDown}
                 placeholder="Escribe tu mensaje..."
                 disabled={isLoading}
-                className="w-full px-4 py-4 rounded-full text-lg bg-white outline-none relative z-10"
+                className="w-full px-4 py-3 rounded-full text-base bg-white outline-none relative z-10"
                 style={{
                   border: "2px solid transparent",
                   backgroundClip: "padding-box",
@@ -205,9 +199,9 @@ export default function AgentsChatStyled({ agent }) {
                   onClick={sendMessage}
                   disabled={isLoading}
                   className="absolute right-3 top-1/2 -translate-y-1/2 bg-black text-white rounded-full 
-                    w-10 h-10 flex items-center justify-center shadow-md z-20"
+                    w-9 h-9 flex items-center justify-center shadow-md z-20"
                 >
-                  <Send size={18} />
+                  <Send size={16} />
                 </motion.button>
               ) : (
                 <motion.button
@@ -216,10 +210,10 @@ export default function AgentsChatStyled({ agent }) {
                   onClick={toggleRecording}
                   disabled={isLoading}
                   className={`absolute right-3 top-1/2 -translate-y-1/2 rounded-full 
-                    w-10 h-10 flex items-center justify-center shadow-md z-20
+                    w-9 h-9 flex items-center justify-center shadow-md z-20
                     ${isRecording ? "bg-red-600 text-white" : "bg-black text-white"}`}
                 >
-                  <Mic size={18} />
+                  <Mic size={16} />
                 </motion.button>
               )}
             </div>
@@ -241,7 +235,7 @@ export default function AgentsChatStyled({ agent }) {
         </div>
       ) : (
         <>
-          {/* 💬 Chat dinámico sin altura fija */}
+          {/* 💬 Chat dinámico */}
           <div
             ref={messagesContainerRef}
             className="flex flex-col px-4 py-2 space-y-2 overflow-y-auto"
