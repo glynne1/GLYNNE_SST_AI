@@ -24,8 +24,9 @@ export default function SideMenuAgent() {
   const [activeSection, setActiveSection] = useState("agents");
 
   const sections = [
-    { id: "plantillas", label: "Modelos predefinidos", icon: <FaCubes /> },
+
     { id: "agents", label: "Tus modelos creados", icon: <FaRobot /> },
+    { id: "plantillas", label: "Modelos predefinidos", icon: <FaCubes /> },
     { id: "streaming", label: "Agente Streaming", icon: <FaRocket /> },
     { id: "framework", label: "Crea tus agentes", icon: <FaMicrochip /> },
     { id: "api", label: "Gestión de API", icon: <FaDatabase /> },

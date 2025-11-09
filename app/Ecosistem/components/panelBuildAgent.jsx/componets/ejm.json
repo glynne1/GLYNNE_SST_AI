@@ -143,7 +143,7 @@
     "api_key": "",
     "avatar": "/avatars/henry.png"
   },
-  [
+  
     {
       "agent_name": "LILA",
       "rol": "CONSEJERA EMOCIONAL",
@@ -204,7 +204,7 @@
       "api_key": "",
       "avatar": "/avatars/solo.png"
     }
-  ]
+  
   ,
   {
     "agent_name": "CLIO",
