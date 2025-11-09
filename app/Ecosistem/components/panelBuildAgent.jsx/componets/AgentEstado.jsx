@@ -15,6 +15,8 @@ export default function AgentsChatStyled({ agent }) {
   const [userInfo, setUserInfo] = useState({ nombre: "Usuario" });
 
   const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
+
   const apiURL =
     process.env.NEXT_PUBLIC_API_URL ||
     "https://generative-glynne-motor.onrender.com";
@@ -42,8 +44,12 @@ export default function AgentsChatStyled({ agent }) {
     }
   }, [agent]);
 
-  const scrollToBottom = () =>
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  // ✅ Scroll automático al final
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   useEffect(() => {
     scrollToBottom();
@@ -152,12 +158,12 @@ export default function AgentsChatStyled({ agent }) {
     );
 
   return (
-    <div className="w-full h-screen flex flex-col bg-white">
+    <div className="w-full flex flex-col bg-white overflow-hidden">
       {/* 🔹 Si no hay mensajes: bienvenida */}
       {messages.length === 0 ? (
-        <div className="flex flex-1 flex-col items-center justify-center text-center px-4 relative">
+        <div className="flex-1 flex flex-col items-center justify-center text-center px-4 relative">
           <p className="text-2xl md:text-xl sm:text-lg mb-4">
-            👋 Hola, <span className="font-semibold">{userInfo.nombre}</span>.<br />
+            Hola, <span className="font-semibold">{userInfo.nombre}</span>.<br />
             Soy <span className="font-semibold">{selectedAgent.agent_name}</span>, tu{" "}
             {selectedAgent.rol?.toLowerCase() || "asistente"}.
             <br />
@@ -235,8 +241,16 @@ export default function AgentsChatStyled({ agent }) {
         </div>
       ) : (
         <>
-          {/* 💬 Chat activo */}
-          <div className="flex-1 px-4 py-2 flex flex-col justify-end space-y-2 overflow-y-auto">
+          {/* 💬 Chat dinámico sin altura fija */}
+          <div
+            ref={messagesContainerRef}
+            className="flex flex-col px-4 py-2 space-y-2 overflow-y-auto"
+            style={{
+              flexGrow: 1,
+              maxHeight: "calc(100vh - 120px)",
+              overflowY: "auto",
+            }}
+          >
             {messages.map((msg, idx) => (
               <div
                 key={idx}
@@ -267,7 +281,7 @@ export default function AgentsChatStyled({ agent }) {
           </div>
 
           {/* ✍️ Input inferior */}
-          <div className="w-full px-4 py-4 flex justify-center">
+          <div className="w-full px-4 py-4 flex justify-center sticky bottom-0 bg-white">
             <div className="flex w-[70%] relative items-center gap-2">
               <div className="relative flex-1">
                 <input
