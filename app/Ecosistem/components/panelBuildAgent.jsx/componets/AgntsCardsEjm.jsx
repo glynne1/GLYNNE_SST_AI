@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Play, Plus, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { saveUserAgentConfig } from "./saveSupabaseAgent"; // ✅ usa la misma función que en AgentConfigPanel
+import { saveUserAgentConfig } from "./saveSupabaseAgent"; // tu util existente
 import agentsData from "./ejm.json";
 
 export default function AgentsGrid() {
@@ -26,9 +26,18 @@ export default function AgentsGrid() {
   const handlePlayClick = (agent) => {
     setSelectedAgent(agent);
     setApiKeyModal(true);
+    setApiKey("");
+    setStatus("");
   };
 
   const handleSaveToSupabase = async () => {
+    // FIX: usar selectedAgent (no `agent` que no existe en este scope)
+    const agent = selectedAgent;
+    if (!agent) {
+      setStatus("❌ No se ha seleccionado un agente");
+      return;
+    }
+
     if (!apiKey.trim()) {
       setStatus("❌ Debes ingresar una API key válida");
       return;
@@ -40,24 +49,27 @@ export default function AgentsGrid() {
     try {
       const form = {
         api_key: apiKey,
-        model: "llama-3.3-70b-versatile",
-        rol: agent.rol,
-        agent_name: agent.agent_name,
-        specialty: agent.specialty,
-        business_info: agent.business_info,
-        objective: agent.objective,
-        additional_msg: agent.additional_msg,
+        model: agent.model || "llama-3.3-70b-versatile",
+        rol: agent.rol || "",
+        agent_name: agent.agent_name || "",
+        specialty: agent.specialty || "",
+        business_info: agent.business_info || "",
+        objective: agent.objective || "",
+        additional_msg: agent.additional_msg || "",
       };
+
       await saveUserAgentConfig(form);
 
       setStatus("✅ Configuración guardada correctamente");
+      // opcional: reproducir sonido o abrir chat aquí si quieres
       setTimeout(() => {
         setApiKeyModal(false);
         setApiKey("");
         setStatus("");
-      }, 1500);
+      }, 1200);
     } catch (err) {
-      setStatus("⚠️ Error al guardar: " + err.message);
+      console.error("Error saving agent to Supabase:", err);
+      setStatus("⚠️ Error al guardar: " + (err.message || String(err)));
     } finally {
       setSaving(false);
     }
@@ -133,7 +145,7 @@ export default function AgentsGrid() {
         ))}
       </div>
 
-      {/* Botón “Ver más” */}
+      {/* Ver más */}
       {visibleCount < agents.length && (
         <div className="flex justify-center mt-6 mb-4">
           <button
