@@ -19,12 +19,12 @@ import Diagrama from "./DiagramaFlujoFW";
 import LogicPanel from "./logicPanel";
 import Consola from "./consola";
 import AgentStreaming from "./ageentStrriming";
+import Flujo from "../../../../components/TransformerAnimation"; // 🧠 Nueva importación
 
 export default function SideMenuAgent() {
   const [activeSection, setActiveSection] = useState("agents");
 
   const sections = [
-
     { id: "agents", label: "Tus modelos creados", icon: <FaRobot /> },
     { id: "plantillas", label: "Modelos predefinidos", icon: <FaCubes /> },
     { id: "streaming", label: "Agente Streaming", icon: <FaRocket /> },
@@ -32,6 +32,7 @@ export default function SideMenuAgent() {
     { id: "api", label: "Gestión de API", icon: <FaDatabase /> },
     { id: "consola", label: "Consola de Control", icon: <FaTerminal /> },
     { id: "motor", label: "Motor Generativo", icon: <FaProjectDiagram /> },
+    { id: "flujo", label: "Estructura de una red neuronal T", icon: <FaProjectDiagram /> }, // 🧠 Nueva sección
   ];
 
   const renderContent = () => {
@@ -50,13 +51,14 @@ export default function SideMenuAgent() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.5 }}
             >
-              TUS MODELOS <span className="text-gray-500">GLYNNE</span>
+  
             </motion.h2>
             <div className="flex-1 overflow-hidden">
               <CardsAgent />
             </div>
           </motion.div>
         );
+
       case "api":
         return (
           <motion.div
@@ -65,19 +67,12 @@ export default function SideMenuAgent() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
           >
-            <motion.h2
-              className="text-neutral-800 text-2xl md:text-3xl lg:text-4xl font-extrabold mb-4 tracking-tight"
-              initial={{ opacity: 0, y: -15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-            >
-
-            </motion.h2>
             <div className="flex-1 overflow-y-auto">
               <Tabla />
             </div>
           </motion.div>
         );
+
       case "plantillas":
         return (
           <motion.div
@@ -86,20 +81,12 @@ export default function SideMenuAgent() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
           >
-            
-            <motion.h2
-              className="text-neutral-800 text-2xl md:text-3xl lg:text-4xl font-extrabold mb-4 tracking-tight"
-              initial={{ opacity: 0, y: -15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-            >
-         
-            </motion.h2>
             <div className="flex-1 overflow-y-auto">
               <Plantillas />
             </div>
           </motion.div>
         );
+
       case "framework":
         return (
           <motion.div
@@ -111,6 +98,7 @@ export default function SideMenuAgent() {
             <LogicPanel />
           </motion.div>
         );
+
       case "motor":
         return (
           <motion.div
@@ -122,6 +110,7 @@ export default function SideMenuAgent() {
             <Diagrama />
           </motion.div>
         );
+
       case "consola":
         return (
           <motion.div
@@ -136,13 +125,14 @@ export default function SideMenuAgent() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.5 }}
             >
-              CONSOLA DE <span className="text-gray-500">CONTROL</span>
+    
             </motion.h2>
             <div className="flex-1 overflow-y-auto">
               <Consola />
             </div>
           </motion.div>
         );
+
       case "streaming":
         return (
           <motion.div
@@ -151,19 +141,41 @@ export default function SideMenuAgent() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
           >
-      
             <div className="flex-1 overflow-hidden">
               <AgentStreaming />
             </div>
           </motion.div>
         );
+
+      case "flujo":
+        return (
+          <motion.div
+            className="w-full h-full p-4 overflow-hidden flex flex-col"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <motion.h2
+              className="text-neutral-800 text-2xl md:text-3xl lg:text-4xl font-extrabold mb-4 tracking-tight"
+              initial={{ opacity: 0, y: -15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+            >
+
+            </motion.h2>
+            <div className="flex-1 overflow-y-auto">
+              <Flujo />
+            </div>
+          </motion.div>
+        );
+
       default:
         return null;
     }
   };
 
   return (
-    <div className="flex   h-full w-full bg-white overflow-hidden m-0 p-0">
+    <div className="flex h-full w-full bg-white overflow-hidden m-0 p-0">
       {/* Sidebar */}
       <motion.aside
         initial={{ x: -20, opacity: 0 }}
@@ -171,6 +183,7 @@ export default function SideMenuAgent() {
         transition={{ duration: 0.4, ease: "easeOut" }}
         className="w-56 bg-white border-r border-gray-200 shadow-sm p-4 flex flex-col justify-between"
       >
+        {/* Logo */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -187,6 +200,7 @@ export default function SideMenuAgent() {
           />
         </motion.div>
 
+        {/* Botones del menú */}
         <div className="flex flex-col gap-2 flex-1 overflow-y-auto scrollbar-hide">
           {sections.map((sec, index) => (
             <motion.button
@@ -217,6 +231,7 @@ export default function SideMenuAgent() {
           ))}
         </div>
 
+        {/* Footer */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}

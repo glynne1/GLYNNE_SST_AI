@@ -7,7 +7,7 @@ import { saveUserAgentConfig } from "./saveSupabaseAgent"; // tu util existente
 import agentsData from "./ejm.json";
 
 export default function AgentsGrid() {
-  const [visibleCount, setVisibleCount] = useState(6);
+  const [visibleCount, setVisibleCount] = useState(20);
   const [agents, setAgents] = useState([]);
   const [selectedAgent, setSelectedAgent] = useState(null);
   const [apiKeyModal, setApiKeyModal] = useState(false);
