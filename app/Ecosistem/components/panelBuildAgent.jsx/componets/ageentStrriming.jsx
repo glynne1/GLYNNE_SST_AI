@@ -11,7 +11,7 @@ export default function AgentCards() {
   const [agents, setAgents] = useState([]);
   const [selectedAgent, setSelectedAgent] = useState(null);
   const [chatAgent, setChatAgent] = useState(null);
-  const [chatHistory, setChatHistory] = useState([]); // ✅ Historial del chat
+  const [chatHistory, setChatHistory] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -48,7 +48,6 @@ export default function AgentCards() {
     }
   };
 
-  // ✅ Cargar conversación del agente seleccionado
   const loadConversation = async (agent) => {
     const user = await getCurrentUser();
     if (!user) return;
@@ -112,108 +111,131 @@ export default function AgentCards() {
   };
 
   return (
-  <div className="w-full h-[80vh] flex flex-col bg-white overflow-hidden">
+    <div className="w-full h-[80vh] flex flex-col bg-white overflow-hidden text-xs">
 
-    {/* HEADER */}
-    <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E5E5] bg-white">
-      <h2 className="text-xl font-semibold tracking-tight text-black">Agentes GLYNNE</h2>
+      {/* HEADER */}
+      <div className="flex items-center justify-between px-3 py-2 border-b border-[#E5E5E5] bg-white">
+        <h2 className="text-sm font-semibold tracking-tight text-black">Agentes GLYNNE</h2>
 
-      <button
-        onClick={handleRefresh}
-        className="w-9 h-9 flex items-center justify-center rounded-full bg-black text-white hover:opacity-80 transition"
-      >
-        <motion.div
-          animate={{ rotate: isRefreshing ? 360 : 0 }}
-          transition={{ duration: 0.6, repeat: isRefreshing ? Infinity : 0 }}
+        <button
+          onClick={handleRefresh}
+          className="w-7 h-7 flex items-center justify-center rounded-full bg-black text-white hover:opacity-80 transition"
         >
-          <RotateCcw className="w-5 h-5" />
-        </motion.div>
-      </button>
-    </div>
-
-    {/* LISTA DE AGENTES (scroll horizontal si es necesario) */}
-    <div className="flex gap-2 px-4 py-3 border-b border-[#E5E5E5] overflow-x-auto no-scrollbar">
-      {loading ? (
-        <p className="text-sm text-gray-400">Cargando...</p>
-      ) : (
-        agents.map((agent, idx) => (
           <motion.div
-            key={agent.id}
-            whileTap={{ scale: 0.96 }}
-            className={`flex items-center gap-3 px-4 py-2 rounded-full border text-sm cursor-pointer transition-all ${
-              chatAgent?.id === agent.id
-                ? "bg-black text-white border-black"
-                : "bg-white border-gray-300 text-black hover:bg-gray-100"
-            }`}
-            onClick={() => loadConversation(agent)}
+            animate={{ rotate: isRefreshing ? 360 : 0 }}
+            transition={{ duration: 0.6, repeat: isRefreshing ? Infinity : 0 }}
           >
-            <span className="truncate max-w-[140px] font-medium">
-              {agent.agent_name}
-            </span>
-
-            <Settings2
-              className="w-4 h-4 hover:opacity-60"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleEdit(agent, idx);
-              }}
-            />
-
-            <Trash2
-              className="w-4 h-4 hover:text-red-500"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleDelete(agent.id);
-              }}
-            />
+            <RotateCcw className="w-3 h-3" />
           </motion.div>
-        ))
-      )}
-    </div>
+        </button>
+      </div>
 
-    {/* CHAT CONTENEDOR */}
-<div className="flex-1 flex flex-col justify-center items-center bg-[#fff] overflow-hidden">
-  <div className="w-full max-w-4xl flex flex-col bg-white h-full">
+      {/* LISTA DE AGENTES */}
+      <div className="flex gap-1.5 px-3 py-2 border-b border-[#E5E5E5] overflow-x-auto no-scrollbar">
+        {loading ? (
+          <p className="text-[0.65rem] text-gray-400">Cargando...</p>
+        ) : (
+          agents.map((agent, idx) => (
+            <motion.div
+              key={agent.id}
+              whileTap={{ scale: 0.96 }}
+              className={`flex items-center gap-1 px-2 py-1 rounded-full border text-[0.65rem] cursor-pointer transition-all ${
+                chatAgent?.id === agent.id
+                  ? "bg-black text-white border-black"
+                  : "bg-white border-gray-300 text-black hover:bg-gray-100"
+              }`}
+              onClick={() => loadConversation(agent)}
+            >
+              <span className="truncate max-w-[100px] font-medium">
+                {agent.agent_name}
+              </span>
 
-    {/* CHAT INTERNO SCROLLEABLE */}
-    <div className="flex-1 overflow-y-auto px-4 py-3 scrollbar-thin scrollbar-thumb-gray-300">
-      {chatAgent ? (
-        <AgentsChatStyled agent={chatAgent} initialMessages={chatHistory} />
-      ) : (
-        <div className="h-full flex items-center justify-center text-gray-400 text-sm">
-          Selecciona un agente para iniciar chat
-        </div>
-      )}
-    </div>
+              <Settings2
+                className="w-3 h-3 hover:opacity-60"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleEdit(agent, idx);
+                }}
+              />
 
-  </div>
-</div>
+              <Trash2
+                className="w-3 h-3 hover:text-red-500"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(agent.id);
+                }}
+              />
+            </motion.div>
+          ))
+        )}
+      </div>
 
+      {/* CHAT CONTENEDOR */}
+      <div className="flex-1 flex flex-col justify-center items-center bg-[#fff] overflow-hidden">
+        <div className="w-full max-w-4xl flex flex-col bg-white h-full max-h-[96vh] rounded-xl shadow-sm">
 
-    {/* MODAL EDITAR AGENTE */}
-    {selectedAgent && (
-      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50">
-        <div className="bg-white rounded-2xl shadow-xl p-6 w-[90%] max-w-lg">
-          <AgentForm
-            agentData={selectedAgent.agent}
-            onSave={handleSave}
-            onCancel={() => setSelectedAgent(null)}
-          />
+          {/* CHAT INTERNO SCROLLEABLE */}
+          <div className="flex-1 overflow-y-auto px-2 py-1 scrollbar-thin scrollbar-thumb-gray-300">
+            {chatAgent ? (
+              <AgentsChatStyled agent={chatAgent} initialMessages={chatHistory} />
+            ) : (
+              <div className="h-full flex items-center justify-center text-gray-400 text-[0.65rem]">
+                Selecciona un agente para iniciar chat
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    )}
 
-    {/* ===== Scrollbar invisible ===== */}
-    <style>{`
-      .no-scrollbar::-webkit-scrollbar {
-        display: none;
-      }
-      .no-scrollbar {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-      }
-    `}</style>
+      {/* MODAL EDITAR AGENTE */}
+      {selectedAgent && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50">
+          <div
+            className="
+              bg-white 
+              rounded-2xl 
+              shadow-2xl 
+              p-3 
+              w-[96vw] 
+              h-[96vh] 
+              max-w-[1200px] 
+              flex 
+              flex-col 
+              overflow-hidden 
+              transition-all 
+              duration-300 
+              ease-in-out
+            "
+          >
+            {/* Cabecera del modal */}
+            <div className="flex justify-between items-center mb-2">
+              <h2 className="text-sm font-bold text-gray-800">
+                Editar Agente
+              </h2>
+              <button
+                onClick={() => setSelectedAgent(null)}
+                className="text-gray-500 hover:text-gray-800 text-sm"
+              >
+                ✕
+              </button>
+            </div>
 
-  </div>
-);
-    }
+            {/* Contenido scrollable */}
+            <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 pr-1">
+              <AgentForm
+                agentData={selectedAgent.agent}
+                onSave={handleSave}
+                onCancel={() => setSelectedAgent(null)}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
+    </div>
+  );
+}
