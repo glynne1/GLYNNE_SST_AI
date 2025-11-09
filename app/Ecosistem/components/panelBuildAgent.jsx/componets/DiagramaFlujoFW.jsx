@@ -90,21 +90,24 @@ const edges = [
   { id: 's3', source: 'scripts', target: 'maint', animated: false, style: { stroke: '#ccc' }},
   { id: 'final', source: 'api', target: 'main', animated: true, style: { stroke: '#8B0000', strokeWidth: 2 }},
 ];
+
 export default function GlynneAgentFlow() {
   return (
     <div
       className="w-screen h-screen bg-white overflow-hidden select-none"
       style={{
-        pointerEvents: 'none', // 🚫 Desactiva toda interacción
-        cursor: 'default',     // 👆 Evita que salga la manito
+        pointerEvents: 'none', // 🚫 Desactiva interacción
+        cursor: 'default',
       }}
     >
+      {/* ✅ ReactFlowProvider envuelve todo */}
       <ReactFlowProvider>
         <ReactFlow
           nodes={nodes}
           edges={edges}
           nodeTypes={NODE_TYPES}
           fitView
+          fitViewOptions={{ padding: 0.2 }} // 🔹 reduce margen interno
           panOnScroll={false}
           zoomOnScroll={false}
           zoomOnPinch={false}
@@ -116,8 +119,9 @@ export default function GlynneAgentFlow() {
           zoomOnDoubleClick={false}
           proOptions={{ hideAttribution: true }}
           style={{
-            pointerEvents: 'none', // 🔒 Reforzamos dentro del diagrama
+            pointerEvents: 'none',
             cursor: 'default',
+            transform: 'translateX(-200px)', // 👈 mueve todo 50px a la izquierda
           }}
         >
           <Background color="#f3f4f6" gap={16} />

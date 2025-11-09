@@ -112,7 +112,7 @@ export default function AgentCards() {
   };
 
   return (
-  <div className="w-full h-[100vh] flex flex-col bg-white overflow-hidden">
+  <div className="w-full h-[80vh] flex flex-col bg-white overflow-hidden">
 
     {/* HEADER */}
     <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E5E5] bg-white">
@@ -173,7 +173,7 @@ export default function AgentCards() {
 
     {/* CHAT CONTENEDOR */}
     <div className="flex-1 flex flex-col justify-center items-center bg-[#fff] overflow-hidden">
-      <div className="w-full max-w-4xl h-full flex flex-col bg-white ">
+      <div className="w-full max-w-4xl h-[100vh] flex flex-col bg-white ">
 
         {/* CHAT INTERNO SCROLLEABLE */}
         <div className="flex-1 overflow-y-auto px-4 py-3 scrollbar-thin scrollbar-thumb-gray-300">

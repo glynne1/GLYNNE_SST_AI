@@ -18,9 +18,9 @@ export default function AgentsGrid() {
   };
 
   return (
-    <div className="w-full h-[90vh] p-6 bg-white rounded-2xl border border-gray-300 shadow-md relative overflow-y-auto">
+    <div className="w-full h-[80vh] p-6 bg-white rounded-2xl border border-gray-300 shadow-md relative overflow-y-auto">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4 sticky top-0 bg-white z-10 py-2 border-b border-gray-200">
+      <div className="flex items-center justify-between sticky top-0 bg-white z-10 py-2 border-b border-gray-200">
         <h2 className="text-xl font-bold text-gray-800">
           Agentes Inteligentes (GLYNNE)
         </h2>
