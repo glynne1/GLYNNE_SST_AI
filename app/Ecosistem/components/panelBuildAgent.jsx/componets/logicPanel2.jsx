@@ -101,7 +101,7 @@ export default function SideMenuAgent() {
       case "framework":
         return (
           <motion.div
-            className="w-full h-full p-4 overflow-hidden"
+            className="w-full h-full p-0 overflow-hidden"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
