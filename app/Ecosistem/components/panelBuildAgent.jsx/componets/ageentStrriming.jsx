@@ -172,22 +172,23 @@ export default function AgentCards() {
     </div>
 
     {/* CHAT CONTENEDOR */}
-    <div className="flex-1 flex flex-col justify-center items-center bg-[#fff] overflow-hidden">
-      <div className="w-full max-w-4xl h-[100vh] flex flex-col bg-white ">
+<div className="flex-1 flex flex-col justify-center items-center bg-[#fff] overflow-hidden">
+  <div className="w-full max-w-4xl flex flex-col bg-white h-full">
 
-        {/* CHAT INTERNO SCROLLEABLE */}
-        <div className="flex-1 overflow-y-auto px-4 py-3 scrollbar-thin scrollbar-thumb-gray-300">
-          {chatAgent ? (
-            <AgentsChatStyled agent={chatAgent} initialMessages={chatHistory} />
-          ) : (
-            <div className="h-full flex items-center justify-center text-gray-400 text-sm">
-              Selecciona un agente para iniciar chat
-            </div>
-          )}
+    {/* CHAT INTERNO SCROLLEABLE */}
+    <div className="flex-1 overflow-y-auto px-4 py-3 scrollbar-thin scrollbar-thumb-gray-300">
+      {chatAgent ? (
+        <AgentsChatStyled agent={chatAgent} initialMessages={chatHistory} />
+      ) : (
+        <div className="h-full flex items-center justify-center text-gray-400 text-sm">
+          Selecciona un agente para iniciar chat
         </div>
-
-      </div>
+      )}
     </div>
+
+  </div>
+</div>
+
 
     {/* MODAL EDITAR AGENTE */}
     {selectedAgent && (
