@@ -37,7 +37,7 @@ export default function SideMenuAgent() {
     switch (activeSection) {
       case "agents":
         return (
-          <motion.div className="w-full p-4 scroll-invisible" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+          <motion.div className="w-full p-4 overflow-hidden scroll-invisible" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
             <motion.h2 className="text-neutral-800 text-2xl md:text-3xl lg:text-4xl font-extrabold mb-4 tracking-tight" initial={{ opacity: 0, y: -15 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.5 }}>
               TUS MODELOS <span className="text-gray-500">GLYNNE</span>
             </motion.h2>
@@ -86,7 +86,7 @@ export default function SideMenuAgent() {
         );
       case "streaming": // 🆕 Nuevo case
         return (
-          <motion.div className="w-full mb-3 p-4 scroll-invisible" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+          <motion.div className="w-full overflow-hidden  mb-3 p-4 scroll-invisible" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
             <motion.h2 className="text-neutral-800 overflow-hidden text-2xl md:text-3xl lg:text-4xl font-extrabold mb-4 tracking-tight" initial={{ opacity: 0, y: -15 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.5 }}>
               AGENTE <span className="text-gray-500">STREAMING</span>
             </motion.h2>
