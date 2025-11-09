@@ -1,7 +1,7 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RefreshCcw, X,  ChevronRight } from 'lucide-react';
+import { RefreshCcw, X, ChevronRight } from 'lucide-react';
 
 import ChatTTS from './LLM';
 import ChatLLM from './ChatAuditoria';
@@ -21,6 +21,12 @@ export default function PlusMenu({ onRefresh }) {
 
   const logoTimerRef = useRef(null);
   const contentTimerRef = useRef(null);
+  const audioRef = useRef(null); // 🎵 referencia del audio
+
+  // Cargar el audio cuando se monta el componente
+  useEffect(() => {
+    audioRef.current = new Audio('/menuTono.mp3'); // asegúrate de tener /public/menuTono.mp3
+  }, []);
 
   useEffect(() => {
     const checkScreenSize = () => setIsVisible(window.innerWidth >= 900);
@@ -40,7 +46,17 @@ export default function PlusMenu({ onRefresh }) {
     };
   }, []);
 
+  const playSound = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0; // Reinicia desde el inicio
+      audioRef.current.play().catch(() => {}); // Ignora error si el navegador bloquea autoplay
+    }
+  };
+
   const openService = (type) => {
+    // 🔊 Solo suena si el tipo es 'news'
+    if (type === 'news') playSound();
+
     clearTimeout(logoTimerRef.current);
     clearTimeout(contentTimerRef.current);
 
@@ -76,32 +92,34 @@ export default function PlusMenu({ onRefresh }) {
   if (!isVisible) return null;
 
   const iconData = [
-    { 
-      type: 'news', 
-      title: 'Explora el Panel de Desarrollo IA', 
-      description: `Accede al entorno donde se configuran y prueban los modelos de inteligencia artificial de GLYNNE. Diseña roles, ajusta parámetros y observa cómo evoluciona tu agente dentro del framework.`,
-      bg: 'https://i.pinimg.com/originals/a3/e9/d6/a3e9d61815b6ed53d26f17861f1f6e34.gif ' 
-    }
-,    
-    { 
-      type: 'docs', 
-      title: 'Crea tu propio Agente de IA', 
-      description: `Framework listo para crear agentes inteligentes personalizables e integrarlos en cualquier sistema.`,
-      bg: 'https://i.pinimg.com/736x/2a/f4/ad/2af4ad1da3e8caaf60577c2fcfa190b9.jpg' 
+    {
+      type: 'news',
+      title: 'Explora el Panel de Desarrollo IA',
+      description:
+        'Accede al entorno donde se configuran y prueban los modelos de inteligencia artificial de GLYNNE. Diseña roles, ajusta parámetros y observa cómo evoluciona tu agente dentro del framework.',
+      bg: 'https://i.pinimg.com/originals/a3/e9/d6/a3e9d61815b6ed53d26f17861f1f6e34.gif',
     },
-    { 
-      type: 'documentacion', 
-      title: 'Documentación Completa GLYNNE Framework', 
-      description: `Guía completa para construir sistemas inteligentes: arquitectura, nodos y automatización avanzada.`,
-      bg: 'https://i.pinimg.com/1200x/95/4f/cb/954fcb1857901306dc74d09908569765.jpg' 
+    {
+      type: 'docs',
+      title: 'Crea tu propio Agente de IA',
+      description:
+        'Framework listo para crear agentes inteligentes personalizables e integrarlos en cualquier sistema.',
+      bg: 'https://i.pinimg.com/736x/2a/f4/ad/2af4ad1da3e8caaf60577c2fcfa190b9.jpg',
     },
-    { 
-      type: 'nn', 
-      title: 'Mira cómo funciona una IA desde cero', 
-      description: `Aprende cómo opera un modelo tipo GPT: arquitectura, razonamiento y entrenamiento visualizado.`,
-      bg: 'https://i.pinimg.com/736x/15/97/21/15972177e2c07a646e0f5fa5d7591654.jpg' 
+    {
+      type: 'documentacion',
+      title: 'Documentación Completa GLYNNE Framework',
+      description:
+        'Guía completa para construir sistemas inteligentes: arquitectura, nodos y automatización avanzada.',
+      bg: 'https://i.pinimg.com/1200x/95/4f/cb/954fcb1857901306dc74d09908569765.jpg',
     },
-   
+    {
+      type: 'nn',
+      title: 'Mira cómo funciona una IA desde cero',
+      description:
+        'Aprende cómo opera un modelo tipo GPT: arquitectura, razonamiento y entrenamiento visualizado.',
+      bg: 'https://i.pinimg.com/736x/15/97/21/15972177e2c07a646e0f5fa5d7591654.jpg',
+    },
   ];
 
   return (
@@ -121,7 +139,9 @@ export default function PlusMenu({ onRefresh }) {
         </motion.div>
 
         <button
-          onClick={handleRefresh}
+          onClick={() => {
+            handleRefresh();
+          }}
           className="p-2 rounded-md hover:scale-110 transition-all"
         >
           <RefreshCcw className="w-4 h-4 text-gray-500 hover:text-black" />
@@ -132,9 +152,9 @@ export default function PlusMenu({ onRefresh }) {
       <AnimatePresence>
         {hoverMenu && !popupOpen && (
           <motion.div
-            initial={{ x: "-20%", opacity: 0 }}
+            initial={{ x: '-20%', opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            exit={{ x: "-20%", opacity: 0 }}
+            exit={{ x: '-20%', opacity: 0 }}
             className="fixed left-0 top-0 h-screen w-[60vw] bg-black backdrop-blur-xl shadow-xl border-r border-gray-200 
                        z-40 flex flex-row items-center justify-between p-12"
             onMouseEnter={() => setHoverMenu(true)}
@@ -170,17 +190,14 @@ export default function PlusMenu({ onRefresh }) {
             </div>
 
             {/* Info Card */}
-            <div className="flex flex-col  ml-[30px] justify-center items-center h-[70vh] w-[200px] p-6 bg-black backdrop-blur-lg rounded-2xl  shadow-lg text-gray-200">
+            <div className="flex flex-col ml-[30px] justify-center items-center h-[70vh] w-[200px] p-6 bg-black backdrop-blur-lg rounded-2xl shadow-lg text-gray-200">
               <img src="/logo.png" className="w-20 h-auto mb-2" />
               <p className="text-[10px] text-center opacity-80 tracking-wide leading-snug mb-6">
                 Aprende y adáptate a la era IA
               </p>
 
               <div className="flex flex-col items-center justify-center flex-grow">
-                <h2 className="text-sm font-semibold mb-2 text-gray-100 tracking-wide">
-                  QR GLY MV
-                </h2>
-
+                <h2 className="text-sm font-semibold mb-2 text-gray-100 tracking-wide">QR GLY MV</h2>
                 <img src="/qrMenuH.png" className="w-24 h-auto mb-2" />
                 <p className="text-[10px] text-center font-medium opacity-90">visita GLYNNE mobile</p>
               </div>

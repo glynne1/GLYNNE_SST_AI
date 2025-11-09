@@ -293,25 +293,36 @@ Entrega recomendaciones concretas, claras y accionables.
             helperText="Añade instrucciones o reglas especiales que tu agente debe seguir"
           />
 
-          <div className="col-span-3 flex justify-center items-center w-full min-h-[15vh]">
-            <div className="w-[50vw] m-5 flex justify-center items-center">
-              <button
-                onClick={async () => {
-                  try {
-                    await saveUserAgentConfig(form);
-                    addLog("✅ Configuración guardada en Supabase", "success");
-                  } catch (err) {
-                    addLog("⚠️ No se pudo guardar configuración: " + err.message, "error");
-                  }
-                  await handleSend();
-                  setChatModalOpen(true);
-                }}
-                className="bg-black text-white px-6 py-3 text-base font-semibold rounded-xl shadow-md hover:bg-gray-900 hover:shadow-lg transition-all duration-300"
-              >
-                ⚡ Ejecutar Agente
-              </button>
-            </div>
-          </div>
+<div className="col-span-3 flex justify-center items-center w-full min-h-[15vh]">
+  <div className="w-[50vw] m-5 flex justify-center items-center">
+    <button
+      onClick={async () => {
+        // 🔊 Reproducir tono
+        try {
+          const audio = new Audio("/tonoCrearModelo.mp3"); // cambia a tu archivo: /sonido.mp3, /alert.wav, etc.
+          await audio.play();
+        } catch (err) {
+          console.warn("No se pudo reproducir el sonido:", err);
+        }
+
+        // 🧠 Ejecutar acciones
+        try {
+          await saveUserAgentConfig(form);
+          addLog("✅ Configuración guardada en Supabase", "success");
+        } catch (err) {
+          addLog("⚠️ No se pudo guardar configuración: " + err.message, "error");
+        }
+
+        await handleSend();
+        setChatModalOpen(true);
+      }}
+      className="bg-black text-white px-6 py-3 text-base font-semibold rounded-xl shadow-md hover:bg-gray-900 hover:shadow-lg transition-all duration-300"
+    >
+       Ejecutar Agente
+    </button>
+  </div>
+</div>
+
         </div>
 
         {/* 🔹 MODAL DE CHAT DENTRO DEL CONTENEDOR */}
