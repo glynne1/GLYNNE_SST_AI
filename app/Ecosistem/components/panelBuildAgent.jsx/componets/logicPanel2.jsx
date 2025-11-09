@@ -86,6 +86,7 @@ export default function SideMenuAgent() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
           >
+            
             <motion.h2
               className="text-neutral-800 text-2xl md:text-3xl lg:text-4xl font-extrabold mb-4 tracking-tight"
               initial={{ opacity: 0, y: -15 }}
