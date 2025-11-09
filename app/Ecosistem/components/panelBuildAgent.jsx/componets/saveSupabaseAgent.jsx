@@ -3,38 +3,30 @@
 import { useState } from "react";
 import { supabase, getCurrentUser } from "../../../../lib/supabaseClient";
 
-// ✅ Función para guardar la configuración del agente
+// ✅ Guardar la configuración del agente SIN LÍMITE
 export async function saveUserAgentConfig(configData) {
   const user = await getCurrentUser();
   if (!user) throw new Error("Usuario no autenticado");
 
-  // 🔎 Verificamos cuántos agentes tiene el usuario
-  const { data: existingAgents, error: fetchError } = await supabase
-    .from("auditorias")
-    .select("id")
-    .eq("user_id", user.id);
+  // ❌ Se elimina el bloqueo de cantidad de agentes
 
-  if (fetchError) throw new Error("Error al verificar agentes existentes");
+  const agentToSave = {
+    ...configData,
+    conversation: [],
+  };
 
-  // 🚫 Si ya tiene 3 o más, no permitir crear otro
-  if (existingAgents && existingAgents.length >= 3) {
-    throw new Error("Has alcanzado el límite máximo de 3 agentes.");
-  }
-
-  // 🧩 Guardamos la nueva configuración
   const { error: insertError } = await supabase
     .from("auditorias")
     .insert([
       {
         user_id: user.id,
-        user_config: configData,
+        user_config: agentToSave,
       },
     ]);
 
   if (insertError) throw insertError;
 }
 
-// ✅ Componente principal
 export default function SaveAgentConfigButton({ configData }) {
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState("");
@@ -46,13 +38,10 @@ export default function SaveAgentConfigButton({ configData }) {
 
       await saveUserAgentConfig(configData);
       setStatus("✅ Configuración guardada exitosamente 🎯");
-
     } catch (err) {
       console.error(err.message);
-      // 🧠 Mensaje amigable según el error
-      if (err.message.includes("límite máximo")) {
-        setStatus("⚠️ Solo puedes crear hasta 3 agentes.");
-      } else if (err.message.includes("no autenticado")) {
+
+      if (err.message.includes("no autenticado")) {
         setStatus("❌ Debes iniciar sesión para guardar agentes.");
       } else {
         setStatus("❌ Error al guardar el agente.");
