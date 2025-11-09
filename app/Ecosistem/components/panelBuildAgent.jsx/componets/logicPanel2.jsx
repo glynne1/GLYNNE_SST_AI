@@ -70,7 +70,7 @@ export default function SideMenuAgent() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.5 }}
             >
-              GESTIONA TUS API's <span className="text-gray-500">GLYNNE</span>
+
             </motion.h2>
             <div className="flex-1 overflow-y-auto">
               <Tabla />
@@ -91,7 +91,7 @@ export default function SideMenuAgent() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.5 }}
             >
-              GLYNNE <span className="text-gray-500">MODELOS PREDEFINIDOS</span>
+         
             </motion.h2>
             <div className="flex-1 overflow-y-auto">
               <Plantillas />
