@@ -172,7 +172,7 @@ export default function AgentCards() {
     </div>
 
     {/* CHAT CONTENEDOR */}
-    <div className="flex-1 flex flex-col justify-center items-center bg-[#FAFAFA] overflow-hidden">
+    <div className="flex-1 flex flex-col justify-center items-center bg-[#fff] overflow-hidden">
       <div className="w-full max-w-4xl h-full flex flex-col bg-white shadow-sm border-x border-[#E5E5E5]">
 
         {/* CHAT INTERNO SCROLLEABLE */}
