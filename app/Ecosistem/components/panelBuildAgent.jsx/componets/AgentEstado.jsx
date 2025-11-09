@@ -269,7 +269,7 @@ export default function AgentsChatStyled({ agent }) {
               </div>
             ))}
             {isLoading && (
-              <div className="text-gray-400 text-sm px-2">Escribiendo...</div>
+              <div className="text-gray-400 text-sm px-2">Escribiendo.....</div>
             )}
             <div ref={messagesEndRef} />
           </div>
