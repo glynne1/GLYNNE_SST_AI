@@ -191,7 +191,7 @@ export default function AgentsChatStyled({ agent }) {
     );
 
   return (
-    <div className="w-full mt-25 flex flex-col bg-white overflow-hidden">
+    <div className="w-full mt-33 flex flex-col bg-white overflow-hidden">
       {messages.length === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center text-center px-4 relative">
           <p className="text-xs md:text-base text-gray-600 mb-6 leading-relaxed">
