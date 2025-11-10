@@ -19,7 +19,7 @@ import Diagrama from "./DiagramaFlujoFW";
 import LogicPanel from "./logicPanel";
 import Consola from "./consola";
 import AgentStreaming from "./ageentStrriming";
-import Flujo from "../../../../components/TransformerAnimation"; // 🧠 Nueva importación
+import Flujo from "../../../../components/TransformerAnimation";
 
 export default function SideMenuAgent() {
   const [activeSection, setActiveSection] = useState("agents");
@@ -32,27 +32,18 @@ export default function SideMenuAgent() {
     { id: "api", label: "Gestión de API", icon: <FaDatabase /> },
     { id: "consola", label: "Consola de Control", icon: <FaTerminal /> },
     { id: "motor", label: "Motor Generativo", icon: <FaProjectDiagram /> },
-    { id: "flujo", label: "Estructura de una red neuronal T", icon: <FaProjectDiagram /> }, // 🧠 Nueva sección
+    { id: "flujo", label: "Estructura de una red neuronal T", icon: <FaProjectDiagram /> },
   ];
 
   const renderContent = () => {
     switch (activeSection) {
       case "agents":
         return (
-          <motion.div
-            className="w-full h-full p-4 overflow-hidden flex flex-col "
+          <motion.div className="w-full h-full p-4 overflow-hidden flex flex-col"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
           >
-            <motion.h2
-              className="text-neutral-800 text-2xl md:text-3xl lg:text-4xl font-extrabold mb-4 tracking-tight"
-              initial={{ opacity: 0, y: -15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-            >
-  
-            </motion.h2>
             <div className="flex-1 overflow-hidden">
               <CardsAgent />
             </div>
@@ -61,8 +52,7 @@ export default function SideMenuAgent() {
 
       case "api":
         return (
-          <motion.div
-            className="w-full h-full p-4 flex flex-col overflow-hidden"
+          <motion.div className="w-full h-full p-4 flex flex-col overflow-hidden"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
@@ -75,8 +65,7 @@ export default function SideMenuAgent() {
 
       case "plantillas":
         return (
-          <motion.div
-            className="w-full h-full p-4 flex flex-col overflow-hidden"
+          <motion.div className="w-full h-full p-4 flex flex-col overflow-hidden"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
@@ -89,8 +78,7 @@ export default function SideMenuAgent() {
 
       case "framework":
         return (
-          <motion.div
-            className="w-full h-full p-0 overflow-hidden"
+          <motion.div className="w-full h-full p-0 overflow-hidden"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
@@ -101,8 +89,7 @@ export default function SideMenuAgent() {
 
       case "motor":
         return (
-          <motion.div
-            className="w-full h-full p-4 overflow-hidden"
+          <motion.div className="w-full h-full p-4 overflow-hidden"
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
@@ -113,20 +100,11 @@ export default function SideMenuAgent() {
 
       case "consola":
         return (
-          <motion.div
-            className="w-full h-full p-4 overflow-hidden flex flex-col"
+          <motion.div className="w-full h-full p-4 overflow-hidden flex flex-col"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
           >
-            <motion.h2
-              className="text-neutral-800 overflow-hidden text-2xl md:text-3xl lg:text-4xl font-extrabold mb-4 tracking-tight"
-              initial={{ opacity: 0, y: -15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-            >
-    
-            </motion.h2>
             <div className="flex-1 overflow-y-auto">
               <Consola />
             </div>
@@ -135,8 +113,7 @@ export default function SideMenuAgent() {
 
       case "streaming":
         return (
-          <motion.div
-            className="w-full h-full p-4 overflow-hidden flex flex-col"
+          <motion.div className="w-full h-full p-4 overflow-hidden flex flex-col"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
@@ -149,20 +126,11 @@ export default function SideMenuAgent() {
 
       case "flujo":
         return (
-          <motion.div
-            className="w-full h-full p-4 overflow-hidden flex flex-col"
+          <motion.div className="w-full h-full p-4 overflow-hidden flex flex-col"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
           >
-            <motion.h2
-              className="text-neutral-800 text-2xl md:text-3xl lg:text-4xl font-extrabold mb-4 tracking-tight"
-              initial={{ opacity: 0, y: -15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-            >
-
-            </motion.h2>
             <div className="flex-1 overflow-y-auto">
               <Flujo />
             </div>
@@ -176,14 +144,16 @@ export default function SideMenuAgent() {
 
   return (
     <div className="flex h-full w-full bg-white overflow-hidden m-0 p-0">
-      {/* Sidebar */}
+
+      {/* SIDEBAR */}
       <motion.aside
         initial={{ x: -20, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
         className="w-56 bg-white border-r border-gray-200 shadow-sm p-4 flex flex-col justify-between"
       >
-        {/* Logo */}
+
+        {/* LOGO */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -200,38 +170,41 @@ export default function SideMenuAgent() {
           />
         </motion.div>
 
-        {/* Botones del menú */}
+        {/* BOTONES MENU */}
         <div className="flex flex-col gap-2 flex-1 overflow-y-auto scrollbar-hide">
           {sections.map((sec, index) => (
             <motion.button
               key={sec.id}
               onClick={() => setActiveSection(sec.id)}
-              whileHover={{
-                scale: 1.02,
-                boxShadow: "0px 2px 10px rgba(0,0,0,0.05)",
-              }}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
-              className={`flex items-center gap-2 px-3 py-2 text-xs rounded-lg transition-all duration-300 ${
-                activeSection === sec.id
-                  ? "bg-gradient-to-r from-gray-900 to-gray-700 text-white shadow-md"
-                  : "bg-white text-gray-700 hover:text-gray-900 border border-gray-100 shadow-inner"
-              }`}
               transition={{ delay: 0.04 * index }}
+              className={`relative flex items-center gap-2 px-3 py-2 text-xs rounded-xl transition-all duration-300 overflow-hidden group ${
+                activeSection === sec.id
+                  ? "bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 text-white shadow-lg"
+                  : "bg-white text-gray-700 hover:text-gray-900 border border-gray-100 shadow-sm"
+              }`}
             >
+              {/* ✨ BARRIDO DE LUZ */}
+              <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
+
+              {/* ICONO */}
               <motion.span
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.04 * index }}
-                className="text-sm"
+                className="text-sm relative z-10"
               >
                 {sec.icon}
               </motion.span>
-              {sec.label}
+
+              {/* TEXTO */}
+              <span className="relative z-10">{sec.label}</span>
             </motion.button>
           ))}
         </div>
 
-        {/* Footer */}
+        {/* FOOTER */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
@@ -242,7 +215,7 @@ export default function SideMenuAgent() {
         </motion.div>
       </motion.aside>
 
-      {/* Contenido principal */}
+      {/* CONTENIDO PRINCIPAL */}
       <motion.main
         key={activeSection}
         initial={{ opacity: 0, y: 8 }}

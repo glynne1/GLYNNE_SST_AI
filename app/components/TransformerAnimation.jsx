@@ -6,7 +6,7 @@ import AlertRotator from '../Ecosistem/components/alert'; // <-- Importamos el c
 export default function VentanaIncrustada() {
   return (
     <motion.div
-      className="relative w-full h-screen overflow-hidden bg-white"
+      className="relative w-full -mt-16 h-screen overflow-hidden bg-white"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
