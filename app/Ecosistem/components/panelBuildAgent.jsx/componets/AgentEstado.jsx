@@ -267,7 +267,7 @@ export default function AgentsChatStyled({ agent }) {
             <div
               ref={messagesContainerRef}
               className="flex-1 flex flex-col px-4 py-2 space-y-2 overflow-y-auto"
-              style={{ maxHeight: "calc(100vh - 100px)" }}
+             
             >
               {messages.map((msg, idx) => (
                 <div
