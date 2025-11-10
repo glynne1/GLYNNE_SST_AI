@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   FaRobot,
@@ -10,6 +10,8 @@ import {
   FaMicrochip,
   FaTerminal,
   FaRocket,
+  FaKey,
+  FaCode,            // ✅ Icono para la nueva sección
 } from "react-icons/fa";
 
 import CardsAgent from "./cardsAgents";
@@ -20,6 +22,10 @@ import LogicPanel from "./logicPanel";
 import Consola from "./consola";
 import AgentStreaming from "./ageentStrriming";
 import Flujo from "../../../../components/TransformerAnimation";
+import GroqApiInfo from "./apiGroq";
+
+// ✅ IMPORTAMOS EL EDITOR VS CODE SIMULADO
+import VsCodeMockEditor from "./editorTex";
 
 export default function SideMenuAgent() {
   const [activeSection, setActiveSection] = useState("agents");
@@ -27,115 +33,47 @@ export default function SideMenuAgent() {
   const sections = [
     { id: "agents", label: "Tus modelos creados", icon: <FaRobot /> },
     { id: "plantillas", label: "Modelos predefinidos", icon: <FaCubes /> },
-    { id: "streaming", label: "Agente Streaming", icon: <FaRocket /> },
     { id: "framework", label: "Crea tus agentes", icon: <FaMicrochip /> },
+    { id: "getKey", label: "Consigue tu API", icon: <FaKey /> },
+    { id: "streaming", label: "Agente Streaming", icon: <FaRocket /> },
+    { id: "codigo", label: "Código IA", icon: <FaCode /> },
     { id: "api", label: "Gestión de API", icon: <FaDatabase /> },
     { id: "consola", label: "Consola de Control", icon: <FaTerminal /> },
     { id: "motor", label: "Motor Generativo", icon: <FaProjectDiagram /> },
-    { id: "flujo", label: "Estructura de una red neuronal T", icon: <FaProjectDiagram /> },
+    { id: "flujo", label: "Estructura de Red Neuronal", icon: <FaProjectDiagram /> },
   ];
 
   const renderContent = () => {
     switch (activeSection) {
       case "agents":
-        return (
-          <motion.div className="w-full h-full p-4 overflow-hidden flex flex-col"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-          >
-            <div className="flex-1 overflow-hidden">
-              <CardsAgent />
-            </div>
-          </motion.div>
-        );
+        return <CardsAgent />;
 
       case "api":
-        return (
-          <motion.div className="w-full h-full p-4 flex flex-col overflow-hidden"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-          >
-            <div className="flex-1 overflow-y-auto">
-              <Tabla />
-            </div>
-          </motion.div>
-        );
+        return <Tabla />;
 
       case "plantillas":
-        return (
-          <motion.div className="w-full h-full p-4 flex flex-col overflow-hidden"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-          >
-            <div className="flex-1 overflow-y-auto">
-              <Plantillas />
-            </div>
-          </motion.div>
-        );
+        return <Plantillas />;
 
       case "framework":
-        return (
-          <motion.div className="w-full h-full p-0 overflow-hidden"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-          >
-            <LogicPanel />
-          </motion.div>
-        );
+        return <LogicPanel />;
 
       case "motor":
-        return (
-          <motion.div className="w-full h-full p-4 overflow-hidden"
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Diagrama />
-          </motion.div>
-        );
+        return <Diagrama />;
 
       case "consola":
-        return (
-          <motion.div className="w-full h-full p-4 overflow-hidden flex flex-col"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-          >
-            <div className="flex-1 overflow-y-auto">
-              <Consola />
-            </div>
-          </motion.div>
-        );
+        return <Consola />;
 
       case "streaming":
-        return (
-          <motion.div className="w-full h-full p-4 overflow-hidden flex flex-col"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-          >
-            <div className="flex-1 overflow-hidden">
-              <AgentStreaming />
-            </div>
-          </motion.div>
-        );
+        return <AgentStreaming />;
 
       case "flujo":
-        return (
-          <motion.div className="w-full h-full p-4 overflow-hidden flex flex-col"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-          >
-            <div className="flex-1 overflow-y-auto">
-              <Flujo />
-            </div>
-          </motion.div>
-        );
+        return <Flujo />;
+
+      case "getKey":
+        return <GroqApiInfo />;
+
+      case "codigo":
+        return <VsCodeMockEditor />; // 👑 Aquí mostramos el editor tipo VS Code
 
       default:
         return null;
@@ -185,10 +123,8 @@ export default function SideMenuAgent() {
                   : "bg-white text-gray-700 hover:text-gray-900 border border-gray-100 shadow-sm"
               }`}
             >
-              {/* ✨ BARRIDO DE LUZ */}
               <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
 
-              {/* ICONO */}
               <motion.span
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -198,7 +134,6 @@ export default function SideMenuAgent() {
                 {sec.icon}
               </motion.span>
 
-              {/* TEXTO */}
               <span className="relative z-10">{sec.label}</span>
             </motion.button>
           ))}
@@ -215,14 +150,14 @@ export default function SideMenuAgent() {
         </motion.div>
       </motion.aside>
 
-      {/* CONTENIDO PRINCIPAL */}
+      {/* MAIN CONTENT */}
       <motion.main
         key={activeSection}
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -8 }}
         transition={{ duration: 0.3 }}
-        className="flex-1 h-full overflow-hidden bg-white"
+        className="flex-1 h-full overflow-hidden bg-white p-4"
       >
         {renderContent()}
       </motion.main>
