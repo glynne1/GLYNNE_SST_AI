@@ -109,7 +109,7 @@ export default function SideMenuAgent() {
         </motion.div>
 
         {/* BOTONES MENU */}
-        <div className="flex flex-col gap-2 flex-1 overflow-y-auto scrollbar-hide">
+        <div className="flex w-full flex-col gap-2 flex-1 overflow-y-auto scrollbar-hide">
           {sections.map((sec, index) => (
             <motion.button
               key={sec.id}
