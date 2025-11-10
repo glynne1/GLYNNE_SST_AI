@@ -191,10 +191,10 @@ export default function AgentsChatStyled({ agent }) {
     );
 
   return (
-    <div className="w-full flex flex-col bg-white overflow-hidden">
+    <div className="w-full mt-25 flex flex-col bg-white overflow-hidden">
       {messages.length === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center text-center px-4 relative">
-          <p className="text-sm md:text-base text-gray-600 mb-6 leading-relaxed">
+          <p className="text-xs md:text-base text-gray-600 mb-6 leading-relaxed">
             Hola, <span className="font-semibold">{userInfo.nombre}</span>.<br />
             Soy <span className="font-semibold">{selectedAgent.agent_name}</span>, tu{" "}
             {selectedAgent.rol?.toLowerCase() || "asistente"}.
@@ -202,7 +202,7 @@ export default function AgentsChatStyled({ agent }) {
             ¿En qué puedo ayudarte hoy?
           </p>
 
-          <div className="w-full max-w-2xl relative flex items-center mt-50 justify-center">
+          <div className="w-full max-w-2xl relative flex items-center mt-25 justify-center">
             <div className="relative flex-1">
               <input
                 type="text"
