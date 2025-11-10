@@ -202,7 +202,7 @@ export default function AgentsChatStyled({ agent }) {
             ¿En qué puedo ayudarte hoy?
           </p>
 
-          <div className="w-full max-w-2xl relative flex items-center mt-15 justify-center">
+          <div className="w-full max-w-2xl relative flex items-center mt-0 justify-center">
             <div className="relative flex-1">
               <input
                 type="text"
