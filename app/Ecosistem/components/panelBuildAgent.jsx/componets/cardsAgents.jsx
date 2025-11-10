@@ -87,7 +87,7 @@ export default function AgentCards() {
 
   return (
     <div className="w-full p-6 bg-white rounded-2xl border border-gray-300 shadow-md relative h-[90vh] flex flex-col">
-      
+
       {/* HEADER */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold text-gray-800">
@@ -115,7 +115,7 @@ export default function AgentCards() {
         </button>
       </div>
 
-      {/* ZONA SCROLLABLE ▼ */}
+      {/* ZONA SCROLLABLE */}
       <div className="flex-1 overflow-y-auto pr-2">
 
         {loading ? (
@@ -131,7 +131,7 @@ export default function AgentCards() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {agents.map((agent, idx) => (
               <div
                 key={agent.id || idx}
