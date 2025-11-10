@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MessageSquareText, Settings2, Trash2, RotateCcw } from "lucide-react";
+import { Settings2, Trash2, RotateCcw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import AgentForm from "./AgentEditModal";
 import AgentsChatStyled from "./AgentEstado";
@@ -162,23 +162,20 @@ export default function AgentCards() {
                   </p>
                 </div>
 
+                {/* ICONOS - Sin el de mensaje */}
                 <div className="mt-3 flex justify-end space-x-4 text-gray-400">
-                  <MessageSquareText
-                    className="w-5 h-5 cursor-pointer hover:text-gray-700 transition-colors duration-200"
-                    onClick={() => {
-                      setChatAgent(agent);
-                      setOpenChatPopup(true);
-                    }}
-                  />
+
                   <Settings2
                     className="w-5 h-5 cursor-pointer hover:text-gray-700 transition-colors duration-200"
                     onClick={() => handleEdit(agent, idx)}
                   />
+
                   <Trash2
                     className="w-5 h-5 cursor-pointer stroke-red-500 hover:stroke-red-700 transition-all duration-200"
                     onClick={() => handleDelete(agent.id)}
                     strokeWidth={1.8}
                   />
+
                 </div>
               </div>
             ))}
@@ -221,7 +218,7 @@ export default function AgentCards() {
         )}
       </AnimatePresence>
 
-      {/* MODAL CHAT */}
+      {/* MODAL CHAT — sigue existiendo por si luego lo reactivas */}
       <AnimatePresence>
         {openChatPopup && (
           <motion.div

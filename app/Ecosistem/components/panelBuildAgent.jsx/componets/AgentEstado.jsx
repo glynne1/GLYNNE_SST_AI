@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Send, Mic } from "lucide-react";
+import { Send, Mic, Trash2 } from "lucide-react"; // 👈 SE AGREGÓ TRASH2
 import { supabase, getCurrentUser } from "../../../../lib/supabaseClient";
 import { marked } from "marked";
 
@@ -99,6 +99,45 @@ export default function AgentsChatStyled({ agent }) {
       console.error("Error guardando mensaje en Supabase:", updateError);
   }
 
+  // ✅ FUNCIÓN PARA BORRAR SOLO EL CHAT
+  async function clearConversation() {
+    const user = await getCurrentUser();
+    if (!user || !selectedAgent) return;
+
+    setMessages([]); // limpiar local
+
+    const { data, error } = await supabase
+      .from("auditorias")
+      .select("id, user_config")
+      .eq("user_id", user.id)
+      .eq("user_config->>agent_name", selectedAgent.agent_name)
+      .single();
+
+    if (error || !data) return console.error("Error limpiando conversación");
+
+    const cleanedConfig = { ...data.user_config, conversation: [] };
+
+    await supabase
+      .from("auditorias")
+      .update({ user_config: cleanedConfig })
+      .eq("id", data.id);
+  }
+
+  // ✅ AVISO CADA 20 MENSAJES DEL USUARIO
+  const userMessageCount = messages.filter(m => m.from === "user").length;
+
+  useEffect(() => {
+    if (userMessageCount > 0 && userMessageCount % 20 === 0) {
+      setMessages(prev => [
+        ...prev,
+        {
+          from: "bot",
+          text: "🧹 Has enviado 20 mensajes. Podrías borrar el chat si quieres mantenerlo limpio."
+        }
+      ]);
+    }
+  }, [userMessageCount]);
+
   const sendMessage = async () => {
     if (!input.trim() || isLoading || !selectedAgent) return;
 
@@ -153,7 +192,6 @@ export default function AgentsChatStyled({ agent }) {
 
   return (
     <div className="w-full flex flex-col bg-white overflow-hidden">
-      {/* 🔹 Pantalla inicial centrada */}
       {messages.length === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center text-center px-4 relative">
           <p className="text-sm md:text-base text-gray-600 mb-6 leading-relaxed">
@@ -164,7 +202,6 @@ export default function AgentsChatStyled({ agent }) {
             ¿En qué puedo ayudarte hoy?
           </p>
 
-          {/* Input centrado */}
           <div className="w-full max-w-2xl relative flex items-center justify-center">
             <div className="relative flex-1">
               <input
@@ -217,25 +254,10 @@ export default function AgentsChatStyled({ agent }) {
                 </motion.button>
               )}
             </div>
-
-            <style jsx>{`
-              @keyframes shine {
-                0% {
-                  background-position: 0% 50%;
-                }
-                50% {
-                  background-position: 100% 50%;
-                }
-                100% {
-                  background-position: 0% 50%;
-                }
-              }
-            `}</style>
           </div>
         </div>
       ) : (
         <>
-          {/* 💬 Chat dinámico */}
           <div
             ref={messagesContainerRef}
             className="flex flex-col px-4 py-2 space-y-2 overflow-y-auto"
@@ -274,9 +296,21 @@ export default function AgentsChatStyled({ agent }) {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* ✍️ Input inferior */}
+          {/* ✅ BOTÓN DE BORRAR CONVERSACIÓN + INPUT (no se elimina nada) */}
           <div className="w-full px-4 py-4 flex justify-center sticky bottom-0 bg-white">
             <div className="flex w-[70%] relative items-center gap-2">
+
+              {/* 🧹 BOTÓN BORRAR CHAT */}
+              <motion.button
+                whileTap={{ scale: 0.9 }}
+                whileHover={{ scale: 1.1 }}
+                onClick={clearConversation}
+                className="bg-red-600 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-md"
+                title="Borrar conversación"
+              >
+                <Trash2 size={20} />
+              </motion.button>
+
               <div className="relative flex-1">
                 <input
                   type="text"
