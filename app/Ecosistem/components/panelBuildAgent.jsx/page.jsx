@@ -38,7 +38,7 @@ export default function Page() {
           >
             GLYNNE Panel AI es el entorno donde los desarrolladores diseñan, configuran y prueban sus modelos inteligentes antes de integrarlos
             al <strong>motor de procesamiento LLM</strong>. Aquí puedes modificar la estructura, personalidad y comportamiento de cada agente,
-            asignar roles específicos y definir parámetros técnicos avanzados. Es el punto de enlace entre la creatividad humana y la autonomía
+            asignar roles específicos y definir parámetros técnicos avanzados . Es el punto de enlace entre la creatividad humana y la autonomía
             generativa, optimizado para que cada ajuste se traduzca en rendimiento, coherencia y precisión dentro del ecosistema GLYNNE.
           </motion.p>
 
