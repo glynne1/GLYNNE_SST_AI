@@ -33,14 +33,14 @@ export default function SideMenuAgent() {
   const sections = [
     { id: "agents", label: "Tus modelos creados", icon: <FaRobot /> },
     { id: "plantillas", label: "Modelos predefinidos", icon: <FaCubes /> },
-    { id: "streaming", label: "Agente Streaming", icon: <FaRocket /> },
-    { id: "framework", label: "Crea tus agentes", icon: <FaMicrochip /> },
+    { id: "streaming", label: "Streaming con tus agentes", icon: <FaRocket /> },
+    { id: "framework", label: "Crea tus profesionales", icon: <FaMicrochip /> },
     { id: "getKey", label: "Consigue tu API", icon: <FaKey /> },
-    { id: "api", label: "Gestión de API", icon: <FaDatabase /> },
-    { id: "consola", label: "Consola de Control", icon: <FaTerminal /> },
+    { id: "api", label: "llaves de modelos", icon: <FaDatabase /> },
+    { id: "consola", label: "Consola de info", icon: <FaTerminal /> },
     { id: "codigo", label: "Código IA", icon: <FaCode /> },
-    { id: "motor", label: "Motor Generativo", icon: <FaProjectDiagram /> },
-    { id: "flujo", label: "Estructura de Red Neuronal", icon: <FaProjectDiagram /> },
+    { id: "motor", label: "Mapa de motor GLYNNE", icon: <FaProjectDiagram /> },
+    { id: "flujo", label: "Mapa red Transformer", icon: <FaProjectDiagram /> },
   ];
 
   const renderContent = () => {
