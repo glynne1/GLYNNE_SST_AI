@@ -7,6 +7,7 @@ import Tabla from "./AgentExponApi";
 import Diagrama from "./DiagramaFlujoFW";
 import CardsAgent from "./cardsAgents";
 import Plantillas from "./AgntsCardsEjm";
+import Image from "next/image";
 
 export default function AgentConfigPanel() {
   const [form, setForm] = useState({
@@ -20,6 +21,7 @@ export default function AgentConfigPanel() {
     additional_msg: "",
   });
 
+  const [step, setStep] = useState(0);
   const [response, setResponse] = useState("");
   const [logs, setLogs] = useState([]);
   const [connected, setConnected] = useState(false);
@@ -165,233 +167,199 @@ Entrega recomendaciones concretas, claras y accionables.
     return () => events.close();
   }, [apiURL]);
 
-  const toggleExamples = (field) =>
-    setShowExamples((prev) => ({ ...prev, [field]: !prev[field] }));
+  const steps = [
+    {
+      title: "Acceso a nuestros modelos IA",
+      text: "Ingresa tu clave API de GROQ o GLYNNE. Es necesaria para autenticar y conectar el modelo.",
+      content: (
+        <div className="col-span-2 relative bg-white p-5 border border-gray-300 shadow-sm flex flex-col gap-2 rounded-lg">
+          <label className="text-xs font-semibold text-gray-700 mb-1 block">API Key</label>
+          <input
+            name="api_key"
+            type="password"
+            placeholder="Enter your API key"
+            value={form.api_key}
+            onChange={handleChange}
+            className="w-full p-3 text-xs bg-white border border-gray-200 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300 rounded-lg"
+          />
+          <p className="text-gray-500 text-xs mt-2">
+            Obtén tu clave en{" "}
+            <a
+              href="https://console.groq.com/keys"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:underline"
+            >
+              GROQ Console
+            </a>
+          </p>
+        </div>
+      ),
+    },
+    {
+      title: "¿En qué área te gustaría que tu agente te ayude?",
+      text: "Define desde qué perspectiva actuará el agente. Ejemplo: 'auditor', 'asesor financiero', 'coach de IA'.",
+      content: (
+        <InputField
+          label="Rol del agente"
+          name="rol"
+          value={form.rol}
+          onChange={handleChange}
+          placeholder="Ej: Analista de procesos"
+          helperText="Describe la función principal del agente"
+        />
+      ),
+    },
+    {
+      title: "¿Cual sera el nombre del agente?",
+      text: "Asigna un nombre único a tu agente para identificarlo fácilmente.",
+      content: (
+        <InputField
+          label="Nombre del agente"
+          name="agent_name"
+          value={form.agent_name}
+          onChange={handleChange}
+          placeholder="Ej: Atlas"
+          helperText="Nombre distintivo para tu agente IA"
+        />
+      ),
+    },
+    {
+      title: "¿En qué tema o área especial quieres que se enfoque?",
+      text: "Explica brevemente para qué es bueno el agente. Ejemplo: ventas, marketing, soporte técnico, análisis de datos.",
+      content: (
+        <InputField
+          label="Especialidad"
+          name="specialty"
+          value={form.specialty}
+          onChange={handleChange}
+          placeholder="Ej: Estrategia de marketing digital"
+          helperText="Campo de especialización del agente"
+        />
+      ),
+    },
+    {
+      title: "Objetivo del agente",
+      text: "Define en una frase qué objetivo principal cumple. Ejemplo: 'Optimizar la atención al cliente'.",
+      content: (
+        <InputField
+          label="Objetivo"
+          name="objective"
+          value={form.objective}
+          onChange={handleChange}
+          placeholder="Ej: Automatizar la gestión de leads"
+          helperText="Propósito principal del agente"
+        />
+      ),
+    },
+    {
+      title: "Información del negocio",
+      text: "Describe brevemente el contexto o entorno donde operará el agente (empresa, producto, flujo, etc).",
+      content: (
+        <InputField
+          label="Información del negocio"
+          name="business_info"
+          value={form.business_info}
+          onChange={handleChange}
+          textarea
+          rows={3}
+          placeholder="Ej: Empresa SaaS enfocada en gestión de proyectos..."
+          helperText="Explica el entorno donde se aplicará el agente"
+        />
+      ),
+    },
+    {
+      title: "Instrucciones adicionales",
+      text: "Agrega reglas, tono o estilo de respuesta del agente. Ejemplo: 'Responder con empatía y precisión'.",
+      content: (
+        <InputField
+          label="Instrucciones adicionales"
+          name="additional_msg"
+          value={form.additional_msg}
+          onChange={handleChange}
+          textarea
+          rows={2}
+          placeholder="Ej: Usa un lenguaje profesional y conciso"
+          helperText="Indicaciones o reglas de comportamiento del agente"
+        />
+      ),
+    },
+  ];
 
   return (
-<div className="relative w-[92vw] h-[92vh] bg-white rounded-2xl p-6 shadow-md overflow-hidden">
-      {/* 🔹 CONTENEDOR GLOBAL */}
-      <div className="relative w-[90%] h-[100%] bg-white rounded-2xl p-0 shadow-md overflow-y-auto">
-        {/* 🔹 PANEL PRINCIPAL */}
-        <div className="grid ml-[70px] w-[87%] grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* API Key */}
-          <div className="col-span-2 relative bg-white p-5 border border-gray-300 shadow-sm flex items-center gap-2 rounded-lg">
-            <div className="flex-1 flex flex-col">
-              <label className="text-xs font-semibold text-gray-700 mb-1 block">
-                API Key
-              </label>
-              <input
-                name="api_key"
-                type="password"
-                placeholder="Enter your API key"
-                value={form.api_key}
-                onChange={handleChange}
-                className="w-full p-3 text-xs bg-white border border-gray-200 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300 rounded-lg"
-              />
-              <p className="text-gray-500 text-xs mt-2">
-                Para conseguir tu clave API, visita{" "}
-                <a
-                  href="https://console.groq.com/keys"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline"
-                >
-                  API MODEL GROQ/GLYNNE
-                </a>
-                . Copia la clave y pégala aquí.
-              </p>
-            </div>
-            <FaCopy
-              onClick={handleCopyAPIKey}
-              className="text-gray-600 hover:text-gray-800 cursor-pointer text-sm"
-              title="Copy API Key"
-            />
-            <FaTrash
-              onClick={() => setForm({ ...form, api_key: "" })}
-              className="text-red-500 hover:text-red-700 cursor-pointer text-sm"
-              title="Delete API Key"
-            />
-          </div>
+    <div className="relative w-[90vw] h-[90vh] bg-white rounded-2xl p-6 shadow-md overflow-hidden">
+      <div className="relative w-[90%] h-full flex flex-col items-center justify-center">
 
-          <InputField
-            label="Rol del agente"
-            name="rol"
-            value={form.rol}
-            onChange={handleChange}
-            placeholder="¿Desde qué visión verá tu proceso?"
-            helperText="Define el rol principal que tendrá tu agente, por ejemplo: auditor o gestor de ventas"
+        {/* 🔹 Logo fijo, sin transición */}
+        <div className="flex -mt-[35vh] justify-center">
+          <Image
+            src="/logo4.png"
+            alt="Logo Glynne"
+            width={300}
+            height={150}
+            className="rounded-full"
           />
-
-          <InputField
-            label="Nombre"
-            name="agent_name"
-            value={form.agent_name}
-            onChange={handleChange}
-            placeholder="Nombre del agente"
-            helperText="Introduce un nombre distintivo para identificar tu agente en el sistema"
-          />
-
-          <InputField
-            label="Especialidad"
-            name="specialty"
-            value={form.specialty}
-            onChange={handleChange}
-            placeholder="¿Para qué es bueno tu agente?"
-            helperText="Indica la especialidad principal del agente, como 'Automatización de ventas' o 'Soporte técnico'"
-          />
-
-          <InputField
-            label="Objetivo"
-            name="objective"
-            value={form.objective}
-            onChange={handleChange}
-            placeholder="¿Qué funciones debe tener este agente?"
-            helperText="Describe el objetivo principal que debe cumplir el agente"
-          />
-
-          <InputField
-            label="Información del proyecto"
-            name="business_info"
-            value={form.business_info}
-            onChange={handleChange}
-            placeholder="Este agente funciona como un nuevo miembro del equipo..."
-            rows={3}
-            textarea
-            colSpan={3}
-            helperText="Proporciona información breve sobre la empresa o proyecto donde se desplegará el agente"
-          >
-            <button
-              onClick={() => toggleExamples("business_info")}
-              className="mt-2 text-xs text-blue-500 hover:underline"
-            >
-              Mostrar ejemplos
-            </button>
-            <AnimatePresence>
-              {showExamples.business_info && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="mt-2 p-3 bg-gray-50 rounded-lg border border-gray-200 text-[11px] text-gray-600 space-y-1"
-                >
-                  <div>Ejemplo 1: Empresa SaaS que ofrece soluciones de automatización.</div>
-                  <div>Ejemplo 2: Proyecto interno de IA para soporte y ventas.</div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </InputField>
-
-          <InputField
-            label="Instrucciones adicionales"
-            name="additional_msg"
-            value={form.additional_msg}
-            onChange={handleChange}
-            placeholder="Instrucciones adicionales"
-            rows={2}
-            textarea
-            colSpan={3}
-            helperText="Añade instrucciones o reglas especiales que tu agente debe seguir"
-          />
-
-<div className="col-span-3 flex justify-center items-center w-full min-h-[15vh]">
-  <div className="w-[50vw] m-5 flex justify-center items-center">
-    <button
-      onClick={async () => {
-        // 🔊 Reproducir tono
-        try {
-          const audio = new Audio("/tonoCrearModelo.mp3"); // cambia a tu archivo: /sonido.mp3, /alert.wav, etc.
-          await audio.play();
-        } catch (err) {
-          console.warn("No se pudo reproducir el sonido:", err);
-        }
-
-        // 🧠 Ejecutar acciones
-        try {
-          await saveUserAgentConfig(form);
-          addLog("✅ Configuración guardada en Supabase", "success");
-        } catch (err) {
-          addLog("⚠️ No se pudo guardar configuración: " + err.message, "error");
-        }
-
-        await handleSend();
-        setChatModalOpen(true);
-      }}
-      className="bg-black text-white px-6 py-3 text-base font-semibold rounded-xl shadow-md hover:bg-gray-900 hover:shadow-lg transition-all duration-300"
-    >
-       Ejecutar Agente
-    </button>
-  </div>
-</div>
-
         </div>
 
-        {/* 🔹 MODAL DE CHAT DENTRO DEL CONTENEDOR */}
-        <AnimatePresence>
-          {chatModalOpen && (
-            <motion.div
-              className="absolute inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50"
+        {/* 🔹 Contenido con animaciones */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={step}
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -50 }}
+            transition={{ duration: 0.5 }}
+            className="w-full md:w-[60%] text-center"
+          >
+            <motion.p
+              className="text-gray-500 -mt-[10vh] text-sm mb-6"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              transition={{ delay: 0.4 }}
             >
-              <motion.div
-                className="bg-white rounded-2xl w-full max-w-lg p-5 flex flex-col max-h-[90vh] shadow-lg"
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.8, opacity: 0 }}
-              >
-                <div className="flex justify-between items-center mb-3">
-                  <h3 className="text-lg font-bold text-gray-800">Chat con IA</h3>
-                  <FaTimes
-                    className="cursor-pointer text-gray-600 hover:text-gray-800"
-                    onClick={() => setChatModalOpen(false)}
-                  />
-                </div>
+              {steps[step].text}
+            </motion.p>
 
-                <div className="flex-1 overflow-y-auto mb-3 space-y-2">
-                  {chatMessages.map((m, i) => (
-                    <div
-                      key={i}
-                      className={`p-2 rounded-lg text-xs ${
-                        m.role === "user"
-                          ? "bg-gray-100 text-gray-800 self-end"
-                          : "bg-blue-100 text-blue-800 self-start"
-                      }`}
-                    >
-                      {typeof m.content === "object"
-                        ? JSON.stringify(m.content, null, 2)
-                        : m.content}
-                    </div>
-                  ))}
-                  <div ref={endRef} />
-                </div>
-
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={chatInput}
-                    onChange={(e) => setChatInput(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && sendChatMessage()}
-                    placeholder="Escribe tu mensaje..."
-                    className="flex-1 p-2 border border-gray-300 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-gray-300"
-                  />
-                  <button
-                    onClick={sendChatMessage}
-                    className="px-3 py-2 bg-black text-white rounded-lg text-xs hover:bg-gray-800 transition-colors"
-                  >
-                    Enviar
-                  </button>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
+            {steps[step].content}
+          </motion.div>
         </AnimatePresence>
+
+        <div className="flex justify-between items-center mt-6 w-[60%]">
+          <button
+            onClick={() => setStep((s) => Math.max(0, s - 1))}
+            disabled={step === 0}
+            className="px-4 py-2 text-xs bg-gray-200 rounded-lg disabled:opacity-50"
+          >
+            Anterior
+          </button>
+
+          {step < steps.length - 1 ? (
+            <button
+              onClick={() => setStep((s) => Math.min(steps.length - 1, s + 1))}
+              className="px-4 py-2 text-xs bg-black text-white rounded-lg"
+            >
+              Siguiente
+            </button>
+          ) : (
+            <button
+              onClick={async () => {
+                await saveUserAgentConfig(form);
+                addLog("✅ Configuración guardada", "success");
+                await handleSend();
+                setChatModalOpen(true);
+              }}
+              className="px-4 py-2 text-xs bg-green-600 text-white rounded-lg"
+            >
+              Ejecutar agente
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
 }
 
-/* 🔹 SUBCOMPONENTE DE INPUT UNIFICADO */
+/* 🔹 Subcomponente InputField (sin cambios estructurales) */
 function InputField({
   label,
   name,
@@ -405,16 +373,8 @@ function InputField({
   children,
 }) {
   return (
-    <div
-      className={`bg-white p-5 border border-gray-300 shadow-sm rounded-lg ${
-        colSpan > 1 ? `col-span-${colSpan}` : ""
-      }`}
-    >
-      {label && (
-        <label className="text-xs font-semibold text-gray-700 mb-2 block">
-          {label}
-        </label>
-      )}
+    <div className="bg-white p-5 border border-gray-300 shadow-sm rounded-lg">
+      {label && <label className="text-xs font-semibold text-gray-700 mb-2 block">{label}</label>}
       {textarea ? (
         <textarea
           name={name}
