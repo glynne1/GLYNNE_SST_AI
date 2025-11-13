@@ -9,7 +9,7 @@ import DB from '../../CSVanaliza/components/panel';
 import News from '../components/panelBuildAgent.jsx/page';
 import DocsSection from './FW_section/page';
 import DocumentacionOff from '../components/DocumentacionOff';
-import TransformerAnimation from '../../components/TransformerAnimation';
+import MercadoPagoButton from '../components/MercadoPagoButton';
 
 export default function PlusMenu({ onRefresh }) {
   const [popupOpen, setPopupOpen] = useState(false);
@@ -259,7 +259,8 @@ export default function PlusMenu({ onRefresh }) {
 
               {showContent && contentType === 'nn' && (
                 <motion.div className="absolute inset-0 flex items-center justify-center bg-white">
-                  <TransformerAnimation />
+                  <MercadoPagoButton title="Plan Pro" price={30000} email="cliente@test.com" />
+   
                 </motion.div>
               )}
             </div>

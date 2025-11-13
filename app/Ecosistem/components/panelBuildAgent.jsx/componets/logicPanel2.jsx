@@ -33,12 +33,12 @@ export default function SideMenuAgent() {
   const sections = [
     { id: "agents", label: "Tus modelos creados", icon: <FaRobot /> },
     { id: "plantillas", label: "Modelos predefinidos", icon: <FaCubes /> },
+    { id: "streaming", label: "Agente Streaming", icon: <FaRocket /> },
     { id: "framework", label: "Crea tus agentes", icon: <FaMicrochip /> },
     { id: "getKey", label: "Consigue tu API", icon: <FaKey /> },
-    { id: "streaming", label: "Agente Streaming", icon: <FaRocket /> },
-    { id: "codigo", label: "Código IA", icon: <FaCode /> },
     { id: "api", label: "Gestión de API", icon: <FaDatabase /> },
     { id: "consola", label: "Consola de Control", icon: <FaTerminal /> },
+    { id: "codigo", label: "Código IA", icon: <FaCode /> },
     { id: "motor", label: "Motor Generativo", icon: <FaProjectDiagram /> },
     { id: "flujo", label: "Estructura de Red Neuronal", icon: <FaProjectDiagram /> },
   ];
