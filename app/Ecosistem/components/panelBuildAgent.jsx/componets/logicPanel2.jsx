@@ -11,7 +11,7 @@ import {
   FaTerminal,
   FaRocket,
   FaKey,
-  FaCode,            // ✅ Icono para la nueva sección
+  FaCode, // Icono de la nueva sección
 } from "react-icons/fa";
 
 import CardsAgent from "./cardsAgents";
@@ -23,9 +23,10 @@ import Consola from "./consola";
 import AgentStreaming from "./ageentStrriming";
 import Flujo from "../../../../components/TransformerAnimation";
 import GroqApiInfo from "./apiGroq";
-
-// ✅ IMPORTAMOS EL EDITOR VS CODE SIMULADO
 import VsCodeMockEditor from "./editorTex";
+
+// ✅ Nuevo componente solicitado
+import GenerarApiExterna from "./generarApiExterna";
 
 export default function SideMenuAgent() {
   const [activeSection, setActiveSection] = useState("agents");
@@ -41,39 +42,37 @@ export default function SideMenuAgent() {
     { id: "codigo", label: "Código IA", icon: <FaCode /> },
     { id: "motor", label: "Mapa de motor GLYNNE", icon: <FaProjectDiagram /> },
     { id: "flujo", label: "Mapa red Transformer", icon: <FaProjectDiagram /> },
+
+    // ✅ NUEVA SECCIÓN QUE PEDISTE
+    { id: "generarApi", label: "Generar API Externa", icon: <FaCode /> },
   ];
 
   const renderContent = () => {
     switch (activeSection) {
       case "agents":
         return <CardsAgent />;
-
       case "api":
         return <Tabla />;
-
       case "plantillas":
         return <Plantillas />;
-
       case "framework":
         return <LogicPanel />;
-
       case "motor":
         return <Diagrama />;
-
       case "consola":
         return <Consola />;
-
       case "streaming":
         return <AgentStreaming />;
-
       case "flujo":
         return <Flujo />;
-
       case "getKey":
         return <GroqApiInfo />;
-
       case "codigo":
-        return <VsCodeMockEditor />; // 👑 Aquí mostramos el editor tipo VS Code
+        return <VsCodeMockEditor />;
+
+      // ⭐ NUEVO RENDER DEL COMPONENTE SOLICITADO
+      case "generarApi":
+        return <GenerarApiExterna />;
 
       default:
         return null;
@@ -82,7 +81,6 @@ export default function SideMenuAgent() {
 
   return (
     <div className="flex h-full w-full bg-white overflow-hidden m-0 p-0">
-
       {/* SIDEBAR */}
       <motion.aside
         initial={{ x: -20, opacity: 0 }}
@@ -90,7 +88,6 @@ export default function SideMenuAgent() {
         transition={{ duration: 0.4, ease: "easeOut" }}
         className="w-56 bg-white border-r border-gray-200 shadow-sm p-4 flex flex-col justify-between"
       >
-
         {/* LOGO */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
@@ -101,6 +98,7 @@ export default function SideMenuAgent() {
           <h1 className="text-center text-sm font-semibold text-gray-800 tracking-tight leading-tight">
             CENTRO DE DESARROLLO <span className="text-gray-400">GLYNNE</span>
           </h1>
+
           <img
             src="/logo2.png"
             alt="Logo GLYNNE"

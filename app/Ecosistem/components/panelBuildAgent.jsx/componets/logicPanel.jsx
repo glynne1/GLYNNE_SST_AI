@@ -286,6 +286,8 @@ Entrega recomendaciones concretas, claras y accionables.
     },
   ];
 
+  
+
   return (
     <div className="relative w-[90vw] h-[90vh] bg-white rounded-2xl p-6 shadow-md overflow-hidden">
       <div className="relative w-[90%] h-full flex flex-col items-center justify-center">
