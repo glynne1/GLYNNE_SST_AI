@@ -17,7 +17,6 @@ export default function AgentPanel() {
     setShowKey((prev) => ({ ...prev, [index]: !prev[index] }));
   };
 
-  // ✅ traer datos SOLO LECTURA desde Supabase
   const fetchAgents = async () => {
     try {
       setLoading(true);
@@ -31,7 +30,6 @@ export default function AgentPanel() {
 
       if (error) throw error;
 
-      // ✅ Extraemos el JSON guardado en user_config
       const formattedAgents =
         data?.map((item) => ({
           ...item.user_config,
@@ -53,66 +51,66 @@ export default function AgentPanel() {
     <div className="w-full p-6 bg-white rounded-2xl border border-gray-300 shadow-md relative">
 
       {/* HEADER */}
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-gray-800">
-          API Keys por Agente
-        </h2>
-        <p className="text-sm text-gray-400">Solo lectura</p>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-bold text-gray-800">API Keys por Agente</h2>
+        <p className="text-xs text-gray-400">Solo lectura</p>
       </div>
 
-      {loading ? (
-        <p className="text-center text-gray-400">Cargando...</p>
-      ) : (
-        <div className="space-y-5">
+      {/* SCROLL */}
+      <div className="h-[75vh] overflow-y-auto pr-2">
 
-          {agents.map((agent, i) => (
-            <div
-              key={i}
-              className="flex justify-between items-center bg-white border border-gray-200 rounded-xl p-5 hover:shadow-lg transition-all duration-300"
-            >
+        {loading ? (
+          <p className="text-center text-gray-400 text-sm">Cargando...</p>
+        ) : (
+          <div className="space-y-4">
 
-              {/* IZQUIERDA */}
-              <div className="flex items-center gap-3 overflow-hidden">
+            {agents.map((agent, i) => (
+              <div
+                key={i}
+                className="flex justify-between items-center bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all duration-300"
+              >
 
-                {/* ✅ ICONO LIVE PULSANTE */}
-                <div className="flex items-center gap-1">
-                  <Activity className="text-green-500 animate-pulse" size={16} />
-                  <span className="text-xs font-medium text-green-600 animate-pulse">
-                    Live
-                  </span>
+                {/* IZQUIERDA */}
+                <div className="flex items-center gap-2 overflow-hidden">
+                  
+                  <div className="flex items-center gap-1">
+                    <Activity className="text-green-500 animate-pulse" size={12} />
+                    <span className="text-[10px] font-medium text-green-600 animate-pulse">
+                      Live
+                    </span>
+                  </div>
+
+                  <div>
+                    <p className="text-sm font-semibold text-gray-800 truncate">
+                      {agent.agent_name}
+                    </p>
+                    <p className="text-[11px] text-gray-500 truncate">
+                      <strong>Rol:</strong> {agent.rol}
+                    </p>
+                  </div>
                 </div>
 
-                {/* Nombre y rol */}
-                <div>
-                  <p className="text-lg font-semibold text-gray-800 truncate">
-                    {agent.agent_name}
-                  </p>
-                  <p className="text-xs text-gray-500 truncate">
-                    <strong>Rol:</strong> {agent.rol}
-                  </p>
+                {/* DERECHA */}
+                <div className="flex items-center gap-3 w-[55%] justify-end">
+                  <div className="text-[10px] bg-gray-50 px-3 py-1.5 rounded-full text-gray-600 font-mono border border-gray-100 w-full text-left overflow-hidden">
+                    {showKey[i] ? agent.api_key : maskApiKey(agent.api_key)}
+                  </div>
+
+                  <button
+                    onClick={() => toggleKey(i)}
+                    className="text-gray-500 hover:text-gray-700 transition"
+                  >
+                    {showKey[i] ? <EyeOff size={14} /> : <Eye size={14} />}
+                  </button>
                 </div>
+
               </div>
+            ))}
 
-              {/* DERECHA */}
-              <div className="flex items-center gap-4 w-[55%] justify-end">
-                <div className="text-xs bg-gray-50 px-4 py-2 rounded-full text-gray-600 font-mono border border-gray-100 w-full text-left overflow-hidden">
-                  {showKey[i] ? agent.api_key : maskApiKey(agent.api_key)}
-                </div>
+          </div>
+        )}
 
-                <button
-                  onClick={() => toggleKey(i)}
-                  className="text-gray-500 hover:text-gray-700 transition"
-                >
-                  {showKey[i] ? <EyeOff size={20} /> : <Eye size={20} />}
-                </button>
-              </div>
-
-            </div>
-          ))}
-
-        </div>
-      )}
-
+      </div>
     </div>
   );
 }

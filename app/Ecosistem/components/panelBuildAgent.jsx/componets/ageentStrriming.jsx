@@ -111,7 +111,8 @@ export default function AgentCards() {
   };
 
   return (
-    <div className="w-full h-[90vh] flex flex-col bg-white overflow-hidden text-xs">
+    <div className="w-full h-[90vh] flex flex-col bg-white overflow-hidden text-xs border border-gray-300 shadow-lg rounded-xl">
+
 
       {/* HEADER */}
       <div className="flex items-center justify-between px-3 py-2 border-b border-[#E5E5E5] bg-white">
