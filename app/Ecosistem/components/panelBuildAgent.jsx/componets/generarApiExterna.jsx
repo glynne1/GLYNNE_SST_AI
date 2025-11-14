@@ -6,6 +6,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import AgentForm from "./AgentEditModal";
 import { supabase, getCurrentUser } from "../../../../lib/supabaseClient";
 
+// ⬅️ IMPORTAMOS TU COMPONENTE DE EJEMPLOS DE CÓDIGO
+import IntroCodeSection from "./conectionCodeApi"; 
+
 export default function AgentCards() {
   const [agents, setAgents] = useState([]);
   const [expandedCard, setExpandedCard] = useState(null);
@@ -27,11 +30,12 @@ export default function AgentCards() {
 
       if (error) throw error;
 
-      const formattedAgents = data?.map((item) => ({
-        id: item.id,
-        ...item.user_config,
-        full_config: item.user_config
-      })) || [];
+      const formattedAgents =
+        data?.map((item) => ({
+          id: item.id,
+          ...item.user_config,
+          full_config: item.user_config,
+        })) || [];
 
       setAgents(formattedAgents);
     } catch (err) {
@@ -41,7 +45,9 @@ export default function AgentCards() {
     }
   };
 
-  useEffect(() => { fetchAgents(); }, []);
+  useEffect(() => {
+    fetchAgents();
+  }, []);
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -62,6 +68,7 @@ export default function AgentCards() {
         .eq("id", agentId);
 
       if (error) throw error;
+
       setAgents((prev) => prev.filter((a) => a.id !== agentId));
     } catch (err) {
       console.error("❌ Error al eliminar agente:", err);
@@ -69,7 +76,10 @@ export default function AgentCards() {
     }
   };
 
-  const handleEdit = (agent, index) => { setSelectedAgent({ index, agent }); };
+  const handleEdit = (agent, index) => {
+    setSelectedAgent({ index, agent });
+  };
+
   const handleSave = (updatedAgent) => {
     setAgents((prev) =>
       prev.map((a, i) => (i === selectedAgent.index ? updatedAgent : a))
@@ -79,20 +89,29 @@ export default function AgentCards() {
 
   const toggleExpandCard = (id) => {
     setExpandedCard(expandedCard === id ? null : id);
-  }
+  };
 
   const handleDownloadJSON = (agent) => {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(agent.full_config, null, 2));
-    const dlAnchorElem = document.createElement('a');
+    const dataStr =
+      "data:text/json;charset=utf-8," +
+      encodeURIComponent(JSON.stringify(agent.full_config, null, 2));
+    const dlAnchorElem = document.createElement("a");
     dlAnchorElem.setAttribute("href", dataStr);
-    dlAnchorElem.setAttribute("download", `${agent.agent_name || "agente"}.json`);
+    dlAnchorElem.setAttribute(
+      "download",
+      `${agent.agent_name || "agente"}.json`
+    );
     dlAnchorElem.click();
-  }
+  };
 
   return (
     <div className="w-full p-6 bg-white rounded-2xl border border-gray-300 shadow-md relative h-[90vh] flex flex-col">
+
+      {/* ⬇️ SECCIÓN DE EJEMPLOS DE CÓDIGO INSERTADA AQUÍ */}
+      <IntroCodeSection show={true} />
+
       {/* HEADER */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 mt-6">
         <h2 className="text-xl font-bold text-gray-800">
           Agentes GLYNNE creados
         </h2>
@@ -103,14 +122,22 @@ export default function AgentCards() {
         >
           <motion.div
             animate={{ rotate: isRefreshing ? 360 : 0 }}
-            transition={{ duration: 0.6, ease: "easeInOut", repeat: isRefreshing ? Infinity : 0 }}
+            transition={{
+              duration: 0.6,
+              ease: "easeInOut",
+              repeat: isRefreshing ? Infinity : 0,
+            }}
           >
-            <RotateCcw className={`w-5 h-5 ${isRefreshing ? "text-blue-600" : "text-gray-600"}`} />
+            <RotateCcw
+              className={`w-5 h-5 ${
+                isRefreshing ? "text-blue-600" : "text-gray-600"
+              }`}
+            />
           </motion.div>
         </button>
       </div>
 
-      {/* CONTENEDOR SCROLLABLE */}
+      {/* CONTENEDOR SCROLL */}
       <div className="flex-1 overflow-y-auto pr-2">
         {loading ? (
           <div className="flex items-center justify-center h-[200px]">
@@ -126,21 +153,27 @@ export default function AgentCards() {
           <div className="flex flex-col gap-4">
             {agents.map((agent, idx) => {
               const isExpanded = expandedCard === agent.id;
+
               return (
                 <motion.div
                   key={agent.id || idx}
                   layout
                   className="bg-white shadow-lg rounded-xl border border-gray-200 overflow-hidden cursor-pointer hover:shadow-xl transition-all"
                 >
-                  {/* CABECERA DE LA CARD */}
+                  {/* CABECERA CARD */}
                   <div
                     className="flex justify-between items-center p-4 text-start text-sm text-gray-700"
                     onClick={() => toggleExpandCard(agent.id)}
                   >
                     <div>
-                      <h3 className="font-semibold text-gray-800">{agent.agent_name || "Agente sin nombre"}</h3>
-                      <p><strong>Rol:</strong> {agent.rol || "-"}</p>
+                      <h3 className="font-semibold text-gray-800">
+                        {agent.agent_name || "Agente sin nombre"}
+                      </h3>
+                      <p>
+                        <strong>Rol:</strong> {agent.rol || "-"}
+                      </p>
                     </div>
+
                     <div className="flex items-center gap-3">
                       <button
                         onClick={(e) => {
@@ -152,11 +185,16 @@ export default function AgentCards() {
                       >
                         <Key className="w-5 h-5 text-gray-600" />
                       </button>
-                      {isExpanded ? <ChevronUp className="w-5 h-5 text-gray-500" /> : <ChevronDown className="w-5 h-5 text-gray-500" />}
+
+                      {isExpanded ? (
+                        <ChevronUp className="w-5 h-5 text-gray-500" />
+                      ) : (
+                        <ChevronDown className="w-5 h-5 text-gray-500" />
+                      )}
                     </div>
                   </div>
 
-                  {/* CONTENIDO EXPANDIDO */}
+                  {/* EXPANDIBLE */}
                   <AnimatePresence>
                     {isExpanded && (
                       <motion.div
@@ -166,19 +204,27 @@ export default function AgentCards() {
                         transition={{ duration: 0.3 }}
                         className="p-4 border-t border-gray-200 text-xs text-gray-700"
                       >
-                        <p><strong>Modelo:</strong> {agent.model || "-"}</p>
-                        {agent.api_key && <p><strong>API Key:</strong> {agent.api_key}</p>}
+                        <p>
+                          <strong>Modelo:</strong> {agent.model || "-"}
+                        </p>
+
+                        {agent.api_key && (
+                          <p>
+                            <strong>API Key:</strong> {agent.api_key}
+                          </p>
+                        )}
 
                         {agent.full_config && (
                           <div className="mt-2">
-                            <h4 className="font-semibold text-gray-800 mb-1">Configuración Completa:</h4>
+                            <h4 className="font-semibold text-gray-800 mb-1">
+                              Configuración Completa:
+                            </h4>
                             <pre className="bg-gray-50 border border-gray-200 p-2 rounded text-[0.7rem] overflow-x-auto whitespace-pre-wrap">
                               {JSON.stringify(agent.full_config, null, 2)}
                             </pre>
                           </div>
                         )}
 
-                        {/* ICONO ELIMINAR */}
                         <div className="mt-2 flex justify-end">
                           <Trash2
                             className="w-4 h-4 cursor-pointer stroke-red-500 hover:stroke-red-700 transition-all"
@@ -217,6 +263,7 @@ export default function AgentCards() {
               >
                 ✖
               </button>
+
               <AgentForm
                 agentData={selectedAgent.agent}
                 onSave={handleSave}

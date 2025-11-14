@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { IoCloudDownloadOutline } from "react-icons/io5";
 import {
   FaRobot,
   FaDatabase,
@@ -35,9 +36,8 @@ export default function SideMenuAgent() {
     { id: "agents", label: "Tus modelos creados", icon: <FaRobot /> },
     { id: "plantillas", label: "Modelos predefinidos", icon: <FaCubes /> },
     { id: "streaming", label: "Streaming con tus agentes", icon: <FaRocket /> },
-    { id: "generarApi", label: "Generar API Externa", icon: <FaCode /> },
+    { id: "generarApi", label: "Exporta tus modelos", icon: <IoCloudDownloadOutline /> },
     { id: "framework", label: "Crea tus profesionales", icon: <FaMicrochip /> },
-    { id: "getKey", label: "Consigue tu API", icon: <FaKey /> },
     { id: "api", label: "llaves de modelos", icon: <FaDatabase /> },
     { id: "consola", label: "Consola de info", icon: <FaTerminal /> },
     { id: "codigo", label: "Código IA", icon: <FaCode /> },
