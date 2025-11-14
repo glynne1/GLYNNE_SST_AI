@@ -1,46 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  Trash2,
-  RotateCcw,
-  KeyRound,
-  Eye,
-  EyeOff,
-  Copy
-} from "lucide-react"; 
+import { Trash2, RotateCcw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import AgentForm from "./AgentEditModal";
-import AgentsChatStyled from "./AgentEstado";
 import { supabase, getCurrentUser } from "../../../../lib/supabaseClient";
 
-// Generador de API Keys
-function generateRandomApiKey() {
-  const chars =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let key = "pub_";
-  for (let i = 0; i < 48; i++) {
-    key += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return key;
-}
+// ⚠️ Se eliminaron:
+// - generateRandomApiKey (ya no se usa)
+// - KeyRound, Eye, EyeOff, Copy (ya no se usan)
+// - AgentsChatStyled (ya que no se usa la funcionalidad de chat)
 
 export default function AgentCards() {
   const [agents, setAgents] = useState([]);
   const [selectedAgent, setSelectedAgent] = useState(null);
-  const [openChatPopup, setOpenChatPopup] = useState(false);
-  const [chatAgent, setChatAgent] = useState(null);
+  // ⚠️ Se eliminaron estados no usados (openChatPopup, chatAgent, apiKeyModal, showKey)
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
-
-  // 🔥 ESTADO DEL MODAL PARA LA API KEY
-  const [apiKeyModal, setApiKeyModal] = useState({
-    open: false,
-    key: "",
-  });
-
-  // Mostrar la API key por agente
-  const [showKey, setShowKey] = useState(null);
 
   const fetchAgents = async () => {
     try {
@@ -48,6 +24,7 @@ export default function AgentCards() {
       const user = await getCurrentUser();
       if (!user) throw new Error("Usuario no autenticado");
 
+      // La consulta sigue siendo la misma, trayendo id y el user_config (JSON)
       const { data, error } = await supabase
         .from("auditorias")
         .select("id, user_config")
@@ -56,10 +33,14 @@ export default function AgentCards() {
 
       if (error) throw error;
 
+      // Formateamos los datos para tener la configuración directamente en el agente
       const formattedAgents =
         data?.map((item) => ({
           id: item.id,
-          ...item.user_config,
+          // Almacenamos todo el objeto user_config (el JSON) en el agente
+          ...item.user_config, 
+          // Guardamos el objeto user_config original completo para mostrarlo
+          full_config: item.user_config 
         })) || [];
 
       setAgents(formattedAgents);
@@ -112,36 +93,9 @@ export default function AgentCards() {
     setSelectedAgent(null);
   };
 
-  // 🔥 Crear y mostrar API KEY en modal
-  const handleCreateApiKey = async (agent) => {
-    try {
-      const newKey = generateRandomApiKey();
-
-      const { error } = await supabase
-        .from("auditorias")
-        .update({
-          user_config: {
-            ...agent,
-            public_api_key: newKey,
-          },
-        })
-        .eq("id", agent.id);
-
-      if (error) throw error;
-
-      setApiKeyModal({ open: true, key: newKey });
-      setShowKey(null);
-
-      fetchAgents();
-    } catch (err) {
-      console.error("❌ Error generando API pública:", err);
-      alert("Hubo un error al crear la API Key. Revisa la consola.");
-    }
-  };
-
-  const copyToClipboard = (key) => {
-    navigator.clipboard.writeText(key);
-  };
+  // ⚠️ Se eliminaron:
+  // - handleCreateApiKey
+  // - copyToClipboard
 
   return (
     <div className="w-full p-6 bg-white rounded-2xl border border-gray-300 shadow-md relative h-[90vh] flex flex-col">
@@ -149,7 +103,7 @@ export default function AgentCards() {
       {/* HEADER */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold text-gray-800">
-          Agentes GLYNNE creados
+          Agentes GLYNNE creados (Configuración Completa)
         </h2>
 
         <button
@@ -192,60 +146,39 @@ export default function AgentCards() {
             {agents.map((agent, idx) => (
               <div
                 key={agent.id || idx}
-                className="bg-white shadow-lg rounded-xl p-5 border border-gray-200 flex flex-col justify-between w-full h-[180px] hover:shadow-2xl transition-all"
+                className="bg-white shadow-lg rounded-xl p-5 border border-gray-200 flex flex-col justify-between w-full hover:shadow-2xl transition-all"
               >
-                {/* NOMBRE, ROL y API Key */}
+                {/* NOMBRE Y ROL */}
                 <div className="space-y-2">
                   <h2 className="text-lg font-semibold text-gray-800 truncate">
                     {agent.agent_name || "Agente sin nombre"}
                   </h2>
-                  <p className="text-xs text-gray-500 truncate">
+                  <p className="text-sm text-gray-600">
                     <strong>Rol:</strong> {agent.rol || "-"}
                   </p>
 
-                  {/* API Key Pública */}
-                  <div className="mt-2 flex items-center justify-between bg-gray-100 px-3 py-2 rounded-lg">
-                    <span className="text-[0.70rem] font-mono text-gray-700 truncate">
-                      {agent.public_api_key
-                        ? showKey === agent.id
-                          ? agent.public_api_key
-                          : "••••••••••••••••••••••"
-                        : "Aún no tiene API Key"}
-                    </span>
+                  <hr className="my-2" />
 
-                    {agent.public_api_key && (
-                      <span className="flex items-center space-x-2">
-                        {showKey === agent.id ? (
-                          <EyeOff
-                            className="w-4 h-4 cursor-pointer text-gray-700 hover:text-gray-900"
-                            onClick={() => setShowKey(null)}
-                          />
-                        ) : (
-                          <Eye
-                            className="w-4 h-4 cursor-pointer text-gray-700 hover:text-gray-900"
-                            onClick={() => setShowKey(agent.id)}
-                          />
-                        )}
-                        <Copy
-                          className="w-4 h-4 cursor-pointer text-gray-700 hover:text-gray-900"
-                          onClick={() => copyToClipboard(agent.public_api_key)}
-                        />
-                      </span>
-                    )}
+                  {/* MOSTRAR EL JSON COMPLETO (user_config) */}
+                  <div className="mt-4">
+                    <h3 className="text-sm font-bold text-gray-700 mb-2">
+                      Configuración Completa (JSON Supabase):
+                    </h3>
+                    <pre className="bg-gray-50 border border-gray-200 p-3 rounded-lg overflow-x-auto text-xs font-mono text-gray-700 max-h-[250px] whitespace-pre-wrap">
+                      {/* Usamos JSON.stringify para mostrar el objeto completo legiblemente */}
+                      {JSON.stringify(agent.full_config, null, 2)}
+                    </pre>
                   </div>
                 </div>
 
                 {/* ICONOS */}
                 <div className="mt-3 flex justify-end space-x-4 text-gray-400">
-                  <KeyRound
-                    className="w-5 h-5 cursor-pointer hover:text-blue-600 transition-colors"
-                    onClick={() => handleCreateApiKey(agent)}
-                    title="Crear API Key pública"
-                  />
+                  {/* ⚠️ Se eliminó KeyRound */}
                   <Trash2
                     className="w-5 h-5 cursor-pointer stroke-red-500 hover:stroke-red-700 transition-all"
                     onClick={() => handleDelete(agent.id)}
                     strokeWidth={1.8}
+                    title="Eliminar agente"
                   />
                 </div>
               </div>
@@ -254,64 +187,9 @@ export default function AgentCards() {
         )}
       </div>
 
-      {/* MODAL API KEY 🌟 */}
-      <AnimatePresence>
-        {apiKeyModal.open && (
-          <motion.div
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50"
-            onClick={() => setApiKeyModal({ open: false, key: "" })}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <motion.div
-              className="bg-white rounded-2xl shadow-2xl p-8 w-[90vw] max-w-md flex flex-col items-center relative"
-              onClick={(e) => e.stopPropagation()}
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-            >
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                API Key creada
-              </h2>
+      {/* ⚠️ Se eliminaron MODAL API KEY y MODAL CHAT */}
 
-              <div className="w-full bg-gray-100 rounded-xl p-4 flex items-center justify-between">
-                <span className="font-mono text-sm text-gray-700 truncate">
-                  {showKey ? apiKeyModal.key : "••••••••••••••••••••••••"}
-                </span>
-
-                <div className="flex items-center space-x-3">
-                  {showKey ? (
-                    <EyeOff
-                      className="w-5 h-5 cursor-pointer text-gray-600 hover:text-gray-800"
-                      onClick={() => setShowKey(false)}
-                    />
-                  ) : (
-                    <Eye
-                      className="w-5 h-5 cursor-pointer text-gray-600 hover:text-gray-800"
-                      onClick={() => setShowKey(true)}
-                    />
-                  )}
-
-                  <Copy
-                    className="w-5 h-5 cursor-pointer text-gray-600 hover:text-gray-800"
-                    onClick={() => copyToClipboard(apiKeyModal.key)}
-                  />
-                </div>
-              </div>
-
-              <button
-                onClick={() => setApiKeyModal({ open: false, key: "" })}
-                className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl shadow transition-all"
-              >
-                Cerrar
-              </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* MODAL EDITAR */}
+      {/* MODAL EDITAR (Se mantiene por si quieres editar la configuración) */}
       <AnimatePresence>
         {selectedAgent && (
           <motion.div
@@ -336,33 +214,6 @@ export default function AgentCards() {
                 onSave={handleSave}
                 onCancel={() => setSelectedAgent(null)}
               />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* MODAL CHAT */}
-      <AnimatePresence>
-        {openChatPopup && (
-          <motion.div
-            className="fixed inset-0 bg-black/30 backdrop-blur-md flex justify-center items-center z-50"
-            onClick={() => setOpenChatPopup(false)}
-          >
-            <motion.div
-              className="relative bg-white rounded-2xl shadow-xl w-[90vw] h-[80vh] flex flex-col overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                onClick={() => setOpenChatPopup(false)}
-                className="absolute top-4 right-6 text-gray-500 hover:text-gray-700 text-xl z-50"
-              >
-                ✖
-              </button>
-
-              <div className="flex-1 w-full h-full overflow-y-auto">
-                <AgentsChatStyled agent={chatAgent} />
-              </div>
-
             </motion.div>
           </motion.div>
         )}
