@@ -1,78 +1,73 @@
-import { NextResponse } from "next/server";
 import { supabase } from "../../lib/supabaseClient";
-
-// URL del backend de tus agentes
-const apiURL =
-  process.env.NEXT_PUBLIC_API_URL ||
-  "https://generative-glynne-motor.onrender.com";
 
 export async function POST(req) {
   try {
-    const body = await req.json();
-    const { agentId, message } = body;
+    const { api_key, mensaje } = await req.json();
 
-    if (!agentId || !message) {
-      return NextResponse.json(
-        { error: "agentId y message son obligatorios" },
+    if (!api_key || !mensaje) {
+      return new Response(
+        JSON.stringify({ error: "Faltan api_key o mensaje" }),
         { status: 400 }
       );
     }
 
-    // 1️⃣ Obtener configuración del agente desde auditorias
-    const { data: agentData, error: agentError } = await supabase
+    // 🔹 Buscar agente por API key pública
+    const { data, error } = await supabase
       .from("auditorias")
-      .select("*")
-      .eq("agent_id", agentId)
+      .select("user_config")
+      .ilike("user_config->>public_api_key", api_key)
       .single();
 
-    if (agentError || !agentData) {
-      return NextResponse.json(
-        { error: "Agente no encontrado" },
-        { status: 404 }
+    if (error || !data) {
+      return new Response(
+        JSON.stringify({ error: "API key inválida" }),
+        { status: 401 }
       );
     }
 
-    const agentConfig = agentData.user_config;
+    const agentConfig = data.user_config;
 
-    // 2️⃣ Guardar mensaje del usuario
-    const userMsg = { from: "external", text: message };
+    // 🔹 Recuperar conversación previa si quieres
+    const conversation = agentConfig.conversation || [];
 
-    agentConfig.conversation = [...(agentConfig.conversation || []), userMsg];
+    // 🔹 Agregar mensaje del usuario al historial temporal
+    conversation.push({ from: "user", text: mensaje });
 
-    await supabase
-      .from("auditorias")
-      .update({ user_config: agentConfig })
-      .eq("id", agentData.id);
+    // 🔹 Aquí puedes llamar a la misma función que procesa el mensaje
+    // Por ejemplo, si antes hacías fetch a tu motor interno:
+    const apiURL =
+      process.env.NEXT_PUBLIC_API_URL ||
+      "https://generative-glynne-motor.onrender.com";
 
-    // 3️⃣ Mandar mensaje al backend IA
     const res = await fetch(`${apiURL}/dynamic/agent/chat/full`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        mensaje: message,
+        mensaje,
         agent_config: agentConfig,
       }),
     });
 
-    const data = await res.json();
-    const reply = data?.reply || "No hubo respuesta";
+    const dataBot = await res.json();
+    const botReply = dataBot.reply || "No recibí respuesta";
 
-    // 4️⃣ Guardar mensaje del BOT
-    const botMsg = { from: "bot", text: reply };
+    // 🔹 Actualizar conversación temporal (opcional)
+    conversation.push({ from: "bot", text: botReply });
 
-    agentConfig.conversation.push(botMsg);
-
+    // 🔹 Guardar en Supabase si quieres mantener el historial
     await supabase
       .from("auditorias")
-      .update({ user_config: agentConfig })
-      .eq("id", agentData.id);
+      .update({ user_config: { ...agentConfig, conversation } })
+      .eq("user_config->>public_api_key", api_key);
 
-    // 5️⃣ Retornar la respuesta al cliente externo
-    return NextResponse.json({ ok: true, reply });
+    return new Response(JSON.stringify({ reply: botReply }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (err) {
-    console.error(err);
-    return NextResponse.json(
-      { error: "Error procesando la solicitud" },
+    console.error("Error en /external-agent:", err);
+    return new Response(
+      JSON.stringify({ error: "Error interno del servidor" }),
       { status: 500 }
     );
   }
