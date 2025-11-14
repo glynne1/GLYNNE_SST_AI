@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Trash2, RotateCcw } from "lucide-react"; 
+import { Trash2, RotateCcw, ChevronDown, ChevronUp } from "lucide-react"; 
 import { motion, AnimatePresence } from "framer-motion";
 import AgentForm from "./AgentEditModal";
 import { supabase, getCurrentUser } from "../../../../lib/supabaseClient";
 
 export default function AgentCards() {
   const [agents, setAgents] = useState([]);
+  const [expandedCard, setExpandedCard] = useState(null);
   const [selectedAgent, setSelectedAgent] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -76,12 +77,16 @@ export default function AgentCards() {
     setSelectedAgent(null);
   };
 
+  const toggleExpandCard = (id) => {
+    setExpandedCard(expandedCard === id ? null : id);
+  }
+
   return (
     <div className="w-full p-6 bg-white rounded-2xl border border-gray-300 shadow-md relative h-[90vh] flex flex-col">
       {/* HEADER */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold text-gray-800">
-          Agentes GLYNNE creados (Información Completa)
+          Agentes GLYNNE creados
         </h2>
         <button
           onClick={handleRefresh}
@@ -111,47 +116,65 @@ export default function AgentCards() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {agents.map((agent, idx) => (
-              <div
-                key={agent.id || idx}
-                className="bg-white shadow-lg rounded-xl p-4 border border-gray-200 flex flex-col justify-between w-full hover:shadow-xl transition-all"
-              >
-                {/* INFORMACIÓN DEL AGENTE ORDENADA Y MÁS COMPACTA */}
-                <div className="space-y-1 text-start text-xs text-gray-700">
-                  <div>
-                    <h3 className="font-semibold text-gray-800">{agent.agent_name || "Agente sin nombre"}</h3>
-                    <p><strong>Rol:</strong> {agent.rol || "-"}</p>
-                    <p><strong>Modelo:</strong> {agent.model || "-"}</p>
-                    {agent.api_key && <p><strong>API Key:</strong> {agent.api_key}</p>}
+            {agents.map((agent, idx) => {
+              const isExpanded = expandedCard === agent.id;
+              return (
+                <motion.div
+                  key={agent.id || idx}
+                  layout
+                  className="bg-white shadow-lg rounded-xl border border-gray-200 overflow-hidden cursor-pointer hover:shadow-xl transition-all"
+                >
+                  {/* CABECERA DE LA CARD */}
+                  <div
+                    className="flex justify-between items-center p-4 text-start text-sm text-gray-700"
+                    onClick={() => toggleExpandCard(agent.id)}
+                  >
+                    <div>
+                      <h3 className="font-semibold text-gray-800">{agent.agent_name || "Agente sin nombre"}</h3>
+                      <p><strong>Rol:</strong> {agent.rol || "-"}</p>
+                    </div>
+                    <div>
+                      {isExpanded ? <ChevronUp className="w-5 h-5 text-gray-500" /> : <ChevronDown className="w-5 h-5 text-gray-500" />}
+                    </div>
                   </div>
 
-                  {/* CONFIGURACIÓN ADICIONAL */}
-                  {agent.full_config && (
-                    <div className="mt-1">
-                      <h4 className="font-semibold text-gray-800">Configuración Adicional:</h4>
-                      <ul className="list-disc list-inside space-y-0.5">
-                        {Object.entries(agent.full_config).map(([key, value]) => {
-                          if (["agent_name","rol","model","api_key"].includes(key)) return null;
-                          return (
-                            <li key={key}><strong>{key}:</strong> {JSON.stringify(value)}</li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                  )}
-                </div>
+                  {/* CONTENIDO EXPANDIDO */}
+                  <AnimatePresence>
+                    {isExpanded && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="p-4 border-t border-gray-200 text-xs text-gray-700"
+                      >
+                        <p><strong>Modelo:</strong> {agent.model || "-"}</p>
+                        {agent.api_key && <p><strong>API Key:</strong> {agent.api_key}</p>}
 
-                {/* ICONO ELIMINAR */}
-                <div className="mt-2 flex justify-end text-gray-400">
-                  <Trash2
-                    className="w-4 h-4 cursor-pointer stroke-red-500 hover:stroke-red-700 transition-all"
-                    onClick={() => handleDelete(agent.id)}
-                    strokeWidth={1.5}
-                    title="Eliminar agente"
-                  />
-                </div>
-              </div>
-            ))}
+                        {agent.full_config && (
+                          <div className="mt-2">
+                            <h4 className="font-semibold text-gray-800 mb-1">Configuración Completa:</h4>
+                            <pre className="bg-gray-50 border border-gray-200 p-2 rounded text-[0.7rem] overflow-x-auto whitespace-pre-wrap">
+                              {JSON.stringify(agent.full_config, null, 2)}
+                            </pre>
+                          </div>
+                        )}
+
+                        {/* ICONO ELIMINAR */}
+                        <div className="mt-2 flex justify-end">
+                          <Trash2
+                            className="w-4 h-4 cursor-pointer stroke-red-500 hover:stroke-red-700 transition-all"
+                            onClick={() => handleDelete(agent.id)}
+                            strokeWidth={1.5}
+                            title="Eliminar agente"
+                          />
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              );
+            })}
           </div>
         )}
       </div>
