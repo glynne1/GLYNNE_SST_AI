@@ -1,14 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Settings2, Trash2, RotateCcw, KeyRound } from "lucide-react";
+import { Trash2, RotateCcw, KeyRound } from "lucide-react"; // 👈 Nuevo icono
 import { motion, AnimatePresence } from "framer-motion";
 import AgentForm from "./AgentEditModal";
 import AgentsChatStyled from "./AgentEstado";
 import { supabase, getCurrentUser } from "../../../../lib/supabaseClient";
 
-// 👇 Import nuevos para mostrar/ocultar API key y copiarla
-import { FaEye, FaEyeSlash, FaCopy } from "react-icons/fa";
+// 🔥 Función para generar API Keys aleatorias únicas
+function generateRandomApiKey() {
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let key = "pub_";
+  for (let i = 0; i < 48; i++) {
+    key += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return key;
+}
 
 export default function AgentCards() {
   const [agents, setAgents] = useState([]);
@@ -17,17 +25,6 @@ export default function AgentCards() {
   const [chatAgent, setChatAgent] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
-
-  // 👇 State para mostrar/ocultar la API KEY por card
-  const [visibleKey, setVisibleKey] = useState(null);
-
-  const toggleViewKey = (id) => {
-    setVisibleKey(visibleKey === id ? null : id);
-  };
-
-  const copyKey = (key) => {
-    navigator.clipboard.writeText(key);
-  };
 
   const fetchAgents = async () => {
     try {
@@ -99,32 +96,29 @@ export default function AgentCards() {
     setSelectedAgent(null);
   };
 
-  // 🔑 GENERAR API KEY
-  const handleGenerateApiKey = async (agent) => {
+  // 🔥 FUNCIÓN QUE CREA Y GUARDA LA API_KEY PÚBLICA EN SUPABASE
+  const handleCreateApiKey = async (agent) => {
     try {
-      const user = await getCurrentUser();
-      if (!user) return alert("Usuario no autenticado");
+      const newKey = generateRandomApiKey();
 
-      const res = await fetch("/api/create-agent-key", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          agentId: agent.agent_id,
-          userId: user.id,
-        }),
-      });
+      const { error } = await supabase
+        .from("auditorias")
+        .update({
+          user_config: {
+            ...agent,
+            public_api_key: newKey, // 👈 Agrega sin modificar nada más
+          },
+        })
+        .eq("id", agent.id);
 
-      const data = await res.json();
+      if (error) throw error;
 
-      if (data.ok) {
-        alert("API KEY generada:\n\n" + data.apiKey);
-        handleRefresh();
-      } else {
-        alert("Error: " + data.error);
-      }
+      alert(`Clave API Pública creada:\n${newKey}`);
+
+      fetchAgents();
     } catch (err) {
-      console.error(err);
-      alert("Error generando API KEY");
+      console.error("❌ Error generando API pública:", err);
+      alert("Hubo un error al crear la API Key. Revisa la consola.");
     }
   };
 
@@ -158,7 +152,7 @@ export default function AgentCards() {
         </button>
       </div>
 
-      {/* SCROLL AREA */}
+      {/* ZONA SCROLLABLE */}
       <div className="flex-1 overflow-y-auto pr-2">
 
         {loading ? (
@@ -175,65 +169,44 @@ export default function AgentCards() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
             {agents.map((agent, idx) => (
               <div
                 key={agent.id || idx}
                 className="bg-white shadow-lg rounded-xl p-5 border border-gray-200 flex flex-col justify-between w-full h-[200px] hover:shadow-2xl transition-all duration-300 text-left"
               >
-                {/* 👉 SOLO NOMBRE Y API KEY AHORA */}
-                <div className="space-y-4 overflow-hidden">
-
-                  {/* Nombre del agente */}
-                  <h2 className="text-xl font-semibold text-gray-800 truncate">
+                <div className="space-y-1 overflow-hidden">
+                  <h2 className="text-lg font-semibold text-gray-800 truncate">
                     {agent.agent_name || "Agente sin nombre"}
                   </h2>
-
-                  {/* API KEY */}
-                  <div className="bg-gray-100 px-3 py-2 flex items-center justify-between rounded-lg border">
-                    <span className="font-mono text-sm text-gray-700">
-                      {visibleKey === agent.id
-                        ? agent.apiKey || "Sin API Key"
-                        : "••••••••••••••••••"}
-                    </span>
-
-                    <div className="flex items-center gap-3">
-
-                      {/* Mostrar / ocultar */}
-                      <button
-                        onClick={() => toggleViewKey(agent.id)}
-                        className="text-gray-600 hover:text-gray-900"
-                      >
-                        {visibleKey === agent.id ? (
-                          <FaEyeSlash size={17} />
-                        ) : (
-                          <FaEye size={17} />
-                        )}
-                      </button>
-
-                      {/* Copiar */}
-                      <button
-                        onClick={() => copyKey(agent.apiKey)}
-                        className="text-gray-600 hover:text-gray-900"
-                      >
-                        <FaCopy size={17} />
-                      </button>
-                    </div>
-                  </div>
+                  <p className="text-xs text-gray-500 truncate">
+                    <strong>Rol:</strong> {agent.rol || "-"}
+                  </p>
+                  <p className="text-xs text-gray-500 truncate">
+                    <strong>Objetivo:</strong> {agent.objective || "-"}
+                  </p>
+                  {agent.specialty && (
+                    <p className="text-xs text-gray-500 truncate">
+                      <strong>Especialidad:</strong> {agent.specialty}
+                    </p>
+                  )}
+                  <p className="text-xs text-gray-500 truncate">
+                    <strong>Información del negocio:</strong>{" "}
+                    {agent.business_info || "-"}
+                  </p>
+                  <p className="text-xs text-gray-500 truncate">
+                    <strong>Mensaje adicional:</strong>{" "}
+                    {agent.additional_msg || "-"}
+                  </p>
                 </div>
 
-                {/* ICONOS */}
+                {/* ICONOS - Cambié Settings2 → KeyRound */}
                 <div className="mt-3 flex justify-end space-x-4 text-gray-400">
-                  
-                  {/* Crear API KEY */}
+
+                  {/* 🔥 NUEVO BOTÓN → Crear API Pública */}
                   <KeyRound
                     className="w-5 h-5 cursor-pointer hover:text-blue-600 transition-colors duration-200"
-                    onClick={() => handleGenerateApiKey(agent)}
-                  />
-
-                  <Settings2
-                    className="w-5 h-5 cursor-pointer hover:text-gray-700 transition-colors duration-200"
-                    onClick={() => handleEdit(agent, idx)}
+                    onClick={() => handleCreateApiKey(agent)}
+                    title="Crear API Key pública"
                   />
 
                   <Trash2
@@ -245,7 +218,6 @@ export default function AgentCards() {
                 </div>
               </div>
             ))}
-
           </div>
         )}
 
@@ -284,7 +256,7 @@ export default function AgentCards() {
         )}
       </AnimatePresence>
 
-      {/* CHAT POPUP (sin cambios) */}
+      {/* MODAL CHAT — lo dejo intacto */}
       <AnimatePresence>
         {openChatPopup && (
           <motion.div
