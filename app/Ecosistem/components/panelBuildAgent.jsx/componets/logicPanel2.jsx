@@ -35,6 +35,7 @@ export default function SideMenuAgent() {
     { id: "agents", label: "Tus modelos creados", icon: <FaRobot /> },
     { id: "plantillas", label: "Modelos predefinidos", icon: <FaCubes /> },
     { id: "streaming", label: "Streaming con tus agentes", icon: <FaRocket /> },
+    { id: "generarApi", label: "Generar API Externa", icon: <FaCode /> },
     { id: "framework", label: "Crea tus profesionales", icon: <FaMicrochip /> },
     { id: "getKey", label: "Consigue tu API", icon: <FaKey /> },
     { id: "api", label: "llaves de modelos", icon: <FaDatabase /> },
@@ -43,8 +44,6 @@ export default function SideMenuAgent() {
     { id: "motor", label: "Mapa de motor GLYNNE", icon: <FaProjectDiagram /> },
     { id: "flujo", label: "Mapa red Transformer", icon: <FaProjectDiagram /> },
 
-    // ✅ NUEVA SECCIÓN QUE PEDISTE
-    { id: "generarApi", label: "Generar API Externa", icon: <FaCode /> },
   ];
 
   const renderContent = () => {
