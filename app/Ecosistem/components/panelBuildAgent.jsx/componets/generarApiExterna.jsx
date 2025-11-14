@@ -1,20 +1,28 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Trash2, RotateCcw } from "lucide-react";
+import { 
+  Trash2, 
+  RotateCcw, 
+  MessageSquareText // Importamos el ícono de chat
+} from "lucide-react"; 
 import { motion, AnimatePresence } from "framer-motion";
 import AgentForm from "./AgentEditModal";
+// IMPORTAR EL MODAL DE CHAT
+import AgentChatModal from "./AgentChatModal"; 
 import { supabase, getCurrentUser } from "../../../../lib/supabaseClient";
 
-// ⚠️ Se eliminaron:
-// - generateRandomApiKey (ya no se usa)
-// - KeyRound, Eye, EyeOff, Copy (ya no se usan)
-// - AgentsChatStyled (ya que no se usa la funcionalidad de chat)
+// ⚠️ NOTA: El componente AgentChatModal debe estar definido en AgentChatModal.jsx 
+// como se mostró en la respuesta anterior para que esta importación funcione.
 
 export default function AgentCards() {
   const [agents, setAgents] = useState([]);
   const [selectedAgent, setSelectedAgent] = useState(null);
-  // ⚠️ Se eliminaron estados no usados (openChatPopup, chatAgent, apiKeyModal, showKey)
+  
+  // 🔥 ESTADOS PARA EL CHAT MODAL
+  const [openChatPopup, setOpenChatPopup] = useState(false);
+  const [chatAgent, setChatAgent] = useState(null);
+
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -39,7 +47,7 @@ export default function AgentCards() {
           id: item.id,
           // Almacenamos todo el objeto user_config (el JSON) en el agente
           ...item.user_config, 
-          // Guardamos el objeto user_config original completo para mostrarlo
+          // Guardamos el objeto user_config original completo para usarlo en el fetch del chat
           full_config: item.user_config 
         })) || [];
 
@@ -93,9 +101,11 @@ export default function AgentCards() {
     setSelectedAgent(null);
   };
 
-  // ⚠️ Se eliminaron:
-  // - handleCreateApiKey
-  // - copyToClipboard
+  // 🔥 Función para abrir el chat
+  const handleOpenChat = (agent) => {
+      setChatAgent(agent);
+      setOpenChatPopup(true);
+  }
 
   return (
     <div className="w-full p-6 bg-white rounded-2xl border border-gray-300 shadow-md relative h-[90vh] flex flex-col">
@@ -173,13 +183,22 @@ export default function AgentCards() {
 
                 {/* ICONOS */}
                 <div className="mt-3 flex justify-end space-x-4 text-gray-400">
-                  {/* ⚠️ Se eliminó KeyRound */}
-                  <Trash2
-                    className="w-5 h-5 cursor-pointer stroke-red-500 hover:stroke-red-700 transition-all"
-                    onClick={() => handleDelete(agent.id)}
-                    strokeWidth={1.8}
-                    title="Eliminar agente"
-                  />
+                    
+                    {/* BOTÓN DE CHAT */}
+                    <MessageSquareText
+                        className="w-5 h-5 cursor-pointer hover:text-green-600 transition-colors"
+                        onClick={() => handleOpenChat(agent)}
+                        title="Abrir Chat con el agente"
+                        strokeWidth={1.8}
+                    />
+                    
+                    {/* BOTÓN DE ELIMINAR */}
+                    <Trash2
+                        className="w-5 h-5 cursor-pointer stroke-red-500 hover:stroke-red-700 transition-all"
+                        onClick={() => handleDelete(agent.id)}
+                        strokeWidth={1.8}
+                        title="Eliminar agente"
+                    />
                 </div>
               </div>
             ))}
@@ -187,9 +206,9 @@ export default function AgentCards() {
         )}
       </div>
 
-      {/* ⚠️ Se eliminaron MODAL API KEY y MODAL CHAT */}
+      {/* ⚠️ Se eliminó MODAL API KEY */}
 
-      {/* MODAL EDITAR (Se mantiene por si quieres editar la configuración) */}
+      {/* MODAL EDITAR (Se mantiene) */}
       <AnimatePresence>
         {selectedAgent && (
           <motion.div
@@ -214,6 +233,32 @@ export default function AgentCards() {
                 onSave={handleSave}
                 onCancel={() => setSelectedAgent(null)}
               />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 🔥 MODAL CHAT (Integración de AgentChatModal) */}
+      <AnimatePresence>
+        {openChatPopup && chatAgent && (
+          <motion.div
+            className="fixed inset-0 bg-black/30 backdrop-blur-md flex justify-center items-center z-50"
+            onClick={() => setOpenChatPopup(false)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="relative bg-white rounded-2xl shadow-xl w-[90vw] max-w-xl h-[80vh] flex flex-col overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+            >
+                <AgentChatModal 
+                    agent={chatAgent} 
+                    onClose={() => setOpenChatPopup(false)} 
+                />
             </motion.div>
           </motion.div>
         )}
