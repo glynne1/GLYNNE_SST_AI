@@ -114,40 +114,39 @@ export default function AgentCards() {
             {agents.map((agent, idx) => (
               <div
                 key={agent.id || idx}
-                className="bg-white shadow-lg rounded-xl p-5 border border-gray-200 flex flex-col justify-between w-full hover:shadow-2xl transition-all"
+                className="bg-white shadow-lg rounded-xl p-4 border border-gray-200 flex flex-col justify-between w-full hover:shadow-xl transition-all"
               >
-                {/* INFORMACIÓN DEL AGENTE ORDENADA */}
-                <div className="space-y-2">
-                  <h2 className="text-lg font-semibold text-gray-800 truncate">
-                    {agent.agent_name || "Agente sin nombre"}
-                  </h2>
-                  <p className="text-sm text-gray-600"><strong>Rol:</strong> {agent.rol || "-"}</p>
-                  <p className="text-sm text-gray-600"><strong>Modelo:</strong> {agent.model || "-"}</p>
-                  {agent.api_key && (
-                    <p className="text-sm text-gray-600">
-                      <strong>API Key:</strong> {agent.api_key}
-                    </p>
-                  )}
+                {/* INFORMACIÓN DEL AGENTE ORDENADA Y MÁS COMPACTA */}
+                <div className="space-y-1 text-start text-xs text-gray-700">
+                  <div>
+                    <h3 className="font-semibold text-gray-800">{agent.agent_name || "Agente sin nombre"}</h3>
+                    <p><strong>Rol:</strong> {agent.rol || "-"}</p>
+                    <p><strong>Modelo:</strong> {agent.model || "-"}</p>
+                    {agent.api_key && <p><strong>API Key:</strong> {agent.api_key}</p>}
+                  </div>
+
                   {/* CONFIGURACIÓN ADICIONAL */}
                   {agent.full_config && (
-                    <div className="mt-2">
-                      <h3 className="text-sm font-semibold text-gray-700">Configuración Adicional:</h3>
-                      <ul className="text-xs text-gray-600 list-disc list-inside">
+                    <div className="mt-1">
+                      <h4 className="font-semibold text-gray-800">Configuración Adicional:</h4>
+                      <ul className="list-disc list-inside space-y-0.5">
                         {Object.entries(agent.full_config).map(([key, value]) => {
                           if (["agent_name","rol","model","api_key"].includes(key)) return null;
-                          return <li key={key}><strong>{key}:</strong> {JSON.stringify(value)}</li>;
+                          return (
+                            <li key={key}><strong>{key}:</strong> {JSON.stringify(value)}</li>
+                          );
                         })}
                       </ul>
                     </div>
                   )}
                 </div>
 
-                {/* ICONOS */}
-                <div className="mt-3 flex justify-end space-x-4 text-gray-400">
+                {/* ICONO ELIMINAR */}
+                <div className="mt-2 flex justify-end text-gray-400">
                   <Trash2
-                    className="w-5 h-5 cursor-pointer stroke-red-500 hover:stroke-red-700 transition-all"
+                    className="w-4 h-4 cursor-pointer stroke-red-500 hover:stroke-red-700 transition-all"
                     onClick={() => handleDelete(agent.id)}
-                    strokeWidth={1.8}
+                    strokeWidth={1.5}
                     title="Eliminar agente"
                   />
                 </div>
@@ -168,7 +167,7 @@ export default function AgentCards() {
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className="relative bg-white rounded-2xl shadow-xl p-8 w-[85vw] h-[85vh] overflow-y-auto flex flex-col"
+              className="relative bg-white rounded-2xl shadow-xl p-6 w-[85vw] h-[85vh] overflow-y-auto flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >
               <button
