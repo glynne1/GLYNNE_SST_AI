@@ -1,13 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Trash2, RotateCcw, KeyRound } from "lucide-react"; // 👈 Nuevo icono
+import {
+  Trash2,
+  RotateCcw,
+  KeyRound,
+  Eye,
+  EyeOff,
+  Copy
+} from "lucide-react"; 
 import { motion, AnimatePresence } from "framer-motion";
 import AgentForm from "./AgentEditModal";
 import AgentsChatStyled from "./AgentEstado";
 import { supabase, getCurrentUser } from "../../../../lib/supabaseClient";
 
-// 🔥 Función para generar API Keys aleatorias únicas
+// Generador de API Keys
 function generateRandomApiKey() {
   const chars =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -25,6 +32,13 @@ export default function AgentCards() {
   const [chatAgent, setChatAgent] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  // 🔥 ESTADO DEL MODAL PARA LA API KEY
+  const [apiKeyModal, setApiKeyModal] = useState({
+    open: false,
+    key: "",
+  });
+  const [showKey, setShowKey] = useState(false);
 
   const fetchAgents = async () => {
     try {
@@ -96,7 +110,7 @@ export default function AgentCards() {
     setSelectedAgent(null);
   };
 
-  // 🔥 FUNCIÓN QUE CREA Y GUARDA LA API_KEY PÚBLICA EN SUPABASE
+  // 🔥 NUEVO → Crear y mostrar API KEY en modal
   const handleCreateApiKey = async (agent) => {
     try {
       const newKey = generateRandomApiKey();
@@ -106,20 +120,25 @@ export default function AgentCards() {
         .update({
           user_config: {
             ...agent,
-            public_api_key: newKey, // 👈 Agrega sin modificar nada más
+            public_api_key: newKey,
           },
         })
         .eq("id", agent.id);
 
       if (error) throw error;
 
-      alert(`Clave API Pública creada:\n${newKey}`);
+      setApiKeyModal({ open: true, key: newKey });
+      setShowKey(false); // siempre iniciará oculta
 
       fetchAgents();
     } catch (err) {
       console.error("❌ Error generando API pública:", err);
       alert("Hubo un error al crear la API Key. Revisa la consola.");
     }
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(apiKeyModal.key);
   };
 
   return (
@@ -130,6 +149,7 @@ export default function AgentCards() {
         <h2 className="text-xl font-bold text-gray-800">
           Agentes GLYNNE creados
         </h2>
+
         <button
           onClick={handleRefresh}
           className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-300 hover:bg-gray-100 transition-all"
@@ -157,13 +177,11 @@ export default function AgentCards() {
 
         {loading ? (
           <div className="flex items-center justify-center h-[200px]">
-            <p className="text-sm text-gray-400 italic text-center">
-              Cargando agentes...
-            </p>
+            <p className="text-sm text-gray-400 italic">Cargando agentes...</p>
           </div>
         ) : !agents || agents.length === 0 ? (
           <div className="flex items-center justify-center h-[200px]">
-            <p className="text-sm text-gray-400 italic text-center">
+            <p className="text-sm text-gray-400 italic">
               Aquí podrás visualizar tus modelos IA creados.
             </p>
           </div>
@@ -172,7 +190,7 @@ export default function AgentCards() {
             {agents.map((agent, idx) => (
               <div
                 key={agent.id || idx}
-                className="bg-white shadow-lg rounded-xl p-5 border border-gray-200 flex flex-col justify-between w-full h-[200px] hover:shadow-2xl transition-all duration-300 text-left"
+                className="bg-white shadow-lg rounded-xl p-5 border border-gray-200 flex flex-col justify-between w-full h-[200px] hover:shadow-2xl transition-all"
               >
                 <div className="space-y-1 overflow-hidden">
                   <h2 className="text-lg font-semibold text-gray-800 truncate">
@@ -199,29 +217,83 @@ export default function AgentCards() {
                   </p>
                 </div>
 
-                {/* ICONOS - Cambié Settings2 → KeyRound */}
+                {/* ICONOS */}
                 <div className="mt-3 flex justify-end space-x-4 text-gray-400">
 
-                  {/* 🔥 NUEVO BOTÓN → Crear API Pública */}
                   <KeyRound
-                    className="w-5 h-5 cursor-pointer hover:text-blue-600 transition-colors duration-200"
+                    className="w-5 h-5 cursor-pointer hover:text-blue-600 transition-colors"
                     onClick={() => handleCreateApiKey(agent)}
                     title="Crear API Key pública"
                   />
 
                   <Trash2
-                    className="w-5 h-5 cursor-pointer stroke-red-500 hover:stroke-red-700 transition-all duration-200"
+                    className="w-5 h-5 cursor-pointer stroke-red-500 hover:stroke-red-700 transition-all"
                     onClick={() => handleDelete(agent.id)}
                     strokeWidth={1.8}
                   />
-
                 </div>
               </div>
             ))}
           </div>
         )}
-
       </div>
+
+      {/* MODAL API KEY 🌟 */}
+      <AnimatePresence>
+        {apiKeyModal.open && (
+          <motion.div
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50"
+            onClick={() => setApiKeyModal({ open: false, key: "" })}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="bg-white rounded-2xl shadow-2xl p-8 w-[90vw] max-w-md flex flex-col items-center relative"
+              onClick={(e) => e.stopPropagation()}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+            >
+              <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                API Key creada
+              </h2>
+
+              <div className="w-full bg-gray-100 rounded-xl p-4 flex items-center justify-between">
+                <span className="font-mono text-sm text-gray-700 truncate">
+                  {showKey ? apiKeyModal.key : "••••••••••••••••••••••••"}
+                </span>
+
+                <div className="flex items-center space-x-3">
+                  {showKey ? (
+                    <EyeOff
+                      className="w-5 h-5 cursor-pointer text-gray-600 hover:text-gray-800"
+                      onClick={() => setShowKey(false)}
+                    />
+                  ) : (
+                    <Eye
+                      className="w-5 h-5 cursor-pointer text-gray-600 hover:text-gray-800"
+                      onClick={() => setShowKey(true)}
+                    />
+                  )}
+
+                  <Copy
+                    className="w-5 h-5 cursor-pointer text-gray-600 hover:text-gray-800"
+                    onClick={copyToClipboard}
+                  />
+                </div>
+              </div>
+
+              <button
+                onClick={() => setApiKeyModal({ open: false, key: "" })}
+                className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl shadow transition-all"
+              >
+                Cerrar
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* MODAL EDITAR */}
       <AnimatePresence>
@@ -236,9 +308,6 @@ export default function AgentCards() {
             <motion.div
               className="relative bg-white rounded-2xl shadow-xl p-8 w-[85vw] h-[85vh] overflow-y-auto flex flex-col"
               onClick={(e) => e.stopPropagation()}
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
             >
               <button
                 onClick={() => setSelectedAgent(null)}
@@ -256,22 +325,16 @@ export default function AgentCards() {
         )}
       </AnimatePresence>
 
-      {/* MODAL CHAT — lo dejo intacto */}
+      {/* MODAL CHAT (sin cambios) */}
       <AnimatePresence>
         {openChatPopup && (
           <motion.div
             className="fixed inset-0 bg-black/30 backdrop-blur-md flex justify-center items-center z-50"
             onClick={() => setOpenChatPopup(false)}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
           >
             <motion.div
               className="relative bg-white rounded-2xl shadow-xl w-[90vw] h-[80vh] flex flex-col overflow-hidden"
               onClick={(e) => e.stopPropagation()}
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
             >
               <button
                 onClick={() => setOpenChatPopup(false)}
