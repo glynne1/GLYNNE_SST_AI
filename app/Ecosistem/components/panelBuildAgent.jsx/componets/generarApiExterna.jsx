@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Trash2, RotateCcw, ChevronDown, ChevronUp } from "lucide-react"; 
+import { Trash2, RotateCcw, ChevronDown, ChevronUp, Key } from "lucide-react"; 
 import { motion, AnimatePresence } from "framer-motion";
 import AgentForm from "./AgentEditModal";
 import { supabase, getCurrentUser } from "../../../../lib/supabaseClient";
@@ -81,6 +81,14 @@ export default function AgentCards() {
     setExpandedCard(expandedCard === id ? null : id);
   }
 
+  const handleDownloadJSON = (agent) => {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(agent.full_config, null, 2));
+    const dlAnchorElem = document.createElement('a');
+    dlAnchorElem.setAttribute("href", dataStr);
+    dlAnchorElem.setAttribute("download", `${agent.agent_name || "agente"}.json`);
+    dlAnchorElem.click();
+  }
+
   return (
     <div className="w-full p-6 bg-white rounded-2xl border border-gray-300 shadow-md relative h-[90vh] flex flex-col">
       {/* HEADER */}
@@ -115,7 +123,7 @@ export default function AgentCards() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="flex flex-col gap-4">
             {agents.map((agent, idx) => {
               const isExpanded = expandedCard === agent.id;
               return (
@@ -133,7 +141,17 @@ export default function AgentCards() {
                       <h3 className="font-semibold text-gray-800">{agent.agent_name || "Agente sin nombre"}</h3>
                       <p><strong>Rol:</strong> {agent.rol || "-"}</p>
                     </div>
-                    <div>
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDownloadJSON(agent);
+                        }}
+                        title="Descargar JSON"
+                        className="p-1 rounded hover:bg-gray-100 transition"
+                      >
+                        <Key className="w-5 h-5 text-gray-600" />
+                      </button>
                       {isExpanded ? <ChevronUp className="w-5 h-5 text-gray-500" /> : <ChevronDown className="w-5 h-5 text-gray-500" />}
                     </div>
                   </div>
