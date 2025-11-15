@@ -36,6 +36,7 @@ export default function DocsPage() {
   return (
     <div className="flex min-h-screen bg-white text-gray-900">
       {/* 🔹 Sidebar fija */}
+
       <DocsSidebar />
 
       {/* 🔹 Contenido principal */}

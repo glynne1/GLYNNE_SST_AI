@@ -14,12 +14,11 @@ export default function DocsSidebar() {
     'Automatización de Procesos',
     'Modificación de Agentes',
     'Personalidad del Agente',
-
     'Conexión con el Frontend',
-
   ];
 
   const [isVisible, setIsVisible] = useState(true);
+  const [active, setActive] = useState(null);
 
   useEffect(() => {
     const handleResize = () => setIsVisible(window.innerWidth >= 700);
@@ -31,52 +30,84 @@ export default function DocsSidebar() {
   if (!isVisible) return null;
 
   return (
-    <aside className="w-47 h-screen sticky top-0 left-0 bg-white border-r border-gray-200 flex flex-col items-start py-8 px-4 z-20">
+    <aside className="w-56 h-screen -mt-30 sticky top-0 left-0 bg-white border-r border-gray-200 shadow-sm flex flex-col items-start py-8 px-4 z-20">
 
-      {/* 🔹 Logo superior */}
+      {/* LOGO */}
       <motion.div
-        initial={{ opacity: 0, y: -8, scale: 0.95 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
         className="flex justify-center w-full mb-4"
       >
         <img
           src="/logo2.png"
           alt="Logo GLYNNE"
-          className="w-12 opacity-80 hover:opacity-100 transition-opacity duration-300 cursor-pointer"
+          className="w-12 opacity-90 hover:opacity-100 transition-opacity duration-300 cursor-pointer"
         />
       </motion.div>
 
-      {/* 🔹 Título de sección */}
+      {/* TITULO */}
       <motion.h2
-        initial={{ opacity: 0, y: -6 }}
+        initial={{ opacity: 0, y: -5 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="text-gray-800 text-xs font-semibold mb-6 tracking-wide uppercase text-center w-full"
+        transition={{ duration: 0.4 }}
+        className="text-gray-700 text-xs font-semibold mb-4 tracking-wide uppercase text-center w-full"
       >
         Documentación del Framework
       </motion.h2>
 
-      {/* 🔹 Navegación */}
-      <nav className="flex flex-col justify-start w-full space-y-1">
-        {sections.map((section) => (
+      {/* NAV */}
+      <nav className="flex flex-col justify-start w-full space-y-2 overflow-y-auto pr-1 scrollbar-hide">
+
+        {sections.map((section, index) => (
           <motion.a
             key={section}
             href={`#${section}`}
-            whileHover={{
-              x: 4,
-              scale: 1.02,
-              transition: { type: 'spring', stiffness: 300 },
-            }}
-            className="block px-2 py-1.5 rounded-md text-[12px] text-gray-600 font-medium hover:text-blue-600 hover:bg-gray-50 transition-all leading-snug text-left"
+            onClick={() => setActive(section)}
+            transition={{ duration: 0.25, delay: index * 0.03 }}
+
+            /* ❌ SIN whileHover, SIN whileTap (NO SCALE) */
+            className={`
+              relative flex items-center px-3 py-2 
+              text-xs rounded-xl font-medium  
+              transition-all duration-300 overflow-hidden group
+              border
+
+              ${
+                active === section
+                  ? `
+                    bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 
+                    text-white border-gray-800 shadow-lg
+                  `
+                  : `
+                    bg-white text-gray-700 
+                    border-gray-100 shadow-sm 
+                    hover:text-gray-900
+                  `
+              }
+            `}
           >
-            {section}
+            {/* ⭐ Barrido solo en seleccionado */}
+            {active === section && (
+              <span
+                className="
+                  absolute top-0 left-0 w-full h-full
+                  bg-gradient-to-r from-transparent via-white/20 to-transparent
+                  transform -translate-x-full 
+                  group-hover:translate-x-full
+                  transition-transform duration-700 ease-in-out
+                "
+              />
+            )}
+
+            <span className="relative z-10">{section}</span>
           </motion.a>
         ))}
+
       </nav>
 
-      {/* 🔹 Espaciador final opcional */}
-      <div className="mt-auto pt-8 text-[10px] text-gray-400 text-center w-full select-none">
+      {/* FOOTER */}
+      <div className="mt-50 pt-8 text-[10px] text-gray-400 text-center w-full select-none">
         © {new Date().getFullYear()} GLYNNE Framework
       </div>
     </aside>
