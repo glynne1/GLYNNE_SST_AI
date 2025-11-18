@@ -29,10 +29,8 @@ import Flujo from "../../../../components/TransformerAnimation";
 import GroqApiInfo from "./apiGroq";
 import VsCodeMockEditor from "./editorTex";
 import GenerarApiExterna from "./generarApiExterna";
-
-// 🔹 Nuevo componente de cards con apps
 import AppCards from "./AppsConected";
-
+import EcosistemaPro from "./EcosistemaComponente";
 export default function SideMenuAgent() {
   const [activeSection, setActiveSection] = useState("agents");
 
@@ -41,12 +39,12 @@ export default function SideMenuAgent() {
     { id: "plantillas", label: "Modelos predefinidos", icon: <FaCubes /> },
     { id: "streaming", label: "Streaming con tus agentes", icon: <FaRocket /> },
     { id: "generarApi", label: "Exporta tus agentes", icon: <IoCloudDownloadOutline /> },
-    { id: "appCards", label: "Conectar Apps", icon: <FaPuzzlePiece /> },
+    { id: "ecosistemPro", label: "Integra a tu ecosistema", icon: <FaGoogle /> },
+    { id: "appCards", label: "Tecnolgias compatibles", icon: <FaPuzzlePiece /> },
     { id: "framework", label: "Crea tus profesionales", icon: <FaMicrochip /> },
     { id: "api", label: "Llaves de modelos", icon: <FaDatabase /> },
     { id: "consola", label: "Consola de info", icon: <FaTerminal /> },
     { id: "codigo", label: "Código IA", icon: <FaCode /> },
-    { id: "motor", label: "Mapa de motor GLYNNE", icon: <FaProjectDiagram /> },
     { id: "flujo", label: "Mapa red Transformer", icon: <FaProjectDiagram /> },
   ];
 
@@ -74,7 +72,9 @@ export default function SideMenuAgent() {
         return <VsCodeMockEditor />;
       case "generarApi":
         return <GenerarApiExterna />;
-
+        case "ecosistemPro":
+          return <EcosistemaPro />;
+      
       // 🔹 Nueva sección render
       case "appCards":
         return <AppCards />;
@@ -101,7 +101,7 @@ export default function SideMenuAgent() {
           className="flex flex-col items-center mb-4 gap-2"
         >
           <h1 className="text-center text-sm font-semibold text-gray-800 tracking-tight leading-tight">
-            CENTRO DE DESARROLLO <span className="text-gray-400">GLYNNE</span>
+            CENTRO DE DESARROLLO
           </h1>
 
           <img
