@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -12,7 +12,10 @@ import {
   FaTerminal,
   FaRocket,
   FaKey,
-  FaCode, // Icono de la nueva sección
+  FaCode,
+  FaGoogle,
+  FaPuzzlePiece
+   // icono ejemplo para la nueva sección
 } from "react-icons/fa";
 
 import CardsAgent from "./cardsAgents";
@@ -25,9 +28,10 @@ import AgentStreaming from "./ageentStrriming";
 import Flujo from "../../../../components/TransformerAnimation";
 import GroqApiInfo from "./apiGroq";
 import VsCodeMockEditor from "./editorTex";
-
-// ✅ Nuevo componente solicitado
 import GenerarApiExterna from "./generarApiExterna";
+
+// 🔹 Nuevo componente de cards con apps
+import AppCards from "./AppsConected";
 
 export default function SideMenuAgent() {
   const [activeSection, setActiveSection] = useState("agents");
@@ -36,14 +40,14 @@ export default function SideMenuAgent() {
     { id: "agents", label: "Tus modelos creados", icon: <FaRobot /> },
     { id: "plantillas", label: "Modelos predefinidos", icon: <FaCubes /> },
     { id: "streaming", label: "Streaming con tus agentes", icon: <FaRocket /> },
-    { id: "generarApi", label: "Exporta tus modelos", icon: <IoCloudDownloadOutline /> },
+    { id: "generarApi", label: "Exporta tus agentes", icon: <IoCloudDownloadOutline /> },
+    { id: "appCards", label: "Conectar Apps", icon: <FaPuzzlePiece /> },
     { id: "framework", label: "Crea tus profesionales", icon: <FaMicrochip /> },
-    { id: "api", label: "llaves de modelos", icon: <FaDatabase /> },
+    { id: "api", label: "Llaves de modelos", icon: <FaDatabase /> },
     { id: "consola", label: "Consola de info", icon: <FaTerminal /> },
     { id: "codigo", label: "Código IA", icon: <FaCode /> },
     { id: "motor", label: "Mapa de motor GLYNNE", icon: <FaProjectDiagram /> },
     { id: "flujo", label: "Mapa red Transformer", icon: <FaProjectDiagram /> },
-
   ];
 
   const renderContent = () => {
@@ -68,10 +72,12 @@ export default function SideMenuAgent() {
         return <GroqApiInfo />;
       case "codigo":
         return <VsCodeMockEditor />;
-
-      // ⭐ NUEVO RENDER DEL COMPONENTE SOLICITADO
       case "generarApi":
         return <GenerarApiExterna />;
+
+      // 🔹 Nueva sección render
+      case "appCards":
+        return <AppCards />;
 
       default:
         return null;
