@@ -10,31 +10,42 @@ import Image from 'next/image';
 
 export default function Diagnostico() {
   const [datosEmpresa, setDatosEmpresa] = useState(null);
-  const [loading, setLoading] = useState(true); // inicia en true = popup visible
+  const [loading, setLoading] = useState(true); // inicia en true = loader visible
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
+    // Verificamos si el modal ya se mostró en esta sesión
+    const modalShown = sessionStorage.getItem('modalInicioShown');
+    if (!modalShown) {
+      setShowModal(true);
+      sessionStorage.setItem('modalInicioShown', 'true');
+    }
+
     let intervalId;
 
     const wakeUpServers = async () => {
       try {
-        // No bloqueamos la UI, el popup ya está activo
         await fetch('https://glynne-ecosistem.onrender.com', { method: 'GET' });
         console.log('✅ Servicio principal despertado correctamente');
       } catch (error) {
         console.error('❌ Error al despertar el servicio principal:', error);
       } finally {
-        // Quitamos el popup una vez termine el intento inicial
         setLoading(false);
       }
     };
 
-    // Disparamos el popup desde el inicio y arrancamos los fetch en paralelo
+    // Disparamos loader desde el inicio y fetch en paralelo
     wakeUpServers();
 
     // Refresco cada 7 min
     intervalId = setInterval(() => wakeUpServers(), 7 * 60 * 1000);
     return () => clearInterval(intervalId);
   }, []);
+
+  const handleModalComplete = (datos) => {
+    setShowModal(false); // Cerramos el modal
+    setDatosEmpresa(datos); // Continuamos con el chat
+  };
 
   return (
     <div className="relative h-screen bg-white flex">
@@ -50,10 +61,8 @@ export default function Diagnostico() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            {/* Oscurecimiento ligero sobre la imagen */}
             <div className="absolute inset-0 bg-black/50" />
 
-            {/* CONTENEDOR con blur */}
             <motion.div
               className="relative backdrop-blur-md bg-white/20 rounded-3xl shadow-2xl w-[80vw] max-w-4xl px-[4vw] py-[5vh] flex flex-col items-center z-10"
               initial={{ scale: 0.95, y: 30 }}
@@ -66,28 +75,16 @@ export default function Diagnostico() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
                 className="font-bold text-center text-white"
-                style={{
-                  fontSize: 'clamp(1.4rem, 2.5vw, 2.3rem)',
-                  lineHeight: '1.3',
-                }}
+                style={{ fontSize: 'clamp(1.4rem, 2.5vw, 2.3rem)', lineHeight: '1.3' }}
               >
                 Iniciando servicios
               </motion.h2>
 
-              <Image
-                src="/logo.png"
-                alt="GLYNNE Logo"
-                width={70}
-                height={70}
-                className="mt-2"
-              />
+              <Image src="/logo.png" alt="GLYNNE Logo" width={70} height={70} className="mt-2" />
 
               <p
                 className="text-center text-gray-200 max-w-[70ch] mt-4"
-                style={{
-                  fontSize: 'clamp(0.75rem, 1.2vw, 1rem)',
-                  lineHeight: '1.6',
-                }}
+                style={{ fontSize: 'clamp(0.75rem, 1.2vw, 1rem)', lineHeight: '1.6' }}
               >
                 Estamos preparando los sistemas para que la experiencia sea rápida y estable.
                 Este paso inicial conecta con nuestros servicios de{' '}
@@ -114,11 +111,12 @@ export default function Diagnostico() {
 
       {/* Contenido principal */}
       <div className="flex-1 flex flex-col h-full">
-        {/* Contenedor del chat */}
         <div className="flex-1">
           <div className="w-full h-full flex flex-col">
-            {!datosEmpresa && <ModalInicio onComplete={setDatosEmpresa} />}
-            {datosEmpresa && <ChatLLM empresa={datosEmpresa} />}
+            {/* Modal solo se muestra una vez por sesión */}
+            {showModal && !datosEmpresa && <ModalInicio onComplete={handleModalComplete} />}
+            {/* Chat directamente si modal ya se cerró */}
+            {(!showModal || datosEmpresa) && <ChatLLM empresa={datosEmpresa} />}
           </div>
         </div>
       </div>

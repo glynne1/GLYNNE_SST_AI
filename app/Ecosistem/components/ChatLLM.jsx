@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Send, Mic } from 'lucide-react';
 import { supabase } from '../../lib/supabaseClient';
@@ -9,8 +8,8 @@ import AlertUpgrade from './alertPlanes';
 import DiscoverG from './TTSinvoke';
 import PlusMenu from './masContenido';
 import { marked } from "marked";
-import PlusMenu2 from './menuColumna';
-
+import Baner from './banerAut'
+import Cards from './cards'
 export default function ChatSimple() {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState([]);
@@ -23,7 +22,6 @@ export default function ChatSimple() {
   const recognitionRef = useRef(null);
   const API_URL = 'https://glynne-ecosistem.onrender.com/chat1';
 
-  // 🎙️ Inicializar STT
   useEffect(() => {
     if ('webkitSpeechRecognition' in window) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -47,7 +45,6 @@ export default function ChatSimple() {
     }
   }, []);
 
-  // 🎙️ Toggle grabación
   const toggleRecording = () => {
     if (!recognitionRef.current) return;
     if (!isRecording) {
@@ -59,13 +56,9 @@ export default function ChatSimple() {
     }
   };
 
-  // 👤 Cargar info del usuario
   useEffect(() => {
     const fetchUserInfo = async () => {
-      const {
-        data: { user },
-        error,
-      } = await supabase.auth.getUser();
+      const { data: { user }, error } = await supabase.auth.getUser();
       if (error || !user) return;
       const { user_metadata } = user;
       setUserInfo({ nombre: user_metadata?.full_name || 'Usuario' });
@@ -82,7 +75,6 @@ export default function ChatSimple() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // ✉️ Enviar mensaje
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return;
     const userMsg = { from: 'user', text: input };
@@ -107,26 +99,26 @@ export default function ChatSimple() {
     }
   };
 
-  // 🔄 Función de refresh
   const handleRefresh = () => {
     setMessages([]);
     setInput('');
   };
 
   return (
-    <div className="w-full h-screen flex flex-col bg-white">
+    <div className="w-full h-screen ml-0 md:-ml-[100px] sm:-ml-4 flex flex-col bg-white">
+      {/* ===== BANNER ARRIBA ===== */}
+      <div className="w-full">
+        <Baner />
+      </div>
+  
       {messages.length === 0 ? (
         <div className="flex flex-1 flex-col items-center justify-center text-center px-4 relative">
-          <p className="text-2xl md:text-xl sm:text-lg mb-2">
-          ¿Cómo puedo ayudarte, <span className="font-semibold">{userInfo.nombre}</span>?
+          <p className="text-2xl md:text-xl sm:text-lg mb-4">
+            Aqui te explicare como crear tus agentes IA, <span className="font-semibold">{userInfo.nombre}</span>?
           </p>
-
-          {/* 🔹 Input inicial */}
-          <div className="w-full max-w-3xl relative flex items-center gap-2">
-            <PlusMenu onRefresh={handleRefresh} />
-            <PlusMenu2 onRefresh={handleRefresh} />
-
-            <div className="relative flex-1">
+  
+          <div className="w-full max-w-3xl flex flex-col items-center gap-2 bg-white rounded-2xl shadow-lg p-6">
+            <div className="relative w-full">
               <input
                 type="text"
                 value={input}
@@ -134,133 +126,18 @@ export default function ChatSimple() {
                 onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
                 placeholder="Hablemos de IA"
                 disabled={isLoading}
-                className="w-full px-4 py-4 rounded-full text-lg bg-white outline-none relative z-10"
-                style={{ border: '2px solid transparent', backgroundClip: 'padding-box' }}
+                className="w-full px-4 py-4 rounded-xl text-lg bg-white outline-none relative z-10 pr-14 border-2 border-gray-300"
               />
-              <span
-                className="absolute inset-0 rounded-full pointer-events-none"
-                style={{
-                  background: 'linear-gradient(90deg, #0f172a, #312e81, #ffffff, #2563eb, #0891b2, #064e3b)',
-                  backgroundSize: '300% 300%',
-                  animation: 'shine 2.5s linear infinite',
-                  borderRadius: '9999px',
-                  padding: '2px',
-                  zIndex: 0,
-                }}
-              />
-              {input.trim() ? (
-                <motion.button
-                  whileTap={{ scale: 0.9 }}
-                  whileHover={{ scale: 1.05 }}
-                  onClick={sendMessage}
-                  disabled={isLoading}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-black text-white rounded-full 
-                    w-10 h-10 flex items-center justify-center shadow-md z-20"
-                >
-                  <Send size={18} />
-                </motion.button>
-              ) : (
-                <motion.button
-                  whileTap={{ scale: 0.9 }}
-                  whileHover={{ scale: 1.05 }}
-                  onClick={toggleRecording}
-                  disabled={isLoading}
-                  className={`absolute right-2 top-1/2 -translate-y-1/2 rounded-full 
-                    w-10 h-10 flex items-center justify-center shadow-md z-20 
-                    ${isRecording ? 'bg-red-600 text-white' : 'bg-black text-white'}`}
-                >
-                  <Mic size={18} />
-                </motion.button>
-              )}
-            </div>
-
-            <style jsx>{`
-              @keyframes shine {
-                0% {
-                  background-position: 0% 50%;
-                }
-                50% {
-                  background-position: 100% 50%;
-                }
-                100% {
-                  background-position: 0% 50%;
-                }
-              }
-            `}</style>
-          </div>
-
-          <div className="hidden md:block">
-            <DiscoverG />
-           
-          </div>
-          <AlertUpgrade />
-        </div>
-      ) : (
-        <>
-
-<div className="flex-1 px-4 py-2 flex flex-col justify-end space-y-2">
-  {messages.map((msg, idx) => (
-    <div
-      key={idx}
-      className={`flex ${msg.from === 'user' ? 'justify-end' : 'justify-start'}`}
-    >
-      <div
-        className={`px-4 py-3 rounded-2xl max-w-[80%] break-words whitespace-pre-wrap ${
-          msg.from === 'user'
-            ? 'bg-black text-white'
-            : 'bg-white text-black shadow-md'
-        }`}
-      >
-        {msg.from === 'user' ? (
-          <p>{msg.text}</p>
-        ) : (
-          <div
-            className="prose prose-sm"
-            dangerouslySetInnerHTML={{ __html: marked(msg.text) }}
-          />
-        )}
-      </div>
-    </div>
-  ))}
-  <div ref={messagesEndRef} />
-</div>
-
-          {/* 🔹 Input inferior */}
-          <div className="w-full px-4 py-4 flex justify-center">
-            <div className="flex w-[70%] relative items-center gap-2">
-              <PlusMenu onRefresh={handleRefresh} />
-              <PlusMenu2 onRefresh={handleRefresh} />
-              <div className="relative flex-1">
-                <input
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-                  placeholder="Escribe tu mensaje..."
-                  className="w-full px-4 py-4 rounded-full text-lg bg-white outline-none relative z-10 pr-14"
-                  style={{ border: '2px solid transparent', backgroundClip: 'padding-box' }}
-                  disabled={isLoading}
-                />
-                <span
-                  className="absolute inset-0 rounded-full pointer-events-none"
-                  style={{
-                    background:
-                      'linear-gradient(90deg, #4ade80, #3b82f6, #facc15, #ec4899)',
-                    backgroundSize: '300% 300%',
-                    animation: 'shine 2.5s linear infinite',
-                    borderRadius: '9999px',
-                    padding: '2px',
-                    zIndex: 0,
-                  }}
-                />
+  
+              {/* Send / Mic dentro del input */}
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 z-20 flex gap-2">
                 {input.trim() ? (
                   <motion.button
                     whileTap={{ scale: 0.9 }}
                     whileHover={{ scale: 1.05 }}
                     onClick={sendMessage}
                     disabled={isLoading}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 
-                      bg-black text-white rounded-full w-10 h-10 flex items-center justify-center shadow-md z-20"
+                    className="bg-black text-white rounded-full w-10 h-10 flex items-center justify-center shadow-md"
                   >
                     <Send size={18} />
                   </motion.button>
@@ -270,23 +147,112 @@ export default function ChatSimple() {
                     whileHover={{ scale: 1.05 }}
                     onClick={toggleRecording}
                     disabled={isLoading}
-                    className={`absolute right-3 top-1/2 -translate-y-1/2 rounded-full 
-                      w-10 h-10 flex items-center justify-center shadow-md z-20
-                      ${isRecording ? 'bg-red-600 text-white' : 'bg-black text-white'}`}
+                    className={`rounded-full w-10 h-10 flex items-center justify-center shadow-md ${
+                      isRecording ? 'bg-red-600 text-white' : 'bg-black text-white'
+                    }`}
                   >
                     <Mic size={18} />
                   </motion.button>
                 )}
               </div>
             </div>
+  
+            {/* Solo el + debajo del input */}
+            <div className="flex justify-start gap-2 mt-3 w-full">
+              <PlusMenu onRefresh={handleRefresh} />
+            </div>
           </div>
+  
+          <div className="hidden md:block mt-4">
+            <DiscoverG />
+            <Cards />
+          <AlertUpgrade />
+          </div>
+       
 
+        </div>
+      ) : (
+        <>
+          <div className="flex-1 px-4 py-2 flex flex-col justify-end space-y-2">
+            {messages.map((msg, idx) => (
+              <div
+                key={idx}
+                className={`flex ${msg.from === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                <div
+                  className={`px-4 py-3 rounded-2xl max-w-[80%] break-words whitespace-pre-wrap ${
+                    msg.from === 'user'
+                      ? 'bg-black text-white'
+                      : 'bg-white text-black shadow-md'
+                  }`}
+                >
+                  {msg.from === 'user' ? (
+                    <p>{msg.text}</p>
+                  ) : (
+                    <div
+                      className="prose prose-sm"
+                      dangerouslySetInnerHTML={{ __html: marked(msg.text) }}
+                    />
+                  )}
+                </div>
+              </div>
+            ))}
+            <div ref={messagesEndRef} />
+          </div>
+  
+          <div className="w-full px-4 py-4 flex justify-center">
+            <div className="flex w-full md:w-[70%] relative items-center gap-2 flex-col">
+              <div className="relative w-full">
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+                  placeholder="Escribe tu mensaje..."
+                  className="w-full px-4 py-4 rounded-full text-lg bg-white outline-none relative z-10 pr-14 border-2 border-gray-300"
+                  disabled={isLoading}
+                />
+  
+                {/* Send / Mic dentro del input */}
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 z-20 flex gap-2">
+                  {input.trim() ? (
+                    <motion.button
+                      whileTap={{ scale: 0.9 }}
+                      whileHover={{ scale: 1.05 }}
+                      onClick={sendMessage}
+                      disabled={isLoading}
+                      className="bg-black text-white rounded-full w-10 h-10 flex items-center justify-center shadow-md"
+                    >
+                      <Send size={18} />
+                    </motion.button>
+                  ) : (
+                    <motion.button
+                      whileTap={{ scale: 0.9 }}
+                      whileHover={{ scale: 1.05 }}
+                      onClick={toggleRecording}
+                      disabled={isLoading}
+                      className={`rounded-full w-10 h-10 flex items-center justify-center shadow-md ${
+                        isRecording ? 'bg-red-600 text-white' : 'bg-black text-white'
+                      }`}
+                    >
+                      <Mic size={18} />
+                    </motion.button>
+                  )}
+                </div>
+              </div>
+  
+              {/* Solo el + debajo del input */}
+              <div className="flex justify-start gap-2 mt-2 w-full">
+                <PlusMenu onRefresh={handleRefresh} />
+              </div>
+            </div>
+          </div>
+  
           <div className="hidden md:flex justify-center items-center w-full">
             <DiscoverG />
-       
           </div>
         </>
       )}
     </div>
   );
-}
+                    }  

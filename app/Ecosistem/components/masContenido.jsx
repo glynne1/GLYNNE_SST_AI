@@ -16,18 +16,15 @@ import DB from '../../CSVanaliza/components/panel';
 import ChatTalento from './agentTalentoH/chatTalento';
 
 export default function PlusMenu({ onRefresh }) {
-  const [menuOpen, setMenuOpen] = useState(false);
   const [popupOpen, setPopupOpen] = useState(false);
   const [contentType, setContentType] = useState(null);
   const [showLogo, setShowLogo] = useState(false);
   const [showContent, setShowContent] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
-  const menuRef = useRef(null);
   const closeButtonRef = useRef(null);
   const logoTimerRef = useRef(null);
   const contentTimerRef = useRef(null);
 
-  // 🖼️ LOGOS SEGÚN SECCIÓN
   const logos = {
     voice: '/logoSTT.png',
     db: '/logoDBs.png',
@@ -37,20 +34,10 @@ export default function PlusMenu({ onRefresh }) {
   };
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsSmallScreen(window.innerWidth < 800);
-    };
+    const handleResize = () => setIsSmallScreen(window.innerWidth < 800);
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) setMenuOpen(false);
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   useEffect(() => {
@@ -69,45 +56,25 @@ export default function PlusMenu({ onRefresh }) {
     };
   }, []);
 
-  useEffect(() => {
-    if (!showContent) return;
-    requestAnimationFrame(() => {
-      const modal = document.getElementById('auditoria-modal');
-      if (!modal) return;
-      const focusable = modal.querySelector(
-        'input, textarea, [contenteditable="true"], button[type="submit"]'
-      );
-      if (focusable && typeof focusable.focus === 'function') {
-        focusable.focus();
-      }
-    });
-  }, [showContent]);
-
-  // 🚀 Se abre directamente sin logo en "audit" y "talento"
   const openService = (type) => {
     clearTimeouts();
     setContentType(type);
     setPopupOpen(true);
 
     if (type === 'voice' || type === 'db') {
-      // Mantiene animación de logo
       setShowLogo(true);
       setShowContent(false);
       logoTimerRef.current = setTimeout(() => {
         setShowLogo(false);
-        contentTimerRef.current = setTimeout(() => {
-          setShowContent(true);
-        }, 180);
+        contentTimerRef.current = setTimeout(() => setShowContent(true), 180);
       }, 700);
     } else {
-      // Auditoría y Talento se abren de inmediato
       setShowLogo(false);
       setShowContent(true);
     }
   };
 
   const handleRefresh = () => {
-    setMenuOpen(false);
     if (typeof onRefresh === 'function') onRefresh();
   };
 
@@ -126,93 +93,39 @@ export default function PlusMenu({ onRefresh }) {
     setShowContent(false);
   };
 
-  if (typeof window !== 'undefined' && window.innerWidth < 500) return null;
-
-  const menuVariants = {
-    hidden: { opacity: 0, y: 10, x: 10, scale: 0.97 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      x: 0,
-      scale: 1,
-      transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] },
-    },
-    exit: { opacity: 0, y: 10, x: 10, scale: 0.98, transition: { duration: 0.2 } },
-  };
-
   const itemVariants = {
-    hidden: { opacity: 0, x: 5 },
-    visible: (i) => ({
-      opacity: 1,
-      x: 0,
-      transition: { delay: i * 0.05, duration: 0.25 },
-    }),
+    hidden: { opacity: 0, y: 5 },
+    visible: (i) => ({ opacity: 1, y: 0, transition: { delay: i * 0.05, duration: 0.25 } }),
   };
+
+  const items = [
+    { icon: <FaMicrophoneAlt />, type: 'voice', label: 'Voz' },
+    { icon: <FaDatabase />, type: 'db', label: 'DB' },
+    { icon: <FaFileSignature />, type: 'audit', label: 'Auditoría' },
+    { icon: <FaUserTie />, type: 'talento', label: 'Talento' },
+    { icon: <FaSyncAlt />, type: 'refresh', label: 'Refrescar' },
+  ];
 
   return (
-    <div ref={menuRef} className="relative flex items-center">
-      <motion.button
-        onClick={() => setMenuOpen(!menuOpen)}
-        whileTap={{ scale: 0.85 }}
-        whileHover={{ scale: 1.1 }}
-        className="text-gray-500 hover:text-gray-700 transition-all text-lg font-semibold px-2"
-        aria-label="Abrir menú"
-      >
-        +
-      </motion.button>
-
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.div
-            key="menu"
-            variants={menuVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            className={`absolute bottom-full mb-2 w-56 bg-white shadow-lg rounded-xl border border-gray-200 z-50 backdrop-blur-sm ${
-              isSmallScreen ? 'left-0' : 'right-0'
-            }`}
-          >
-            <motion.div
-              className="flex flex-col py-2 text-[0.75rem] font-light"
-              initial="hidden"
-              animate="visible"
-              exit="hidden"
-            >
-              {[
-                // { icon: <FaMicrophoneAlt />, text: 'Conversación por voz', type: 'voice' }, // 👈 Opción comentada
-                { icon: <FaDatabase />, text: 'Analiza tu base', type: 'db' },
-                { icon: <FaFileSignature />, text: 'istegra IA a tu negocio', type: 'audit' },
-                { icon: <FaUserTie />, text: 'como  aplicar GLY_FW', type: 'talento' },
-                { icon: <FaSyncAlt />, text: 'Refrescar chat', type: 'refresh' },
-              ].map((item, i) => (
-                <motion.div
-                  key={i}
-                  custom={i}
-                  variants={itemVariants}
-                  className="relative group flex items-center gap-2 px-3 py-2 cursor-pointer overflow-hidden hover:bg-gray-100 transition-all"
-                  onClick={() =>
-                    item.type === 'refresh' ? handleRefresh() : openService(item.type)
-                  }
-                  whileHover={{ x: -3, scale: 1.02 }}
-                >
-                  <span className="absolute inset-0 bg-gradient-to-l from-transparent via-white/30 to-transparent transform translate-x-full group-hover:-translate-x-full transition-transform duration-700 ease-in-out pointer-events-none" />
-                  <motion.div
-                    whileHover={{ scale: 1.1, rotate: -2 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 15 }}
-                    className="text-gray-600 text-xs relative z-10"
-                  >
-                    {item.icon}
-                  </motion.div>
-                  <span className="text-gray-700 text-[0.7rem] tracking-wide relative z-10">
-                    {item.text}
-                  </span>
-                </motion.div>
-              ))}
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+    <div className="flex items-center gap-3">
+      {items.map((item, i) => (
+        <motion.button
+          key={i}
+          custom={i}
+          variants={itemVariants}
+          initial="hidden"
+          animate="visible"
+          whileHover={{ scale: 1.2 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={() =>
+            item.type === 'refresh' ? handleRefresh() : openService(item.type)
+          }
+          className="w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-full shadow-sm text-gray-700"
+          title={item.label}
+        >
+          {item.icon}
+        </motion.button>
+      ))}
 
       <AnimatePresence>
         {popupOpen && (
@@ -250,7 +163,6 @@ export default function PlusMenu({ onRefresh }) {
 
               <div className="relative w-full h-full overflow-hidden">
                 <AnimatePresence>
-                  {/* 🔹 SOLO DB y VOICE mantienen logo */}
                   {showLogo && (contentType === 'voice' || contentType === 'db') && (
                     <motion.div
                       key="logo"

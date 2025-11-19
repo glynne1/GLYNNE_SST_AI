@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Star, X } from 'lucide-react';
+import { Star } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function DiscoverGlyAI() {
@@ -18,7 +18,6 @@ export default function DiscoverGlyAI() {
     "Modelos de NLP & asistentes corporativos",
     "Sistemas de autoservicio B2B",
     "Estrategia tecnológica y escalamiento",
-
     "Gemelos digitales para simulación y optimización de procesos",
     "Plataformas no-code para automatización con agentes inteligentes",
     "MLOps y despliegue continuo de modelos en producción",
@@ -35,7 +34,7 @@ export default function DiscoverGlyAI() {
       <div className="w-full flex justify-center mt-3">
         <button
           onClick={() => setOpenModal(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-white text-gray-800 rounded-full text-[11px] md:text-xs shadow-sm border border-gray-200 hover:shadow-md hover:scale-[1.02] active:scale-[0.97] transition-all duration-300 ease-out backdrop-blur-sm"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-white text-gray-800 rounded-full text-[11px] md:text-xs shadow-sm border border-gray-200 hover:shadow-md hover:scale-[1.02] active:scale-[0.97] transition-all duration-300 ease-out"
         >
           <Star size={12} className="text-yellow-500" />
           <span className="font-medium">Así de fácil, ¿quieres ver?</span>
@@ -51,29 +50,18 @@ export default function DiscoverGlyAI() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="fixed inset-0  backdrop-blur-md z-40"
+              className="fixed inset-0 backdrop-blur-md z-40"
               onClick={() => setOpenModal(false)}
             />
 
-            {/* modal cinematográfico */}
+            {/* modal con fondo blanco */}
             <motion.div
               initial={{ opacity: 0, scale: 0.94 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.94 }}
               transition={{ duration: 0.4, ease: 'easeOut' }}
-              className="fixed z-50 top-1/2 left-1/2 w-[92%] md:w-[420px] h-[88vh] -translate-x-1/2 -translate-y-1/2 rounded-2xl overflow-hidden border border-gray-800 shadow-2xl"
+              className="fixed z-50 top-1/2 left-1/2 w-[92%] md:w-[420px] h-[88vh] -translate-x-1/2 -translate-y-1/2 rounded-2xl overflow-hidden border border-gray-200 shadow-2xl bg-white"
             >
-              {/* imagen fondo */}
-              <div className="absolute inset-0">
-                <img
-                  src="https://i.pinimg.com/736x/1b/df/93/1bdf936e38d4cc676e424ef09be89fe0.jpg"
-                  className="w-full h-full object-cover opacity-[0.6]"
-                  alt="GLYNNE cinematic background"
-                />
-              </div>
-
-           
-
               {/* contenido */}
               <div className="relative z-50 flex flex-col items-center h-full px-6 pt-8">
 
@@ -89,7 +77,7 @@ export default function DiscoverGlyAI() {
                   Servicios GLYNNE
                 </h2>
 
-                <div className="w-full h-[1px] bg-white/20 mb-4" />
+                <div className="w-full h-[1px] bg-gray-200 mb-4" />
 
                 {/* Lista */}
                 <div className="text-[10px] text-gray-800 leading-relaxed font-light tracking-wider max-h-[60vh] overflow-y-auto w-full text-left space-y-2">
