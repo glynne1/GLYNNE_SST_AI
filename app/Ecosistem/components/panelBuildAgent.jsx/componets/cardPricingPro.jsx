@@ -31,7 +31,7 @@ export default function PricingCards({ onClose }) {
       return;
     }
 
-    const phone = "TU_NUMERO"; // <-- CAMBIAR A TU NÚMERO
+    const phone = "+573123455328"; // <-- CAMBIAR A TU NÚMERO
     let planText = "";
 
     if (plan === "plan0") {
