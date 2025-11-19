@@ -4,8 +4,10 @@ import { motion } from 'framer-motion';
 import { Mic, Send } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { LoginPopup } from './LoginPopup';
-import ServiceCards from './cards'; // 👈 Importamos el componente de tarjetas
-import Carrucel from './carrucel'
+import ServiceCards from './cards'; // 👈 Componente de tarjetas
+import Carrucel from './carrucelDf';
+import ExText from './textoHme'
+
 
 export default function VoiceInput() {
   const [input, setInput] = useState('');
@@ -13,7 +15,6 @@ export default function VoiceInput() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const recognitionRef = useRef(null);
 
-  // 🔹 Inicializamos SpeechRecognition
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const SpeechRecognition =
@@ -44,10 +45,8 @@ export default function VoiceInput() {
     }
   }, []);
 
-  // 🔹 Activar / desactivar grabación
   const toggleRecording = () => {
     if (!recognitionRef.current) return;
-
     if (!isRecording) {
       setInput('');
       recognitionRef.current.start();
@@ -58,7 +57,6 @@ export default function VoiceInput() {
     }
   };
 
-  // 🔹 Enviar mensaje (abre el popup de login)
   const handleSend = () => {
     if (input.trim() === '') return;
     localStorage.removeItem('glyiaChatClosed');
@@ -67,8 +65,14 @@ export default function VoiceInput() {
 
   return (
     <div className="w-full flex flex-col items-center justify-center text-center mt-10 px-4 space-y-6">
-      {/* 🔹 TÍTULO */}
-      <motion.h2
+  
+
+     
+
+   
+
+          {/* 🔹 TÍTULO */}
+          <motion.h2
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
@@ -76,17 +80,14 @@ export default function VoiceInput() {
       >
         CONOCE NUESTRAS HERRAMIENTAS
       </motion.h2>
-
-      {/* 🔹 INPUT con grabador funcional */}
-      <div className="w-full max-w-3xl relative flex items-center gap-2 mt-4">
-        <div className="relative flex-1">
+       {/* 🔹 INPUT con grabador funcional */}
+       <div className="w-full max-w-3xl relative flex items-center gap-2 mt-4 z-10">
+        <div className="relative flex-1 z-10">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') handleSend(); // 👈 Enter también envía
-            }}
+            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
             placeholder="Hablemos de IA"
             className="w-full px-4 py-4 rounded-full text-lg bg-white outline-none relative z-10 placeholder-gray-500 text-gray-900"
             style={{ border: '2px solid transparent', backgroundClip: 'padding-box' }}
@@ -94,7 +95,7 @@ export default function VoiceInput() {
 
           {/* 🔹 Borde animado */}
           <span
-            className="absolute inset-0 rounded-full pointer-events-none"
+            className="absolute inset-0 rounded-full pointer-events-none z-0"
             style={{
               background:
                 'linear-gradient(90deg, #0f172a, #312e81, #ffffff, #2563eb, #0891b2, #064e3b)',
@@ -102,7 +103,6 @@ export default function VoiceInput() {
               animation: 'shine 2.5s linear infinite',
               borderRadius: '9999px',
               padding: '2px',
-              zIndex: 0,
             }}
           />
 
@@ -132,15 +132,9 @@ export default function VoiceInput() {
 
         <style jsx>{`
           @keyframes shine {
-            0% {
-              background-position: 0% 50%;
-            }
-            50% {
-              background-position: 100% 50%;
-            }
-            100% {
-              background-position: 0% 50%;
-            }
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
           }
         `}</style>
       </div>
@@ -156,11 +150,22 @@ export default function VoiceInput() {
         aquí <span className="font-semibold text-gray-600">gly-ia</span> es quien hace las preguntas y conoce lo que necesitas.
       </motion.p>
 
-      {/* 🔹 SECCIÓN DE CARDS (importada) */}
-      <div className="w-full mt-10">
+      {/* 🔹 CARRUCEL AISLADO */}
+      <div className="w-[80%] mt-10 relative z-0 isolate">
+        <div className="relative w-full">
+          <ExText />
+        </div>
+           {/* 🔹 SECCIÓN DE CARDS */}
+      <div className="w-full mt-10 relative z-10">
         <ServiceCards />
       </div>
-      
+      </div>
+          {/* 🔹 CARRUCEL AISLADO */}
+          <div className="w-[80%] mt-10 relative z-0 isolate">
+        <div className="relative w-full">
+          <Carrucel />
+        </div>
+      </div>
 
       {/* 🔹 MODAL DE LOGIN */}
       <LoginPopup visible={showLoginModal} onClose={() => setShowLoginModal(false)} />

@@ -114,7 +114,7 @@ export default function ChatSimple() {
       {messages.length === 0 ? (
         <div className="flex flex-1 flex-col items-center justify-center text-center px-4 relative">
           <p className="text-2xl md:text-xl sm:text-lg mb-4">
-            Aqui te explicare como crear tus agentes IA, <span className="font-semibold">{userInfo.nombre}</span>?
+            Aqui te explicare como crear tus agentes IA, <span className="font-semibold">{userInfo.nombre}</span>
           </p>
   
           <div className="w-full max-w-3xl flex flex-col items-center gap-2 bg-white rounded-2xl shadow-lg p-6">

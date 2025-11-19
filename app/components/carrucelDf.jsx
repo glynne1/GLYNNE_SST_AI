@@ -19,10 +19,14 @@ export default function CarouselLogos() {
 
   return (
     <div className="carousel-glynne-container w-full overflow-hidden py-8">
+
+      {/* ======== TÍTULO ARRIBA ======== */}
+      <h2 className="carousel-title">Conecta con tus servicios favoritos</h2>
+
       <div className="carousel-glynne-wrapper relative w-full">
 
         <motion.div
-          className="carousel-glynne-track flex gap-6"
+          className="carousel-glynne-track flex flex-nowrap whitespace-nowrap gap-6 min-w-max"
           initial={{ x: 0 }}
           animate={{ x: ["0%", "-100%"] }}
           transition={{
@@ -52,7 +56,28 @@ export default function CarouselLogos() {
 
       </div>
 
+      {/* ======== DESCRIPCIÓN ABAJO ======== */}
+      <p className="carousel-description">
+        Este panel muestra algunos de los servicios compatibles con Glynne AI.
+      </p>
+
+      {/* ======== ESTILOS LOCALES (SIN GLOBAL) ======== */}
       <style jsx>{`
+        .carousel-title {
+          text-align: center;
+          font-size: 2rem;         /* MÁS GRANDE */
+          font-weight: 800;
+          color: #222;
+          margin-bottom: 30px;     /* MÁS ESPACIO CON LAS CARDS */
+        }
+
+        .carousel-description {
+          text-align: center;
+          font-size: 0.85rem;      /* UN POCO MÁS LEGIBLE */
+          color: #777;
+          margin-top: 25px;         /* ESPACIO DESPUÉS DEL CARRUSEL */
+        }
+
         .carousel-glynne-container * {
           isolation: isolate;
         }

@@ -111,10 +111,21 @@ export default function PlusMenu({ onRefresh }) {
       
         </h2>
 
+
+
+
+
         {/* LISTA DE CARDS */}
         <div className="space-y-6 mt-[150px] mb-6 flex flex-col items-center w-full">
-
+        <div className="absolute mt-[12%] -top-12 flex justify-center w-full">
+    <img
+      src="/logo4.png"
+      className="w-38 h-38 md:w-32 md:h-32 drop-shadow-2xl rounded-full object-cover"
+      alt="Logo"
+    />
+  </div>
           {iconData.map((item, index) => (
+            
             <motion.div
               key={item.type}
               onClick={() => openService(item.type)}
@@ -124,6 +135,8 @@ export default function PlusMenu({ onRefresh }) {
                 ${index === 0 ? 'h-40' : 'h-auto py-4'}
               `}
             >
+
+              
               {index === 0 && (
                 <div className="absolute -top-10 flex justify-center">
                   <img
