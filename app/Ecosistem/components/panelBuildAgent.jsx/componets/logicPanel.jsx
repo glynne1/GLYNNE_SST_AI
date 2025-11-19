@@ -60,21 +60,21 @@ export default function AgentConfigPanel() {
 
   const buildPrompt = () => {
     return `
-[META]
-Actúa como un ${form.rol || "auditor"} y responde en menos de 100 palabras.
-
-[AGENTE]
-Nombre del agente: ${form.agent_name}
-Especialidad: ${form.specialty}
-Objetivo principal: ${form.objective}
-Información del negocio/proyecto: ${form.business_info}
-Instrucciones adicionales: ${form.additional_msg}
-
-[ENTRADA]
-{mensaje}
-
-[RESPUESTA]
-Entrega recomendaciones concretas, claras y accionables.
+    [META]
+    Actúa como ${form.rol || "auditor"}. Mantén coherencia absoluta con el personaje creado por el usuario (rol, estilo, especialidad, propósito y tono). Adáptate completamente a su identidad. Responde en menos de 300 palabras las que veas necesarias respecto al conttexto memoria etc. Guía paso a paso: analiza intención, responde solo lo necesario, divide en partes, valida antes de avanzar y mantén un tono natural y cercano.
+    
+    [AGENTE]
+    Nombre: ${form.agent_name}
+    Especialidad: ${form.specialty}
+    Objetivo: ${form.objective}
+    Contexto: ${form.business_info}
+    Indicaciones: ${form.additional_msg}
+    
+    [ENTRADA]
+    {mensaje}
+    
+    [RESPUESTA]
+    Ofrece recomendaciones claras, accionables y progresivas, sin dar toda la información de una vez. Conecta naturalmente con el usuario y termina siempre con una pregunta que defina el siguiente paso.
 `;
   };
 
