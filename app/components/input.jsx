@@ -7,7 +7,8 @@ import { LoginPopup } from './LoginPopup';
 import ServiceCards from './cards'; // 👈 Componente de tarjetas
 import Carrucel from './carrucelDf';
 import ExText from './textoHme'
-
+import ExText2 from './textoHome2'
+import CardTec from './cardsTecnlgias'
 
 export default function VoiceInput() {
   const [input, setInput] = useState('');
@@ -150,20 +151,34 @@ export default function VoiceInput() {
         aquí <span className="font-semibold text-gray-600">gly-ia</span> es quien hace las preguntas y conoce lo que necesitas.
       </motion.p>
 
-      {/* 🔹 CARRUCEL AISLADO */}
+      {/* texto */}
       <div className="w-[80%] mt-10 relative z-0 isolate">
+      
+         {/* 🔹 CARRUCEL AISLADO */}
+         <div className="w-[80%] ml-30 relative z-0 isolate">
+        <div className="relative w-full">
+          <Carrucel />
+        </div>
         <div className="relative w-full">
           <ExText />
         </div>
+      </div>
            {/* 🔹 SECCIÓN DE CARDS */}
-      <div className="w-full mt-10 relative z-10">
+      <div className="w-full  mt-10 relative z-10">
         <ServiceCards />
       </div>
       </div>
-          {/* 🔹 CARRUCEL AISLADO */}
-          <div className="w-[80%] mt-10 relative z-0 isolate">
+
+         <div className="w-[80%] mt-10 relative z-0 isolate">
         <div className="relative w-full">
-          <Carrucel />
+          <ExText2 />
+        </div>
+      </div>
+         
+           {/* 🔹 cards Teecnologias  */}
+           <div className="w-[80%] mt-10 relative z-0 isolate">
+        <div className="relative w-full">
+          <CardTec />
         </div>
       </div>
 

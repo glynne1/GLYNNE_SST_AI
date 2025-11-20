@@ -80,9 +80,9 @@ export default function Main1() {
             {/* TEXTO PRINCIPAL */}
             <div className="w-full sm:w-1/2 text-left text-white space-y-6">
               <h2 className="text-5xl sm:text-6xl font-bold leading-tight mt-6 ">
-                EN GLYNNE CONSTRUYE TU IA.{' '}
+              CONSTRUYE TU IA CON NUESTRO LLM ENGINE:{' '}
                 <span className={isMobile ? 'text-purple-500' : 'text-red-800'}>
-                  MOLDEA TU FUTURO.
+                   Corre, Decide, ACTUA!
                 </span>
               </h2>
 

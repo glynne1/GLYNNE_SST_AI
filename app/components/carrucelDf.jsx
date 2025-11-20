@@ -14,82 +14,57 @@ const logos = [
   { src: "/iconServises/icons8-threads.svg", name: "Threads" },
 ];
 
-export default function CarouselLogos() {
-  const loopLogos = [...logos, ...logos];
-
+export default function StaticServicesGrid() {
   return (
-    <div className="carousel-glynne-container w-full overflow-hidden py-8">
+    <div className="w-full py-12">
 
       {/* ======== TÍTULO ARRIBA ======== */}
-      <h2 className="carousel-title">Conecta con tus servicios favoritos</h2>
+      <h2 className="text-center text-3xl font-extrabold text-gray-900 mb-10">
+        Conecta con tus servicios favoritos
+      </h2>
 
-      <div className="carousel-glynne-wrapper relative w-full">
-
-        <motion.div
-          className="carousel-glynne-track flex flex-nowrap whitespace-nowrap gap-6 min-w-max"
-          initial={{ x: 0 }}
-          animate={{ x: ["0%", "-100%"] }}
-          transition={{
-            repeat: Infinity,
-            duration: 28,
-            ease: "linear",
-          }}
-        >
-          {loopLogos.map((item, i) => (
-            <div
-              key={i}
-              className="carousel-glynne-item flex flex-col items-center justify-center min-w-[130px] bg-white rounded-xl p-4 shadow-sm"
-            >
-              <Image
-                src={item.src}
-                alt={item.name}
-                width={70}
-                height={70}
-                className="carousel-glynne-img object-contain"
-              />
-              <p className="carousel-glynne-text text-sm font-semibold mt-2 text-gray-500">
-                {item.name}
-              </p>
-            </div>
-          ))}
-        </motion.div>
-
+      {/* ======== GRID ESTÁTICO ======== */}
+      <div
+        className="
+          grid 
+          grid-cols-2 
+          sm:grid-cols-3 
+          md:grid-cols-4 
+          lg:grid-cols-4 
+          gap-6
+          px-4
+        "
+      >
+        {logos.map((item, i) => (
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.2 }}
+            key={i}
+            className="
+              flex flex-col items-center justify-center 
+              bg-white border border-gray-200 
+              rounded-xl p-4 shadow-sm
+            "
+          >
+            <Image
+              src={item.src}
+              alt={item.name}
+              width={55}
+              height={55}
+              className="object-contain"
+            />
+            <p className="mt-2 text-sm font-semibold text-gray-600">
+              {item.name}
+            </p>
+          </motion.div>
+        ))}
       </div>
 
       {/* ======== DESCRIPCIÓN ABAJO ======== */}
-      <p className="carousel-description">
+      <p className="text-center text-sm text-gray-500 mt-6">
         Este panel muestra algunos de los servicios compatibles con Glynne AI.
       </p>
 
-      {/* ======== ESTILOS LOCALES (SIN GLOBAL) ======== */}
-      <style jsx>{`
-        .carousel-title {
-          text-align: center;
-          font-size: 2rem;         /* MÁS GRANDE */
-          font-weight: 800;
-          color: #222;
-          margin-bottom: 30px;     /* MÁS ESPACIO CON LAS CARDS */
-        }
-
-        .carousel-description {
-          text-align: center;
-          font-size: 0.85rem;      /* UN POCO MÁS LEGIBLE */
-          color: #777;
-          margin-top: 25px;         /* ESPACIO DESPUÉS DEL CARRUSEL */
-        }
-
-        .carousel-glynne-container * {
-          isolation: isolate;
-        }
-
-        .carousel-glynne-container,
-        .carousel-glynne-wrapper,
-        .carousel-glynne-track,
-        .carousel-glynne-item {
-          position: relative;
-          z-index: 1;
-        }
-      `}</style>
     </div>
   );
 }

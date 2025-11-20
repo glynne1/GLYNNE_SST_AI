@@ -9,7 +9,6 @@ import Main2 from './components/main2';
 import Main4 from './components/main5';
 import Footer from './components/footer';
 
-// Importa la fuente Inter optimizada con next/font
 import { Inter } from 'next/font/google';
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
@@ -46,7 +45,9 @@ function AnimatedSection({
           },
         },
       }}
-      className={`snap-start ${className} relative`}
+
+      // ❌ Snap removido
+      className={`${className} relative`}
     >
       {children}
     </motion.section>
@@ -92,9 +93,9 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* Contenedor principal con fuente global */}
+      {/* ❌ Snap removido del contenedor principal */}
       <div
-        className={`${inter.variable} font-sans h-screen w-full bg-white text-black overflow-y-auto snap-y snap-mandatory`}
+        className={`${inter.variable} font-sans min-h-screen w-full bg-white text-black overflow-y-auto`}
       >
         <AnimatedSection className="min-h-screen flex items-center justify-center">
           <Main1 />
