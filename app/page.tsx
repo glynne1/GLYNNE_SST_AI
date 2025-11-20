@@ -3,7 +3,7 @@
 import { useRef, useEffect } from 'react';
 import { motion, useAnimation, useInView } from 'framer-motion';
 import Head from 'next/head';
-
+import Header from './components/header'
 import Main1 from './components/main1';
 import Main2 from './components/main2';
 import Main4 from './components/main5';
@@ -97,6 +97,7 @@ export default function Home() {
       <div
         className={`${inter.variable} font-sans min-h-screen w-full bg-white text-black overflow-y-auto`}
       >
+        <Header />
         <AnimatedSection className="min-h-screen flex items-center justify-center">
           <Main1 />
         </AnimatedSection>
