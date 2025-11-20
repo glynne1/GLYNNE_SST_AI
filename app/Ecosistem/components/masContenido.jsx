@@ -102,7 +102,6 @@ export default function PlusMenu({ onRefresh }) {
     { icon: <FaMicrophoneAlt />, type: 'voice', label: 'Voz' },
     { icon: <FaDatabase />, type: 'db', label: 'DB' },
     { icon: <FaFileSignature />, type: 'audit', label: 'Auditoría' },
-    { icon: <FaUserTie />, type: 'talento', label: 'Talento' },
     { icon: <FaSyncAlt />, type: 'refresh', label: 'Refrescar' },
   ];
 

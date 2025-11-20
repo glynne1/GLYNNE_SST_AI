@@ -10,11 +10,11 @@ import Image from 'next/image';
 
 export default function Diagnostico() {
   const [datosEmpresa, setDatosEmpresa] = useState(null);
-  const [loading, setLoading] = useState(true); // inicia en true = loader visible
+  const [loading, setLoading] = useState(true); 
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    // Verificamos si el modal ya se mostró en esta sesión
+    // ¿El modal ya se mostró en esta sesión?
     const modalShown = sessionStorage.getItem('modalInicioShown');
     if (!modalShown) {
       setShowModal(true);
@@ -25,26 +25,32 @@ export default function Diagnostico() {
 
     const wakeUpServers = async () => {
       try {
+        // 🔥 Servidor principal
         await fetch('https://glynne-ecosistem.onrender.com', { method: 'GET' });
-        console.log('✅ Servicio principal despertado correctamente');
+
+        // 🔥 Segundo servidor adicional
+        await fetch('https://generative-glynne-motor.onrender.com', { method: 'GET' });
+
+        console.log('⚡ Servidores despertados correctamente');
       } catch (error) {
-        console.error('❌ Error al despertar el servicio principal:', error);
+        console.error('❌ Error al despertar servidores:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    // Disparamos loader desde el inicio y fetch en paralelo
+    // Ejecutar inmediatamente
     wakeUpServers();
 
-    // Refresco cada 7 min
+    // Repetir cada 7 minutos
     intervalId = setInterval(() => wakeUpServers(), 7 * 60 * 1000);
+
     return () => clearInterval(intervalId);
   }, []);
 
   const handleModalComplete = (datos) => {
-    setShowModal(false); // Cerramos el modal
-    setDatosEmpresa(datos); // Continuamos con el chat
+    setShowModal(false);
+    setDatosEmpresa(datos);
   };
 
   return (
@@ -113,9 +119,7 @@ export default function Diagnostico() {
       <div className="flex-1 flex flex-col h-full">
         <div className="flex-1">
           <div className="w-full h-full flex flex-col">
-            {/* Modal solo se muestra una vez por sesión */}
             {showModal && !datosEmpresa && <ModalInicio onComplete={handleModalComplete} />}
-            {/* Chat directamente si modal ya se cerró */}
             {(!showModal || datosEmpresa) && <ChatLLM empresa={datosEmpresa} />}
           </div>
         </div>
