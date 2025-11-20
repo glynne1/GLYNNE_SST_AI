@@ -1,4 +1,3 @@
-// app/components/LoginPopup.js
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -21,50 +20,21 @@ export function LoginPopup({ visible, onClose }) {
       });
 
       if (error) {
-        // ocultamos el error
-        // console.error('Error al iniciar sesión con Google:', error.message);
         alert('Error al iniciar sesión.');
       }
 
     } catch (_) {
-      // error silencioso
+      // silencioso
     }
   };
 
   useEffect(() => {
-    const checkAndInsertUser = async () => {
+    const checkUser = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
 
         if (user?.email) {
           setEmail(user.email);
-
-          let data = null;
-          let error = null;
-
-          try {
-            const res = await supabase
-              .from('GLNNEacces')
-              .select('*')
-              .eq('email', user.email)
-              .single();
-            data = res.data;
-            error = res.error;
-          } catch (_) {
-            // silencioso
-          }
-
-          // Si no existe, lo insertamos
-          if (!data && !error) {
-            try {
-              await supabase
-                .from('GLNNEacces')
-                .insert([{ email: user.email }]);
-            } catch (_) {
-              // silencioso
-            }
-          }
-
           router.push('/Ecosistem');
         }
       } catch (_) {
@@ -72,7 +42,7 @@ export function LoginPopup({ visible, onClose }) {
       }
     };
 
-    checkAndInsertUser();
+    checkUser();
   }, [router]);
 
   return (
