@@ -12,37 +12,63 @@ export function LoginPopup({ visible, onClose }) {
   const [email, setEmail] = useState('');
 
   const handleGoogleLogin = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/Ecosistem`,
-      },
-    });
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/Ecosistem`,
+        },
+      });
 
-    if (error) {
-      console.error('Error al iniciar sesión con Google:', error.message);
-      alert('Error al iniciar sesión: ' + error.message);
+      if (error) {
+        // ocultamos el error
+        // console.error('Error al iniciar sesión con Google:', error.message);
+        alert('Error al iniciar sesión.');
+      }
+
+    } catch (_) {
+      // error silencioso
     }
   };
 
   useEffect(() => {
     const checkAndInsertUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
 
-      if (user?.email) {
-        setEmail(user.email);
+        if (user?.email) {
+          setEmail(user.email);
 
-        const { data, error } = await supabase
-          .from('GLNNEacces')
-          .select('*')
-          .eq('email', user.email)
-          .single();
+          let data = null;
+          let error = null;
 
-        if (!data && !error) {
-          await supabase.from('GLNNEacces').insert([{ email: user.email }]);
+          try {
+            const res = await supabase
+              .from('GLNNEacces')
+              .select('*')
+              .eq('email', user.email)
+              .single();
+            data = res.data;
+            error = res.error;
+          } catch (_) {
+            // silencioso
+          }
+
+          // Si no existe, lo insertamos
+          if (!data && !error) {
+            try {
+              await supabase
+                .from('GLNNEacces')
+                .insert([{ email: user.email }]);
+            } catch (_) {
+              // silencioso
+            }
+          }
+
+          router.push('/Ecosistem');
         }
-
-        router.push('/Ecosistem');
+      } catch (_) {
+        // silencioso
       }
     };
 
