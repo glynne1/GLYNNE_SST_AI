@@ -62,7 +62,7 @@ export default function AuditoriasFullScreen() {
   return (
     <div
       className="w-full h-screen relative flex flex-col bg-cover bg-center"
-      style={{ backgroundImage: "url('/ruta/de/tu/imagen-fondo.jpg')" }}
+      style={{ backgroundImage: "url('')" }}
     >
       {/* Overlay para legibilidad */}
       <div className="absolute inset-0 w-full h-full z-0 bg-white/90"></div>
