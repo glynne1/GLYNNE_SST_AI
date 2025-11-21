@@ -43,7 +43,7 @@ export default function GLYNNEOverviewComponent() {
     },
     {
       id: "panel-agentes",
-      title: "Panel de creación y orquestación de agentes",
+      title: "Panel de creación de agentes",
       icon: Cpu,
       content:
         "El acceso a claves, proveedores y credenciales está resuelto mediante un panel de desarrollo seguro que abstrae la complejidad de la gestión de entornos. En lugar de obligar al usuario a crear un archivo .env o a manipular configuraciones manuales, GLYNNE provee un Key Vault inteligente, donde cada clave —desde un token de WhatsApp Business hasta las credenciales de Gmail o el API Key de un LLM privado— puede añadirse con un solo click. Además, la plataforma valida automáticamente si una clave es válida, qué permisos tiene y cómo se integrará en los agentes configurados, evitando errores silenciosos o fallos inesperados."
@@ -181,7 +181,6 @@ export default function GLYNNEOverviewComponent() {
     pdf.addImage(img, "PNG", 0, 0, width, height);
     pdf.save("GLYNNE_documentacion.pdf");
   };
-
   return (
     <div ref={contentRef} className="max-w-6xl mt-10 mx-auto p-6">
       <Header />
@@ -210,22 +209,20 @@ export default function GLYNNEOverviewComponent() {
               {sections.map((s) => (
                 <li key={s.id}>
                   <button
-                    onClick={() => toggle(s.id)}
-                    className={`w-full flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 transition ${
-                      openSection === s.id ? "bg-gray-100" : ""
-                    }`}
+                    onClick={() => {
+                      const element = document.getElementById(`section-${s.id}`);
+                      if (element) {
+                        element.scrollIntoView({
+                          behavior: "smooth",
+                          block: "start",
+                        });
+                      }
+                    }}
+                    className="w-full flex items-start justify-between p-2 rounded-lg hover:bg-gray-50 transition"
                   >
                     <div className="flex items-center gap-3">
                       <s.icon className="w-4 h-4" />
                       <span>{s.title}</span>
-                    </div>
-  
-                    <div className="opacity-70">
-                      {openSection === s.id ? (
-                        <ChevronUp className="w-4 h-4" />
-                      ) : (
-                        <ChevronDown className="w-4 h-4" />
-                      )}
                     </div>
                   </button>
                 </li>
@@ -253,77 +250,49 @@ export default function GLYNNEOverviewComponent() {
           </div>
         </aside>
   
-        {/* MAIN SCROLLABLE */}
+        {/* MAIN — TEXTO PLANO SIN CONTENEDORES */}
         <main
           className="
             md:col-span-2
             md:ml-[280px]
-            space-y-4
             w-full
+            prose prose-neutral max-w-none
           "
         >
           {sections.map((s) => (
             <section
               key={s.id}
-              className="p-4 rounded-2xl bg-white/60 backdrop-blur shadow-sm"
+              id={`section-${s.id}`}
+              className="mb-12 scroll-mt-24"
             >
-              <header className="flex items-start justify-between gap-4">
-                <div>
-                  <h2 className="text-lg font-semibold">{s.title}</h2>
-                  <p className="text-sm mt-1 text-gray-500">
-                    Breve descripción operativa y recomendaciones.
-                  </p>
-                </div>
+              <h2 className="text-2xl font-bold mb-2">{s.title}</h2>
   
-                <div className="flex items-center gap-2">
-                  <button
-                    className="py-1 px-2 text-sm rounded-lg border hover:bg-gray-50"
-                    onClick={() => copyToClipboard(s.content)}
-                  >
-                    Copiar texto
-                  </button>
-                  <button
-                    className="py-1 px-2 text-sm rounded-lg border hover:bg-gray-50"
-                    onClick={() => toggle(s.id)}
-                  >
-                    {openSection === s.id ? "Cerrar" : "Abrir"}
-                  </button>
-                </div>
-              </header>
+              <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                {s.content}
+              </p>
   
-              <AnimatePresence>
-                {openSection === s.id && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.22 }}
-                    className="mt-3 text-sm leading-7 text-gray-700"
-                  >
-                    <p>{s.content}</p>
-  
-                    <div className="mt-3 text-xs text-gray-500">
-                      (Aquí puedes añadir documentación extendida.)
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <hr className="my-8 border-gray-300" />
             </section>
           ))}
   
           {/* DOCUMENTACIÓN EXTENDIDA */}
-          <section className="p-4 rounded-2xl bg-white/60 backdrop-blur shadow-sm">
-            <h3 className="font-semibold">Documentación extendida</h3>
-            <p className="mt-2 text-sm text-gray-600">
+          <section className="mt-12">
+            <h3 className="text-xl font-semibold">Documentación extendida</h3>
+            <p className="mt-2 text-gray-700">
               Aquí puedes pegar artículos largos, contenido técnico o guías completas.
             </p>
   
-            <div className="mt-3 flex gap-2">
-              <button className="py-2 px-3 rounded-lg border" onClick={generarPDF}>
+            <div className="mt-4 flex gap-2">
+              <button
+                className="py-2 px-3 rounded-lg border"
+                onClick={generarPDF}
+              >
                 Exportar PDF
               </button>
   
-              <button className="py-2 px-3 rounded-lg border">Abrir Editor</button>
+              <button className="py-2 px-3 rounded-lg border">
+                Abrir Editor
+              </button>
             </div>
           </section>
         </main>
@@ -334,4 +303,5 @@ export default function GLYNNEOverviewComponent() {
       </footer>
     </div>
   );
+  
                 }

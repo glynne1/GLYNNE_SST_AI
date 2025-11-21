@@ -88,13 +88,13 @@ export default function PlusMenu({ onRefresh }) {
   const iconData = [
     {
       type: 'news',
-      title: ' Desarrolla tu IA',
+      title: 'Da click aqui y desarrolla tu IA',
       description: 'Accede al entorno donde se crean y personalizan tunn modelos de inteligencia artificial.',
       icon: '/yoAvatar.png'
     },
     {
       type: 'docs',
-      title: 'Explora nuestro Framework',
+      title: 'Explora e instala nuestro Framework aqui!',
     },
   ];
 
@@ -138,12 +138,38 @@ export default function PlusMenu({ onRefresh }) {
 
               
               {index === 0 && (
-                <div className="absolute -top-10 flex justify-center">
-                  <img
-                    src={item.icon}
-                    className="w-44 h-44 drop-shadow-2xl -mt-[100px] rounded-full object-cover"
-                  />
-                </div>
+               <div className="absolute -top-10 flex justify-center w-full">
+               {/* === AVATAR === */}
+               <div className="relative flex justify-center">
+                 <img
+                   src={item.icon}
+                   className="w-44 h-44 drop-shadow-2xl -mt-[100px] rounded-full object-cover"
+                 />
+             
+                 {/* === 🟢 LUZ VERDE SIEMPRE PRENDIDA — SOLO TAILWIND === */}
+                 <div className="absolute -right-1 top-6 flex items-center justify-center">
+             
+                   {/* AURA / PULSO SUAVE */}
+                   <span
+                     className="
+                       absolute w-6 h-6 bg-green-400 rounded-full 
+                       opacity-70 
+                       animate-ping
+                     "
+                   ></span>
+             
+                   {/* PUNTO CENTRAL */}
+                   <span
+                     className="
+                       relative w-2.5 h-2.5 bg-green-500 rounded-full 
+                       shadow-[0_0_8px_rgba(34,197,94,0.8)]
+                     "
+                   ></span>
+             
+                 </div>
+               </div>
+             </div>
+             
               )}
 
               <h3

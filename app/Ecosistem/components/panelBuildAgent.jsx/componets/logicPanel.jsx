@@ -34,6 +34,9 @@ export default function AgentConfigPanel() {
     additional_msg: false,
   });
 
+  // 🔹 NUEVO MODAL DE CREACIÓN (ÉXITO / ERROR)
+  const [creationModal, setCreationModal] = useState({ open: false, status: null });
+
   const apiURL =
     process.env.NEXT_PUBLIC_API_URL ||
     "https://generative-glynne-motor.onrender.com";
@@ -61,26 +64,27 @@ export default function AgentConfigPanel() {
   const buildPrompt = () => {
     return `
     [META]
-    Actúa como ${form.rol || "auditor"}. Mantén coherencia absoluta con el personaje creado por el usuario (rol, estilo, especialidad, propósito y tono). Adáptate completamente a su identidad. Responde en menos de 300 palabras las que veas necesarias respecto al conttexto memoria etc. Guía paso a paso: analiza intención, responde solo lo necesario, divide en partes, valida antes de avanzar y mantén un tono natural y cercano.
-    
+    Actúa como ${form.rol || "auditor"}...
+
     [AGENTE]
     Nombre: ${form.agent_name}
     Especialidad: ${form.specialty}
     Objetivo: ${form.objective}
     Contexto: ${form.business_info}
     Indicaciones: ${form.additional_msg}
-    
+
     [ENTRADA]
     {mensaje}
-    
+
     [RESPUESTA]
-    Ofrece recomendaciones claras, accionables y progresivas, sin dar toda la información de una vez. Conecta naturalmente con el usuario y termina siempre con una pregunta que defina el siguiente paso.
+    ...
 `;
   };
 
   const handleSend = async () => {
     if (!form.api_key) {
       addLog("❌ Debes ingresar tu API key antes de enviar la solicitud", "error");
+      setCreationModal({ open: true, status: "error" });
       return;
     }
 
@@ -108,9 +112,16 @@ export default function AgentConfigPanel() {
       ]);
       setChatModalOpen(true);
       addLog("✅ Respuesta recibida del backend", "success");
+
+      // 🔹 Mostrar modal de éxito
+      setCreationModal({ open: true, status: "success" });
+
     } catch (err) {
       setResponse("❌ Error: " + err.message);
       addLog("❌ " + err.message, "error");
+
+      // 🔹 Mostrar modal de error
+      setCreationModal({ open: true, status: "error" });
     }
   };
 
@@ -170,10 +181,12 @@ export default function AgentConfigPanel() {
   const steps = [
     {
       title: "Acceso a nuestros modelos IA",
-      text: "Ingresa tu clave API de GROQ o GLYNNE. Es necesaria para autenticar y conectar el modelo.",
+      text: "Ingresa tu clave API...",
       content: (
         <div className="col-span-2 relative bg-white p-5 border border-gray-300 shadow-sm flex flex-col gap-2 rounded-lg">
-          <label className="text-xs font-semibold text-gray-700 mb-1 block">API Key</label>
+          <label className="text-xs font-semibold text-gray-700 mb-1 block">
+            API Key
+          </label>
           <input
             name="api_key"
             type="password"
@@ -182,23 +195,12 @@ export default function AgentConfigPanel() {
             onChange={handleChange}
             className="w-full p-3 text-xs bg-white border border-gray-200 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300 rounded-lg"
           />
-          <p className="text-gray-500 text-xs mt-2">
-            Obtén tu clave en{" "}
-            <a
-              href="https://console.groq.com/keys"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:underline"
-            >
-              GROQ Console
-            </a>
-          </p>
         </div>
       ),
     },
     {
       title: "¿En qué área te gustaría que tu agente te ayude?",
-      text: "Define desde qué perspectiva actuará el agente. Ejemplo: 'auditor', 'asesor financiero', 'coach de IA'.",
+      text: "Define desde qué perspectiva actuará...",
       content: (
         <InputField
           label="Rol del agente"
@@ -212,7 +214,7 @@ export default function AgentConfigPanel() {
     },
     {
       title: "¿Cual sera el nombre del agente?",
-      text: "Asigna un nombre único a tu agente para identificarlo fácilmente.",
+      text: "Asigna un nombre único...",
       content: (
         <InputField
           label="Nombre del agente"
@@ -226,7 +228,7 @@ export default function AgentConfigPanel() {
     },
     {
       title: "¿En qué tema o área especial quieres que se enfoque?",
-      text: "Explica brevemente para qué es bueno el agente. Ejemplo: ventas, marketing, soporte técnico, análisis de datos.",
+      text: "Explica brevemente...",
       content: (
         <InputField
           label="Especialidad"
@@ -240,7 +242,7 @@ export default function AgentConfigPanel() {
     },
     {
       title: "Objetivo del agente",
-      text: "Define en una frase qué objetivo principal cumple. Ejemplo: 'Optimizar la atención al cliente'.",
+      text: "Define en una frase...",
       content: (
         <InputField
           label="Objetivo"
@@ -254,7 +256,7 @@ export default function AgentConfigPanel() {
     },
     {
       title: "Información del negocio",
-      text: "Describe brevemente el contexto o entorno donde operará el agente (empresa, producto, flujo, etc).",
+      text: "Describe brevemente...",
       content: (
         <InputField
           label="Información del negocio"
@@ -270,7 +272,7 @@ export default function AgentConfigPanel() {
     },
     {
       title: "Instrucciones adicionales",
-      text: "Agrega reglas, tono o estilo de respuesta del agente. Ejemplo: 'Responder con empatía y precisión'.",
+      text: "Agrega reglas...",
       content: (
         <InputField
           label="Instrucciones adicionales"
@@ -286,13 +288,47 @@ export default function AgentConfigPanel() {
     },
   ];
 
-  
-
   return (
     <div className="relative w-[90vw] h-[90vh] bg-white rounded-2xl p-6 shadow-md overflow-hidden">
+
+      {/* 🟩 MODAL de creación (Éxito / Error) */}
+      {creationModal.open && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[999]">
+          <div className="bg-white p-6 rounded-xl shadow-xl w-[300px] text-center">
+
+            {creationModal.status === "success" ? (
+              <>
+                <h2 className="text-lg font-bold text-green-600">
+                  Agente creado con éxito 🎉
+                </h2>
+                <p className="text-xs text-gray-600 mt-2">
+                  Tu agente está listo para usarse.
+                </p>
+              </>
+            ) : (
+              <>
+                <h2 className="text-lg font-bold text-red-600">
+                  Error al crear agente ❌
+                </h2>
+                <p className="text-xs text-gray-600 mt-2">
+                  Revisa la configuración e inténtalo nuevamente.
+                </p>
+              </>
+            )}
+
+            <button
+              onClick={() => setCreationModal({ open: false, status: null })}
+              className="mt-4 px-4 py-2 text-xs bg-black text-white rounded-lg"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="relative w-[90%] h-full flex flex-col items-center justify-center">
 
-        {/* 🔹 Logo fijo, sin transición */}
+        {/* Logo */}
         <div className="flex -mt-[35vh] justify-center">
           <Image
             src="/logo4.png"
@@ -303,7 +339,7 @@ export default function AgentConfigPanel() {
           />
         </div>
 
-        {/* 🔹 Contenido con animaciones */}
+        {/* Steps */}
         <AnimatePresence mode="wait">
           <motion.div
             key={step}
@@ -347,7 +383,8 @@ export default function AgentConfigPanel() {
               onClick={async () => {
                 await saveUserAgentConfig(form);
                 addLog("✅ Configuración guardada", "success");
-                await handleSend();
+
+                await handleSend(); // aquí se dispara el modal según éxito/error
                 setChatModalOpen(true);
               }}
               className="px-4 py-2 text-xs bg-green-600 text-white rounded-lg"
@@ -361,7 +398,7 @@ export default function AgentConfigPanel() {
   );
 }
 
-/* 🔹 Subcomponente InputField (sin cambios estructurales) */
+/* 🔹 Subcomponente InputField */
 function InputField({
   label,
   name,

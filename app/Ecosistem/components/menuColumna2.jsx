@@ -16,7 +16,7 @@ export default function PlusMenu({ onRefresh }) {
   const [showLogo, setShowLogo] = useState(false);
   const [showContent, setShowContent] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  const [tooltip, setTooltip] = useState(''); // <-- estado para tooltip
+  const [tooltip, setTooltip] = useState(''); 
 
   const logoTimerRef = useRef(null);
   const contentTimerRef = useRef(null);
@@ -84,12 +84,22 @@ export default function PlusMenu({ onRefresh }) {
 
   return (
     <>
-      {/* ✅ Barra lateral */}
+      {/* Barra lateral */}
       <div className="fixed left-0 top-0 h-screen w-12 flex flex-col items-center justify-center py-6 space-y-7 z-20">
-        {iconData.map((item) => {
+        
+        {iconData.map((item, index) => {
           const IconComponent = item.icon;
           return (
             <div key={item.type} className="relative">
+
+              {/* ⭐ Luz verde que palpita SOLO en el primer icono */}
+              {index === 0 && (
+                <div className="absolute -right-2 -top-1 flex items-center justify-center">
+                  <span className="absolute w-3 h-3 bg-green-400 rounded-full animate-ping opacity-75"></span>
+                  <span className="relative w-2 h-2 bg-green-500 rounded-full"></span>
+                </div>
+              )}
+
               <button
                 onClick={() => {
                   if(item.type === 'refresh') handleRefresh();
@@ -102,7 +112,7 @@ export default function PlusMenu({ onRefresh }) {
                 <IconComponent className="w-4 h-4 text-gray-400 hover:text-black" strokeWidth={1.4} />
               </button>
 
-              {/* 🔹 Tooltip */}
+              {/* Tooltip */}
               <AnimatePresence>
                 {tooltip === item.tooltip && (
                   <motion.div
@@ -119,6 +129,7 @@ export default function PlusMenu({ onRefresh }) {
             </div>
           );
         })}
+
       </div>
 
       <AnimatePresence>
@@ -132,7 +143,6 @@ export default function PlusMenu({ onRefresh }) {
               transition={{ duration: 0.28 }}
               className="fixed inset-0 z-30 bg-white w-screen h-screen"
             >
-              {/* ✅ BOTÓN CERRAR SUPERIOR */}
               <div className="absolute top-4 right-4 z-[9999]">
                 <motion.button
                   whileHover={{ rotate: 90, scale: 1.05 }}
@@ -166,6 +176,7 @@ export default function PlusMenu({ onRefresh }) {
                       <News />
                     </motion.div>
                   )}
+
                   {showContent && contentType === 'docs' && (
                     <motion.div key="docs" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 w-screen h-screen overflow-auto">
                       <div className="absolute inset-0 bg-white" />
@@ -174,6 +185,7 @@ export default function PlusMenu({ onRefresh }) {
                       </div>
                     </motion.div>
                   )}
+
                   {showContent && contentType === 'nn' && (
                     <motion.div key="nn" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 flex items-center justify-center bg-white">
                       <div className="w-full h-full flex items-center justify-center">

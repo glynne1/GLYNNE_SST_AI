@@ -113,9 +113,16 @@ export default function ChatSimple() {
   
       {messages.length === 0 ? (
         <div className="flex flex-1 flex-col items-center justify-center text-center px-4 relative">
-          <p className="text-2xl md:text-xl sm:text-lg mb-4">
-            Aqui te explicare como crear tus agentes IA, <span className="font-semibold">{userInfo.nombre}</span>
-          </p>
+          <div className="mb-4">
+  <h1 className="text-3xl md:text-2xl sm:text-xl font-bold mb-1">
+    ¡Hola, <span className="text-gray-900">{userInfo.nombre}</span>!
+  </h1>
+
+  <p className="text-lg md:text-base sm:text-sm text-gray-700 leading-snug">
+    Aquí te guiaré paso a paso para crear tus agentes de IA dentro de GLYNNE.
+  </p>
+</div>
+
   
           <div className="w-full max-w-3xl flex flex-col items-center gap-2 bg-white rounded-2xl shadow-lg p-6">
             <div className="relative w-full">

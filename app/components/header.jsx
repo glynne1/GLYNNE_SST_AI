@@ -10,7 +10,7 @@ export default function Header() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const threshold = window.innerHeight; 
+      const threshold = window.innerHeight;
       setScrolled(window.scrollY >= threshold);
     };
 
@@ -24,30 +24,39 @@ export default function Header() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 w-full z-50 backdrop-blur-md transition-all duration-500 px-3 md:px-5 py-2 flex items-center justify-between h-12 ${
-          scrolled ? 'bg-white/10' : 'bg-transparent'
-        }`}
+        className={`fixed top-0 left-0 w-full z-50 backdrop-blur-md transition-all duration-500 px-4 md:px-6 py-2 flex items-center justify-between h-14
+          ${scrolled ? 'bg-white/10 shadow-sm' : 'bg-transparent'}`}
       >
-        {/* LOGO */}
+
+        {/* === LOGO === */}
         <img
           src={currentLogo}
           alt="Logo"
-          className="h-10 sm:h-10 cursor-pointer transition-all duration-500"
+          className="h-10 cursor-pointer transition-all duration-500"
           onClick={() => router.push('/')}
         />
 
-        <div className="flex items-center gap-4">
+        {/* === NAV LINKS === */}
+        <div className="flex items-center gap-6">
 
-          {/* 🔥 NUEVO ENLACE → "Qué es esto" */}
+          {/* LINK → Plataforma GLYNNE */}
           <span
             onClick={() => router.push('/appInfo')}
-            className={`cursor-pointer text-xs sm:text-sm font-medium transition-all ${
-              scrolled
-                ? 'text-black/80 hover:text-black'
-                : 'text-white hover:text-gray-200'
-            }`}
+            className={`cursor-pointer text-sm font-medium transition-all 
+              ${scrolled ? 'text-black/80 hover:text-black' : 'text-white hover:text-gray-200'}
+            `}
           >
-            Qué es esto
+            Plataforma GLYNNE
+          </span>
+
+          {/* LINK → Políticas */}
+          <span
+            onClick={() => router.push('/politicas')}
+            className={`cursor-pointer text-sm font-medium transition-all 
+              ${scrolled ? 'text-black/80 hover:text-black' : 'text-white hover:text-gray-200'}
+            `}
+          >
+            Políticas
           </span>
 
           {/* BOTÓN LOGIN */}
@@ -56,18 +65,19 @@ export default function Header() {
               localStorage.removeItem('glyiaChatClosed');
               setShowLoginModal(true);
             }}
-            className={`px-3 py-1 text-xs sm:text-sm font-semibold rounded-lg transition-all duration-300 ${
-              scrolled
+            className={`px-4 py-1.5 text-sm font-semibold rounded-lg transition-all duration-300
+              ${scrolled
                 ? 'bg-black/80 text-white hover:bg-black'
                 : 'bg-white text-black border border-black/20 hover:bg-gray-100'
-            }`}
+              }
+            `}
           >
             Iniciar sesión
           </button>
-
         </div>
       </header>
 
+      {/* === MODAL LOGIN === */}
       <LoginPopup
         visible={showLoginModal}
         onClose={() => setShowLoginModal(false)}
