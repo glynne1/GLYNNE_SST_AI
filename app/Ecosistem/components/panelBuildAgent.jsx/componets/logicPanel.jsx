@@ -289,7 +289,7 @@ export default function AgentConfigPanel() {
   ];
 
   return (
-    <div className="relative w-[90vw] h-[90vh] bg-white rounded-2xl p-6 shadow-md overflow-hidden">
+    <div className="relative w-[70vw] ml-20 h-[90vh] bg-white rounded-2xl p-6overflow-hidden">
 
       {/* 🟩 MODAL de creación (Éxito / Error) */}
       {creationModal.open && (

@@ -1,9 +1,11 @@
 'use client';
+import Link from "next/link";
 
 export default function GlynneFooter() {
   return (
     <footer className="w-full bg-white/80 backdrop-blur-lg ring-1 ring-black/5 shadow-inner mt-20">
       <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8 text-sm text-gray-700">
+        
         {/* Novedades */}
         <div>
           <h4 className="font-semibold text-black mb-4">Novedades</h4>
@@ -43,10 +45,11 @@ export default function GlynneFooter() {
           <h4 className="font-semibold text-black mb-4">Compañía</h4>
           <ul className="space-y-2">
             <li>Sobre GLYNNE</li>
-            <li>Privacidad y Seguridad</li>
+            <li><Link href="/app/politicas" className="hover:underline">Términos y Condiciones</Link></li>
             <li>Oportunidades de Carrera</li>
             <li>GLYNNE Green (Sustentabilidad)</li>
-            <li>Contacto y Soporte</li>
+            <li><a href="https://wa.me/573123455328" target="_blank" rel="noopener noreferrer" className="hover:underline">Contacto</a></li>
+            <li>Soporte</li>
           </ul>
         </div>
       </div>
@@ -55,10 +58,10 @@ export default function GlynneFooter() {
       <div className="border-t border-gray-200 text-xs text-gray-600 px-6 py-4 flex flex-col md:flex-row justify-between items-center">
         <span>Español (Colombia)</span>
         <div className="flex flex-wrap justify-center gap-4 mt-2 md:mt-0">
-          <a href="#" className="hover:underline">Tus opciones de privacidad</a>
-          <a href="#" className="hover:underline">Aviso legal</a>
-          <a href="#" className="hover:underline">Marcas Registradas</a>
-          <a href="#" className="hover:underline">© GLYNNE 2025</a>
+          <a href="https://wa.me/573123455328" target="_blank" rel="noopener noreferrer" className="hover:underline">Contacto</a>
+          <Link href="/app/politicas" className="hover:underline">Aviso legal</Link>
+          <span className="hover:underline">Marcas Registradas</span>
+          <span>© GLYNNE 2025</span>
         </div>
       </div>
     </footer>

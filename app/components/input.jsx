@@ -9,6 +9,7 @@ import Carrucel from './carrucelDf';
 import ExText from './textoHme'
 import ExText2 from './textoHome2'
 import CardTec from './cardsTecnlgias'
+import Diagrama from './diagrama'
 
 export default function VoiceInput() {
   const [input, setInput] = useState('');
@@ -163,6 +164,13 @@ export default function VoiceInput() {
           <ExText />
         </div>
       </div>
+
+        {/* 🔹 Diagrama  */}
+         <div className="w-[100%] mt-10 relative z-0 isolate">
+        <div className="relative w-full">
+          <Diagrama />
+        </div>
+      </div>
            {/* 🔹 SECCIÓN DE CARDS */}
       <div className="w-full  mt-10 relative z-10">
         <ServiceCards />
@@ -181,6 +189,8 @@ export default function VoiceInput() {
           <CardTec />
         </div>
       </div>
+
+       
 
       {/* 🔹 MODAL DE LOGIN */}
       <LoginPopup visible={showLoginModal} onClose={() => setShowLoginModal(false)} />

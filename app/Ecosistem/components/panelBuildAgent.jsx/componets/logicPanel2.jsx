@@ -94,39 +94,37 @@ export default function SideMenuAgentWrapper() {
   ];
 
   return (
-  <TourProvider
-    steps={steps}
-    scrollSmooth
-    styles={{
-      popover: (base) => ({
-        ...base,
-        background: "#ffffff",        // ✅ Fondo blanco sólido
-        color: "#000000",             // ✅ Texto negro
-        borderRadius: "20px",
-        padding: "20px",
-        border: "1px solid #e5e5e5",  // ✅ Borde gris suave
-        boxShadow: "0 8px 30px rgba(0,0,0,0.15)",
-
-        // 👇 Mantiene tu movimiento
-        transform: "translate(250px, 50px)",
-      }),
-
+    <TourProvider
+      steps={steps}
+      scrollSmooth
+      styles={{
+        popover: (base) => ({
+          ...base,
+          background: "#ffffff",
+          color: "#000000",
+          borderRadius: "20px",
+          padding: "20px",
+          border: "1px solid #e5e5e5",
+          boxShadow: "0 8px 30px rgba(0,0,0,0.15)",
+          transform: "translate(250px, 50px)",
+        }),
+  
       maskWrapper: (base) => ({
         ...base,
-        backdropFilter: "blur(10px)",
-        backgroundColor: "rgba(0,0,0,0.35)",
+        backdropFilter: "blur(50px)",      // ⭐ Blur limpio
+        backgroundColor: "rgba(0,0,0,0.1)" // ⭐ Sin sombra fuerte
       }),
-
-      arrow: (base) => ({
-        ...base,
-        color: "#000000", // ✅ Flecha negra
-      }),
-    }}
-  >
-    <SideMenuAgent />
-  </TourProvider>
-);
-  } 
+  
+        arrow: (base) => ({
+          ...base,
+          color: "#000000",
+        }),
+      }}
+    >
+      <SideMenuAgent />
+    </TourProvider>
+  );
+    }  
 
 /* ===========================
    COMPONENTE PRINCIPAL
