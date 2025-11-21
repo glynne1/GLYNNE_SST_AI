@@ -349,35 +349,7 @@ export default function AgentCards() {
         )}
       </AnimatePresence>
 
-      {/* ALERTA PLANES */}
-      <AnimatePresence>
-        {openLimitAlert && (
-          <motion.div
-            className="fixed inset-0 backdrop-blur-xl flex justify-center items-center z-50"
-            onClick={() => setOpenLimitAlert(false)}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <motion.div
-              className="relative bg-white backdrop-blur-2xl border border-white/40 shadow-2xl rounded-3xl p-8 w-[90vw] h-[90vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-              initial={{ scale: 0.92, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.92, opacity: 0 }}
-            >
-              <button
-                onClick={() => setOpenLimitAlert(false)}
-                className="absolute top-4 right-4 text-gray-600 hover:text-black text-2xl font-light"
-              >
-                ×
-              </button>
-
-              <TablaPrising />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      
 
     </div>
   );

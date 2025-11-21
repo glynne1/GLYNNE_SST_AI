@@ -15,6 +15,7 @@ import {
   FaCode,
   FaGoogle,
   FaPuzzlePiece,
+  FaDollarSign
 } from "react-icons/fa";
 
 import CardsAgent from "./cardsAgents";
@@ -30,6 +31,9 @@ import VsCodeMockEditor from "./editorTex";
 import GenerarApiExterna from "./generarApiExterna";
 import AppCards from "./AppsConected";
 import EcosistemaPro from "./EcosistemaComponente";
+
+// ⬅️ NUEVO IMPORT (TU COMPONENTE)
+import TargetaPricing from "./TablaServicios";
 
 /* ===========================
    WRAPPER: TourProvider
@@ -108,13 +112,13 @@ export default function SideMenuAgentWrapper() {
           boxShadow: "0 8px 30px rgba(0,0,0,0.15)",
           transform: "translate(250px, 50px)",
         }),
-  
-      maskWrapper: (base) => ({
-        ...base,
-        backdropFilter: "blur(50px)",      // ⭐ Blur limpio
-        backgroundColor: "rgba(0,0,0,0.1)" // ⭐ Sin sombra fuerte
-      }),
-  
+
+        maskWrapper: (base) => ({
+          ...base,
+          backdropFilter: "blur(50px)",
+          backgroundColor: "rgba(0,0,0,0.1)"
+        }),
+
         arrow: (base) => ({
           ...base,
           color: "#000000",
@@ -124,7 +128,7 @@ export default function SideMenuAgentWrapper() {
       <SideMenuAgent />
     </TourProvider>
   );
-    }  
+}
 
 /* ===========================
    COMPONENTE PRINCIPAL
@@ -145,6 +149,7 @@ function SideMenuAgent() {
     { id: "agents", label: "Tus modelos creados", icon: <FaRobot />, tourId: "btn-agents" },
     { id: "streaming", label: "Streaming con tus agentes", icon: <FaRocket />, tourId: "btn-streaming" },
     { id: "generarApi", label: "Exporta tus agentes", icon: <IoCloudDownloadOutline />, tourId: "btn-generarApi" },
+    { id: "pricing", label: "Pricing", icon: <FaDollarSign />, tourId: "btn-pricing" },
     { id: "ecosistemPro", label: "Integra a tu ecosistema", icon: <FaGoogle />, tourId: "btn-ecosistemPro" },
     { id: "appCards", label: "Tecnologías compatibles", icon: <FaPuzzlePiece />, tourId: "btn-appCards" },
     { id: "api", label: "Llaves de modelos", icon: <FaDatabase />, tourId: "btn-api" },
@@ -168,6 +173,10 @@ function SideMenuAgent() {
       case "generarApi": return <GenerarApiExterna />;
       case "ecosistemPro": return <EcosistemaPro />;
       case "appCards": return <AppCards />;
+
+      // ⬅️ NUEVO RENDER
+      case "pricing": return <TargetaPricing />;
+
       default: return null;
     }
   };
@@ -175,73 +184,61 @@ function SideMenuAgent() {
   return (
     <div className="relative">
 
-     {/* =======================
-      POPUP DE API KEY
-======================= */}
-{showPopup && (
-  <div
-    className="fixed inset-0 backdrop-blur-md bg-black/20 flex items-center justify-center z-[9999] p-4"
-    onClick={handleClosePopup}
-  >
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.25, ease: "easeOut" }}
-      className="bg-white/80 backdrop-blur-2xl border border-white/40 shadow-[0_8px_30px_rgba(0,0,0,0.12)]
-                 p-8 rounded-3xl w-full max-w-md relative"
-      onClick={(e) => e.stopPropagation()}
-    >
-      {/* Cerrar */}
-      <button
-        onClick={handleClosePopup}
-        className="absolute top-4 right-4 text-gray-700 hover:text-gray-900 text-xl font-bold"
-        aria-label="Cerrar"
-      >
-        ✕
-      </button>
-
-      {/* Título principal */}
-      <h2 className="text-2xl font-semibold text-gray-900 mb-3 text-center leading-tight">
-        Antes de continuar
-      </h2>
-
-      {/* Texto descripción */}
-      <p className="text-base text-gray-700 text-center mb-4 leading-relaxed">
-        Necesitas crear tu <span className="font-semibold">API Key de GROQ</span> en nuestra capa gratuita antes de seguir.
-      </p>
-   
-
-
-      {/* Enlace */}
-      <a
-        href="https://console.groq.com/keys"
-        target="_blank"
-        className="block text-center text-blue-700 font-medium underline mb-6 text-base hover:text-blue-900"
-      >
-        Ir a GROQ Console
-      </a>
-
-      {/* Label */}
-      <label className="text-sm font-semibold text-gray-800 mb-2 block text-center">
-        Si ya tienes tu API Key puedes continuar
-      </label>
-
-      {/* Botón */}
-      <div className="mt-5 flex justify-center">
-        <button
+      {/* POPUP */}
+      {showPopup && (
+        <div
+          className="fixed inset-0 backdrop-blur-md bg-black/20 flex items-center justify-center z-[9999] p-4"
           onClick={handleClosePopup}
-          className="px-5 py-2.5 rounded-xl bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition"
         >
-          Continuar
-        </button>
-      </div>
-    </motion.div>
-  </div>
-)}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="bg-white/80 backdrop-blur-2xl border border-white/40 shadow-[0_8px_30px_rgba(0,0,0,0.12)]
+                 p-8 rounded-3xl w-full max-w-md relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={handleClosePopup}
+              className="absolute top-4 right-4 text-gray-700 hover:text-gray-900 text-xl font-bold"
+              aria-label="Cerrar"
+            >
+              ✕
+            </button>
 
-      {/* =======================
-           CONTENIDO PRINCIPAL
-      ======================= */}
+            <h2 className="text-2xl font-semibold text-gray-900 mb-3 text-center leading-tight">
+              Antes de continuar
+            </h2>
+
+            <p className="text-base text-gray-700 text-center mb-4 leading-relaxed">
+              Necesitas crear tu <span className="font-semibold">API Key de GROQ</span> en nuestra capa gratuita antes de seguir.
+            </p>
+
+            <a
+              href="https://console.groq.com/keys"
+              target="_blank"
+              className="block text-center text-blue-700 font-medium underline mb-6 text-base hover:text-blue-900"
+            >
+              Ir a GROQ Console
+            </a>
+
+            <label className="text-sm font-semibold text-gray-800 mb-2 block text-center">
+              Si ya tienes tu API Key puedes continuar
+            </label>
+
+            <div className="mt-5 flex justify-center">
+              <button
+                onClick={handleClosePopup}
+                className="px-5 py-2.5 rounded-xl bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition"
+              >
+                Continuar
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* MAIN STRUCTURE */}
       <div className="flex h-full w-full bg-white">
 
         {/* SIDEBAR */}
@@ -251,7 +248,7 @@ function SideMenuAgent() {
             CENTRO DE DESARROLLO
           </h1>
 
-          <img src="/logo2.png" className="w-14 h-14 mx-auto mb-4 opacity-80" />
+          <img src="/logo2.png" className="w-8 h-8 mx-auto mb-4 opacity-80" />
 
           <div className="flex flex-col gap-2 flex-1 overflow-y-auto scrollbar-hide">
             {sections.map((sec) => (
@@ -278,7 +275,7 @@ function SideMenuAgent() {
           </div>
         </aside>
 
-        {/* MAIN */}
+        {/* CONTENT */}
         <main className="flex-1 p-4 bg-white">
           {renderContent()}
         </main>
