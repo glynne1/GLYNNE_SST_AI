@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import AgentForm from "./AgentEditModal";
 import AgentsChatStyled from "./AgentEstado";
 import { supabase, getCurrentUser } from "../../../../lib/supabaseClient";
+import TablaPrising from './TablaServicios';
 
 export default function AgentCards() {
   const [agents, setAgents] = useState([]);
@@ -14,6 +15,12 @@ export default function AgentCards() {
   const [chatAgent, setChatAgent] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const [openLimitAlert, setOpenLimitAlert] = useState(false);
+
+  // ➕ NUEVO ESTADO PARA MODO MULTI-SELECCIÓN
+  const [selectMode, setSelectMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState([]);
 
   const fetchAgents = async () => {
     try {
@@ -74,6 +81,41 @@ export default function AgentCards() {
     }
   };
 
+  // ➕ NUEVO: BORRADO MASIVO
+  const handleBulkDelete = async () => {
+    if (selectedIds.length === 0) {
+      alert("Selecciona al menos un agente para eliminar.");
+      return;
+    }
+
+    const confirmDelete = window.confirm(
+      `¿Seguro que quieres eliminar ${selectedIds.length} agentes?`
+    );
+    if (!confirmDelete) return;
+
+    try {
+      const { error } = await supabase
+        .from("auditorias")
+        .delete()
+        .in("id", selectedIds);
+
+      if (error) throw error;
+
+      setAgents((prev) => prev.filter((a) => !selectedIds.includes(a.id)));
+      setSelectedIds([]);
+      setSelectMode(false);
+    } catch (err) {
+      console.error("❌ Error al eliminar múltiples agentes:", err);
+      alert("Hubo un error al eliminar los agentes seleccionados.");
+    }
+  };
+
+  const toggleSelect = (id) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
+
   const handleEdit = (agent, index) => {
     setSelectedAgent({ index, agent });
   };
@@ -90,29 +132,72 @@ export default function AgentCards() {
 
       {/* HEADER */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold text-gray-800">
-          Agentes GLYNNE creados
-        </h2>
-        <button
-          onClick={handleRefresh}
-          className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-300 hover:bg-gray-100 transition-all"
-          title="Actualizar lista"
-        >
-          <motion.div
-            animate={{ rotate: isRefreshing ? 360 : 0 }}
-            transition={{
-              duration: 0.6,
-              ease: "easeInOut",
-              repeat: isRefreshing ? Infinity : 0,
-            }}
+        <div>
+          <h2 className="text-xl font-bold text-gray-800">
+            Agentes GLYNNE creados
+          </h2>
+
+          <div className="flex items-center">
+            <p className="text-xs text-gray-500 mt-1">
+              Límite Plan Free: 8 agentes para desarrollo
+            </p>
+
+            <p
+              className="text-xs text-blue-500 underline cursor-pointer mt-1 ml-3"
+              onClick={() => setOpenLimitAlert(true)}
+            >
+              Actualizar plan
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center space-x-3">
+
+          {/* 🔄 REFRESH */}
+          <button
+            onClick={handleRefresh}
+            className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-300 hover:bg-gray-100 transition-all"
+            title="Actualizar lista"
           >
-            <RotateCcw
+            <motion.div
+              animate={{ rotate: isRefreshing ? 360 : 0 }}
+              transition={{
+                duration: 0.6,
+                ease: "easeInOut",
+                repeat: isRefreshing ? Infinity : 0,
+              }}
+            >
+              <RotateCcw
+                className={`w-5 h-5 ${
+                  isRefreshing ? "text-blue-600" : "text-gray-600"
+                }`}
+              />
+            </motion.div>
+          </button>
+
+          {/* 🗑️ NUEVO BOTÓN DE MULTI-DELETE */}
+          <button
+            onClick={() => {
+              if (selectMode && selectedIds.length > 0) {
+                handleBulkDelete();
+              } else {
+                setSelectMode(!selectMode);
+                setSelectedIds([]);
+              }
+            }}
+            className={`flex items-center justify-center w-9 h-9 rounded-full border transition-all 
+            ${selectMode ? "border-red-400 bg-red-50" : "border-gray-300 hover:bg-gray-100"}`}
+            title="Eliminar múltiples"
+          >
+            <Trash2
               className={`w-5 h-5 ${
-                isRefreshing ? "text-blue-600" : "text-gray-600"
+                selectMode ? "stroke-red-600" : "stroke-gray-600"
               }`}
+              strokeWidth={1.8}
             />
-          </motion.div>
-        </button>
+          </button>
+
+        </div>
       </div>
 
       {/* ZONA SCROLLABLE */}
@@ -131,12 +216,23 @@ export default function AgentCards() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md-grid-cols-2 gap-6">
             {agents.map((agent, idx) => (
               <div
                 key={agent.id || idx}
-                className="bg-white shadow-lg rounded-xl p-5 border border-gray-200 flex flex-col justify-between w-full h-[200px] hover:shadow-2xl transition-all duration-300 text-left"
+                className="bg-white shadow-lg rounded-xl p-5 border border-gray-200 flex flex-col justify-between w-full h-[200px] hover:shadow-2xl transition-all duration-300 text-left relative"
               >
+
+                {/* ✔️ CHECKBOX SI ESTÁ ACTIVADO EL MODO SELECCIÓN */}
+                {selectMode && (
+                  <input
+                    type="checkbox"
+                    className="absolute top-3 left-3 w-4 h-4 cursor-pointer"
+                    checked={selectedIds.includes(agent.id)}
+                    onChange={() => toggleSelect(agent.id)}
+                  />
+                )}
+
                 <div className="space-y-1 overflow-hidden">
                   <h2 className="text-lg font-semibold text-gray-800 truncate">
                     {agent.agent_name || "Agente sin nombre"}
@@ -162,28 +258,26 @@ export default function AgentCards() {
                   </p>
                 </div>
 
-                {/* ICONOS - Sin el de mensaje */}
-                <div className="mt-3 flex justify-end space-x-4 text-gray-400">
+                {!selectMode && (
+                  <div className="mt-3 flex justify-end space-x-4 text-gray-400">
+                    <Settings2
+                      className="w-5 h-5 cursor-pointer hover:text-gray-700 transition-colors duration-200"
+                      onClick={() => handleEdit(agent, idx)}
+                    />
 
-                  <Settings2
-                    className="w-5 h-5 cursor-pointer hover:text-gray-700 transition-colors duration-200"
-                    onClick={() => handleEdit(agent, idx)}
-                  />
-
-                  <Trash2
-                    className="w-5 h-5 cursor-pointer stroke-red-500 hover:stroke-red-700 transition-all duration-200"
-                    onClick={() => handleDelete(agent.id)}
-                    strokeWidth={1.8}
-                  />
-
-                </div>
+                    <Trash2
+                      className="w-5 h-5 cursor-pointer stroke-red-500 hover:stroke-red-700 transition-all duration-200"
+                      onClick={() => handleDelete(agent.id)}
+                      strokeWidth={1.8}
+                    />
+                  </div>
+                )}
               </div>
             ))}
           </div>
         )}
 
       </div>
-      {/* FIN scrollable */}
 
       {/* MODAL EDITAR */}
       <AnimatePresence>
@@ -208,17 +302,21 @@ export default function AgentCards() {
               >
                 ✖
               </button>
+
+              <TablaPrising />
+
               <AgentForm
                 agentData={selectedAgent.agent}
                 onSave={handleSave}
                 onCancel={() => setSelectedAgent(null)}
               />
+
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* MODAL CHAT — sigue existiendo por si luego lo reactivas */}
+      {/* MODAL CHAT */}
       <AnimatePresence>
         {openChatPopup && (
           <motion.div
@@ -246,6 +344,36 @@ export default function AgentCards() {
                 <AgentsChatStyled agent={chatAgent} />
               </div>
 
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ALERTA PLANES */}
+      <AnimatePresence>
+        {openLimitAlert && (
+          <motion.div
+            className="fixed inset-0 backdrop-blur-xl flex justify-center items-center z-50"
+            onClick={() => setOpenLimitAlert(false)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="relative bg-white backdrop-blur-2xl border border-white/40 shadow-2xl rounded-3xl p-8 w-[90vw] h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+              initial={{ scale: 0.92, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.92, opacity: 0 }}
+            >
+              <button
+                onClick={() => setOpenLimitAlert(false)}
+                className="absolute top-4 right-4 text-gray-600 hover:text-black text-2xl font-light"
+              >
+                ×
+              </button>
+
+              <TablaPrising />
             </motion.div>
           </motion.div>
         )}

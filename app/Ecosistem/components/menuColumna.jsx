@@ -89,7 +89,7 @@ export default function PlusMenu({ onRefresh }) {
     {
       type: 'news',
       title: 'Da click aqui y desarrolla tu IA',
-      description: 'Accede al entorno donde se crean y personalizan tunn modelos de inteligencia artificial.',
+      description: 'Accede al entorno donde se crean y personalizan tus modelos de inteligencia artificial.',
       icon: '/yoAvatar.png'
     },
     {

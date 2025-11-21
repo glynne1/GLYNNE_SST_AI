@@ -3,12 +3,22 @@
 import { useState } from "react";
 import { supabase, getCurrentUser } from "../../../../lib/supabaseClient";
 
-// ✅ Guardar la configuración del agente SIN LÍMITE
+// ✅ Guardar la configuración del agente CON LÍMITE
 export async function saveUserAgentConfig(configData) {
   const user = await getCurrentUser();
   if (!user) throw new Error("Usuario no autenticado");
 
-  // ❌ Se elimina el bloqueo de cantidad de agentes
+  // 🔹 Verificar cuántos agentes ya tiene el usuario
+  const { data: existingAgents, error: fetchError } = await supabase
+    .from("auditorias")
+    .select("*")
+    .eq("user_id", user.id);
+
+  if (fetchError) throw fetchError;
+
+  if (existingAgents.length >= 8) {
+    throw new Error("⚠️ Has alcanzado el límite de 8 agentes por usuario");
+  }
 
   const agentToSave = {
     ...configData,
@@ -43,6 +53,8 @@ export default function SaveAgentConfigButton({ configData }) {
 
       if (err.message.includes("no autenticado")) {
         setStatus("❌ Debes iniciar sesión para guardar agentes.");
+      } else if (err.message.includes("⚠️")) {
+        setStatus(err.message); // Mostrar mensaje de límite de agentes
       } else {
         setStatus("❌ Error al guardar el agente.");
       }
