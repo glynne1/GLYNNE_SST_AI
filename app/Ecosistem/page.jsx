@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import ModalInicio from './components/madalInicio';
 import ChatLLM from './unifique';
-
 import SideMenu from './components/menuLateral';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
@@ -14,7 +13,6 @@ export default function Diagnostico() {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    // ¿El modal ya se mostró en esta sesión?
     const modalShown = sessionStorage.getItem('modalInicioShown');
     if (!modalShown) {
       setShowModal(true);
@@ -25,12 +23,8 @@ export default function Diagnostico() {
 
     const wakeUpServers = async () => {
       try {
-        // 🔥 Servidor principal
         await fetch('https://glynne-ecosistem.onrender.com', { method: 'GET' });
-
-        // 🔥 Segundo servidor adicional
         await fetch('https://generative-glynne-motor.onrender.com', { method: 'GET' });
-
         console.log('⚡ Servidores despertados correctamente');
       } catch (error) {
         console.error('❌ Error al despertar servidores:', error);
@@ -39,10 +33,7 @@ export default function Diagnostico() {
       }
     };
 
-    // Ejecutar inmediatamente
     wakeUpServers();
-
-    // Repetir cada 7 minutos
     intervalId = setInterval(() => wakeUpServers(), 7 * 60 * 1000);
 
     return () => clearInterval(intervalId);
@@ -54,23 +45,18 @@ export default function Diagnostico() {
   };
 
   return (
-    <div className="relative h-screen bg-white flex">
+    <div className="relative h-screen bg-white flex text-black">
       {/* Overlay Loader */}
       <AnimatePresence>
         {loading && (
           <motion.div
-            className="fixed inset-0 flex items-center justify-center z-50 p-4 bg-cover bg-center"
-            style={{
-              backgroundImage: "url('https://i.pinimg.com/originals/da/50/09/da500959c4a72da8dd39ce88fc97208c.gif')",
-            }}
+            className="fixed inset-0 flex items-center justify-center z-50 p-4 bg-white"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <div className="absolute inset-0 bg-black/50" />
-
             <motion.div
-              className="relative backdrop-blur-md bg-white/20 rounded-3xl shadow-2xl w-[80vw] max-w-4xl px-[4vw] py-[5vh] flex flex-col items-center z-10"
+              className="relative bg-white rounded-xl w-[80vw] max-w-4xl px-6 py-8 flex flex-col items-center"
               initial={{ scale: 0.95, y: 30 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 40 }}
@@ -80,30 +66,25 @@ export default function Diagnostico() {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="font-bold text-center text-white"
-                style={{ fontSize: 'clamp(1.4rem, 2.5vw, 2.3rem)', lineHeight: '1.3' }}
+                className="font-bold text-center text-black text-2xl sm:text-xl"
               >
                 Iniciando servicios
               </motion.h2>
 
-              <Image src="/logo.png" alt="GLYNNE Logo" width={70} height={70} className="mt-2" />
+              <Image src="/logo2.png" alt="GLYNNE Logo" width={70} height={70} className="mt-2" />
 
-              <p
-                className="text-center text-gray-200 max-w-[70ch] mt-4"
-                style={{ fontSize: 'clamp(0.75rem, 1.2vw, 1rem)', lineHeight: '1.6' }}
-              >
-                Estamos preparando los sistemas para que la experiencia sea rápida y estable.
-                Este paso inicial conecta con nuestros servicios de{' '}
-                <strong>inteligencia artificial</strong> y procesamiento de voz antes de comenzar.
-              </p>
+              <p className="text-center text-gray-800 max-w-[70ch] mt-4 text-sm sm:text-base leading-relaxed">
+  Actualmente estamos construyendo y optimizando nuestros procesos de desarrollo para brindarte la mejor experiencia. 
+  Este paso inicial puede tardar un minuto mientras aseguramos que todos los servicios de <strong>inteligencia artificial</strong> y procesamiento de manera rápida y confiable.
 
-              <br />
-              <p className="text-gray-300">Puede tardar un minuto...</p>
+</p>
+
+              <p className="text-gray-600 mt-2 text-sm">Puede tardar un minuto...</p>
 
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
-                className="w-14 h-14 border-4 border-white border-t-transparent rounded-full mt-6"
+                className="w-14 h-14 border-4 border-black border-t-transparent rounded-full mt-6"
               />
             </motion.div>
           </motion.div>

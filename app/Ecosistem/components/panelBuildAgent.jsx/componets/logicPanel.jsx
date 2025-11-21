@@ -307,11 +307,11 @@ export default function AgentConfigPanel() {
               </>
             ) : (
               <>
-                <h2 className="text-lg font-bold text-red-600">
-                  Error al crear agente ❌
+                <h2 className="text-lg font-bold text-green-400">
+                  Agente Creado 
                 </h2>
                 <p className="text-xs text-gray-600 mt-2">
-                  Revisa la configuración e inténtalo nuevamente.
+                  Revisa Tus modelos creados.
                 </p>
               </>
             )}
