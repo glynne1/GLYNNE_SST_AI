@@ -16,10 +16,10 @@ const logos = [
 
 export default function StaticServicesGrid() {
   return (
-    <div className="w-full py-12">
-
+    <div className="w-full py-12 px-4 sm:px-6 lg:px-8">
+      
       {/* ======== TÍTULO ARRIBA ======== */}
-      <h2 className="text-center text-3xl font-extrabold text-gray-900 mb-10">
+      <h2 className="text-center text-2xl sm:text-3xl font-extrabold text-gray-900 mb-10">
         Conecta con tus servicios favoritos
       </h2>
 
@@ -31,8 +31,8 @@ export default function StaticServicesGrid() {
           sm:grid-cols-3 
           md:grid-cols-4 
           lg:grid-cols-4 
-          gap-6
-          px-4
+          xl:grid-cols-6
+          gap-4 sm:gap-6
         "
       >
         {logos.map((item, i) => (
@@ -41,9 +41,10 @@ export default function StaticServicesGrid() {
             transition={{ duration: 0.2 }}
             key={i}
             className="
-              flex flex-col items-center justify-center 
+              flex flex-col items-center justify-center
               bg-white border border-gray-200 
-              rounded-xl p-4 shadow-sm
+              rounded-xl p-4 sm:p-5 md:p-6
+              shadow-md hover:shadow-lg transition-shadow duration-300
             "
           >
             <Image
@@ -53,7 +54,7 @@ export default function StaticServicesGrid() {
               height={55}
               className="object-contain"
             />
-            <p className="mt-2 text-sm font-semibold text-gray-600">
+            <p className="mt-2 text-xs sm:text-sm font-semibold text-gray-600 text-center">
               {item.name}
             </p>
           </motion.div>
@@ -61,7 +62,7 @@ export default function StaticServicesGrid() {
       </div>
 
       {/* ======== DESCRIPCIÓN ABAJO ======== */}
-      <p className="text-center text-sm text-gray-500 mt-6">
+      <p className="text-center text-xs sm:text-sm text-gray-500 mt-6 max-w-2xl mx-auto">
         Este panel muestra algunos de los servicios compatibles con Glynne AI.
       </p>
 

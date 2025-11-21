@@ -141,56 +141,77 @@ export default function VoiceInput() {
         `}</style>
       </div>
 
-      {/* 🔹 TEXTO DESCRIPTIVO */}
-      <motion.p
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.6 }}
-        className="max-w-2xl text-gray-400 text-[0.75rem] sm:text-sm leading-snug mt-3 lowercase tracking-wide"
-      >
-        el problema de las ia actuales es el sobrecontexto: no conocen tu dolor y ya están dándote mil soluciones,
-        aquí <span className="font-semibold text-gray-600">gly-ia</span> es quien hace las preguntas y conoce lo que necesitas.
-      </motion.p>
+     {/* 🔹 TEXTO DESCRIPTIVO */}
+<motion.p
+  initial={{ opacity: 0, y: 10 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: 0.4, duration: 0.6 }}
+  className="max-w-2xl text-gray-400 text-[0.75rem] sm:text-sm leading-snug mt-3 lowercase tracking-wide"
+>
+  el problema de las ia actuales es el sobrecontexto: no conocen tu dolor y ya están dándote mil soluciones,
+  aquí <span className="font-semibold text-gray-600">gly-ia</span> es quien hace las preguntas y conoce lo que necesitas.
+</motion.p>
 
-      {/* texto */}
-      <div className="w-[80%] mt-10 relative z-0 isolate">
-      
-         {/* 🔹 CARRUCEL AISLADO */}
-         <div className="w-[80%] ml-30 relative z-0 isolate">
-        <div className="relative w-full">
-          <Carrucel />
-        </div>
-        <div className="relative w-full">
-          <ExText />
-        </div>
-      </div>
 
-        {/* 🔹 Diagrama  */}
-         <div className="w-[100%] mt-10 relative z-0 isolate">
-        <div className="relative w-full">
-          <Diagrama />
-        </div>
-      </div>
-           {/* 🔹 SECCIÓN DE CARDS */}
-      <div className="w-full  mt-10 relative z-10">
-        <ServiceCards />
-      </div>
-      </div>
 
-         <div className="w-[80%] mt-10 relative z-0 isolate">
-        <div className="relative w-full">
-          <ExText2 />
-        </div>
-      </div>
-         
-           {/* 🔹 cards Teecnologias  */}
-           <div className="w-[80%] mt-10 relative z-0 isolate">
-        <div className="relative w-full">
-          <CardTec />
-        </div>
-      </div>
+{/* ===================================================================================== */}
+{/* 🔥 SECCIÓN 1: CARRUSEL + EXTEXT (AGRUPACIÓN VISUAL) */}
+{/* ===================================================================================== */}
 
-       
+<div className="w-[80%] mt-10 relative z-0 isolate space-y-10">
+
+  {/* Carrusel */}
+  <div className="relative w-full">
+    <Carrucel />
+  </div>
+
+  {/* Texto inferior del carrusel */}
+  <div className="relative w-full">
+    <ExText />
+  </div>
+
+</div>
+
+
+
+{/* ===================================================================================== */}
+{/* 🔥 SECCIÓN 2: DIAGRAMA PRINCIPAL */}
+{/* ===================================================================================== */}
+
+<div className="w-full mt-10 relative z-0 isolate">
+  <Diagrama />
+</div>
+
+
+
+{/* ===================================================================================== */}
+{/* 🔥 SECCIÓN 3: CARDS DE SERVICIOS */}
+{/* ===================================================================================== */}
+
+<div className="w-full mt-10 relative z-10">
+  <ServiceCards />
+</div>
+
+
+
+{/* ===================================================================================== */}
+{/* 🔥 SECCIÓN 4: TEXTO ADICIONAL (ExText2) */}
+{/* ===================================================================================== */}
+
+<div className="w-[80%] mt-10 relative z-0 isolate">
+  <ExText2 />
+</div>
+
+
+
+{/* ===================================================================================== */}
+{/* 🔥 SECCIÓN 5: CARDS DE TECNOLOGÍAS */}
+{/* ===================================================================================== */}
+
+<div className="w-[80%] mt-10 relative z-0 isolate">
+  <CardTec />
+</div>
+
 
       {/* 🔹 MODAL DE LOGIN */}
       <LoginPopup visible={showLoginModal} onClose={() => setShowLoginModal(false)} />
