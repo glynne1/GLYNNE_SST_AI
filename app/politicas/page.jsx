@@ -1,5 +1,5 @@
 "use client";
-
+import Head from "next/head";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { useRef, useState } from "react";
@@ -17,10 +17,13 @@ import {
 } from "lucide-react";
 
 import Header from "./components/header";
+import Head from "next/head";
+
 
 export default function GLYNNEOverviewComponent() {
   const [openSection, setOpenSection] = useState(null);
   const contentRef = useRef(null);
+
 
   const sections = [
     {
@@ -208,7 +211,6 @@ export default function GLYNNEOverviewComponent() {
   ];
   
   
-
   const toggle = (id) => {
     setOpenSection(openSection === id ? null : id);
   };
@@ -235,12 +237,64 @@ export default function GLYNNEOverviewComponent() {
     pdf.addImage(img, "PNG", 0, 0, width, height);
     pdf.save("GLYNNE_documentacion.pdf");
   };
+
   return (
     <div ref={contentRef} className="max-w-6xl mt-10 mx-auto p-6">
+      <Head>
+        <title>GLYNNE – Alcance y Documentación de la Plataforma de Agentes IA</title>
+        <meta
+          name="description"
+          content="GLYNNE proporciona documentación completa sobre su plataforma de agentes IA, su alcance, responsabilidad y modelo B2B. Conoce cómo automatizar procesos empresariales de manera segura y escalable."
+        />
+        <meta
+          name="keywords"
+          content="GLYNNE, documentación IA, agentes inteligentes, automatización empresarial, B2B, responsabilidad, modelo open-source, integración de APIs"
+        />
+        <meta name="author" content="GLYNNE Tech" />
+        <meta name="robots" content="index, follow" />
+
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="GLYNNE – Documentación de la Plataforma de Agentes IA" />
+        <meta property="og:description" content="Consulta la documentación oficial de GLYNNE sobre alcance, responsabilidad y modelo B2B de agentes IA." />
+        <meta property="og:image" content="https://glynneai.com/meta-banner.jpg" />
+        <meta property="og:url" content="https://glynneai.com/appInfo" />
+        <meta property="og:site_name" content="GLYNNE" />
+
+        {/* Canonical */}
+        <link rel="canonical" href="https://glynneai.com/appInfo" />
+
+        {/* Structured Data JSON-LD */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "TechArticle",
+              "headline": "Documentación de GLYNNE – Alcance y Modelo B2B",
+              "author": {
+                "@type": "Person",
+                "name": "Alexander Quiroga"
+              },
+              "publisher": {
+                "@type": "Organization",
+                "name": "GLYNNE",
+                "logo": {
+                  "@type": "ImageObject",
+                  "url": "https://glynneai.com/favicon.ico"
+                }
+              },
+              "datePublished": "2023-01-01",
+              "url": "https://glynneai.com/appInfo",
+              "mainEntityOfPage": "https://glynneai.com/appInfo"
+            })
+          }}
+        />
+      </Head>
+
       <Header />
-  
+
       <div className="relative grid grid-cols-1 md:grid-cols-3 gap-6">
-  
         {/* SIDEBAR FIXED */}
         <aside
           className="
@@ -258,7 +312,6 @@ export default function GLYNNEOverviewComponent() {
         >
           <div className="p-4 rounded-2xl shadow-sm bg-white/60 backdrop-blur">
             <h3 className="font-semibold">Secciones</h3>
-  
             <ul className="mt-3 space-y-2 text-sm">
               {sections.map((s) => (
                 <li key={s.id}>
@@ -266,10 +319,7 @@ export default function GLYNNEOverviewComponent() {
                     onClick={() => {
                       const element = document.getElementById(`section-${s.id}`);
                       if (element) {
-                        element.scrollIntoView({
-                          behavior: "smooth",
-                          block: "start",
-                        });
+                        element.scrollIntoView({ behavior: "smooth", block: "start" });
                       }
                     }}
                     className="w-full flex items-start justify-between p-2 rounded-lg hover:bg-gray-50 transition"
@@ -282,80 +332,53 @@ export default function GLYNNEOverviewComponent() {
                 </li>
               ))}
             </ul>
-  
+
             <div className="mt-4 flex gap-2">
               <button
-                onClick={() => copyToClipboard("https://glynneai.com")}
+                onClick={() => copyToClipboard("https://glynneai.com/appInfo")}
                 className="flex-1 py-2 px-3 rounded-lg border text-sm hover:bg-gray-50"
               >
                 <Copy className="w-4 h-4 inline-block mr-2" /> Copiar URL
               </button>
             </div>
           </div>
-  
+
           <div className="p-4 rounded-2xl bg-white/60 backdrop-blur shadow-sm">
             <h4 className="text-xs uppercase text-gray-500">Estado</h4>
-            <div className="mt-2 text-sm">
-              Presets: Ventas, Finanzas, Operaciones
-            </div>
-            <div className="mt-3 text-xs text-gray-400">
-              Entornos: dev • staging • prod
-            </div>
+            <div className="mt-2 text-sm">Presets: Ventas, Finanzas, Operaciones</div>
+            <div className="mt-3 text-xs text-gray-400">Entornos: dev • staging • prod</div>
           </div>
         </aside>
-  
-        {/* MAIN — TEXTO PLANO SIN CONTENEDORES */}
-        <main
-          className="
-            md:col-span-2
-            md:ml-[280px]
-            w-full
-            prose prose-neutral max-w-none
-          "
-        >
+
+        {/* MAIN */}
+        <main className="md:col-span-2 md:ml-[280px] w-full prose prose-neutral max-w-none">
           {sections.map((s) => (
-            <section
-              key={s.id}
-              id={`section-${s.id}`}
-              className="mb-12 scroll-mt-24"
-            >
+            <section key={s.id} id={`section-${s.id}`} className="mb-12 scroll-mt-24">
               <h2 className="text-2xl font-bold mb-2">{s.title}</h2>
-  
-              <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-                {s.content}
-              </p>
-  
+              <p className="text-gray-700 leading-relaxed whitespace-pre-line">{s.content}</p>
               <hr className="my-8 border-gray-300" />
             </section>
           ))}
-  
-          {/* DOCUMENTACIÓN EXTENDIDA */}
+
           <section className="mt-12">
             <h3 className="text-xl font-semibold">Documentación extendida</h3>
             <p className="mt-2 text-gray-700">
               Aquí puedes pegar artículos largos, contenido técnico o guías completas.
             </p>
-  
+
             <div className="mt-4 flex gap-2">
-              <button
-                className="py-2 px-3 rounded-lg border"
-                onClick={generarPDF}
-              >
+              <button className="py-2 px-3 rounded-lg border" onClick={generarPDF}>
                 Exportar PDF
               </button>
-  
-              <button className="py-2 px-3 rounded-lg border">
-                Abrir Editor
-              </button>
+              <button className="py-2 px-3 rounded-lg border">Abrir Editor</button>
             </div>
           </section>
         </main>
       </div>
-  
+
       <footer className="mt-6 text-sm text-gray-500 text-center">
         GLYNNE · Plataforma de agentes y automatización guiada por IA
       </footer>
     </div>
   );
-  
-                }
+}
