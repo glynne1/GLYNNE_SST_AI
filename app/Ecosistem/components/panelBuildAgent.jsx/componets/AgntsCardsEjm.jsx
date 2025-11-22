@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react";
 import { Play, Plus, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { saveUserAgentConfig } from "./saveSupabaseAgent"; // tu util existente
+import { saveUserAgentConfig } from "./saveSupabaseAgent";
+
+// Importación por defecto del primer JSON
 import agentsData from "./ejm.json";
 
 export default function AgentsGrid() {
@@ -15,9 +17,35 @@ export default function AgentsGrid() {
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState("");
 
+  // 🔥 Estado del modelo seleccionado
+  const [modelType, setModelType] = useState("easy"); // easy | corporativos
+
+  // 🔥 Función para limitar palabras
+  function limitWords(text, maxWords = 14) {
+    if (!text) return "";
+    const words = text.split(" ");
+    if (words.length <= maxWords) return text;
+    return words.slice(0, maxWords).join(" ") + " ...";
+  }
+
+  // 🔥 Cargar data según lo que el usuario seleccione
   useEffect(() => {
-    setAgents(agentsData);
-  }, []);
+    async function loadModels() {
+      try {
+        if (modelType === "easy") {
+          const mod = await import("./ejm2.json");
+          setAgents(mod.default);
+        } else {
+          const mod = await import("./ejm.json");
+          setAgents(mod.default);
+        }
+      } catch (error) {
+        console.error("Error cargando JSON:", error);
+      }
+    }
+
+    loadModels();
+  }, [modelType]);
 
   const handleShowMore = () => setVisibleCount((prev) => prev + 4);
   const openAgentModal = (agent) => setSelectedAgent(agent);
@@ -31,7 +59,6 @@ export default function AgentsGrid() {
   };
 
   const handleSaveToSupabase = async () => {
-    // FIX: usar selectedAgent (no `agent` que no existe en este scope)
     const agent = selectedAgent;
     if (!agent) {
       setStatus("❌ No se ha seleccionado un agente");
@@ -61,7 +88,6 @@ export default function AgentsGrid() {
       await saveUserAgentConfig(form);
 
       setStatus("✅ Configuración guardada correctamente");
-      // opcional: reproducir sonido o abrir chat aquí si quieres
       setTimeout(() => {
         setApiKeyModal(false);
         setApiKey("");
@@ -77,15 +103,33 @@ export default function AgentsGrid() {
 
   return (
     <div className="w-full h-[90vh] p-0 bg-white rounded-2xl border border-gray-300 shadow-md relative overflow-y-auto">
-      {/* Header */}
+      
+      {/* 🔥 HEADER */}
       <div className="flex items-center justify-between sticky top-0 z-20 backdrop-blur-md bg-white/50 px-4 py-2 border-b border-gray-200">
-        <h2 className="text-lg font-bold text-gray-800 m-0">Agentes Predefinidos</h2>
-        <p className="text-xs text-gray-400 m-0">
-          Mostrando {Math.min(visibleCount, agents.length)} de {agents.length}
-        </p>
+
+        <h2 className="text-lg font-bold text-gray-800 m-0">
+          Agentes Predefinidos
+        </h2>
+
+        <div className="flex items-center space-x-4">
+
+          {/* 🔥 SELECTOR DERECHO */}
+          <select
+            value={modelType}
+            onChange={(e) => setModelType(e.target.value)}
+            className="text-xs px-2 py-1 border border-gray-300 rounded-md bg-white text-gray-700"
+          >
+            <option value="easy">Corporativos</option>
+            <option value="corporativos">Easy Models</option>
+          </select>
+
+          <p className="text-xs text-gray-400 m-0">
+            Mostrando {Math.min(visibleCount, agents.length)} de {agents.length}
+          </p>
+        </div>
       </div>
 
-      {/* Grid */}
+      {/* GRID */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mt-3 p-4">
         {agents.slice(0, visibleCount).map((agent, idx) => (
           <motion.div
@@ -95,49 +139,50 @@ export default function AgentsGrid() {
             transition={{ duration: 0.3 }}
             className="bg-white shadow-lg rounded-xl p-4 border border-gray-200 flex flex-col justify-between hover:shadow-2xl transition-all duration-300 text-left text-xs"
           >
-            {/* Avatar */}
             <div className="w-full flex justify-center mb-2">
               <img
                 src={agent.avatar}
                 alt={agent.agent_name}
-                className="w-20 h-20 rounded-full border-2 border-black object-cover"
+                className="w-32 h-32 rounded-full border-2 border-black object-contain bg-white p-1"
               />
             </div>
 
-            {/* Información */}
             <div className="space-y-1 text-left">
               <h2 className="text-sm font-semibold text-gray-800 truncate text-center">
                 {agent.agent_name || "Agente sin nombre"}
               </h2>
+
+              {/* LIMITAMOS TODOS LOS CAMPOS A 7 PALABRAS */}
               <p className="text-[11px] text-gray-500">
-                <strong>Rol:</strong> {agent.rol || "-"}
+                <strong>Rol:</strong> {limitWords(agent.rol, 7)}
               </p>
+
               <p className="text-[11px] text-gray-500">
-                <strong>Objetivo:</strong> {agent.objective || "-"}
+                <strong>Objetivo:</strong> {limitWords(agent.objective, 7)}
               </p>
+
               {agent.specialty && (
                 <p className="text-[11px] text-gray-500">
-                  <strong>Especialidad:</strong> {agent.specialty}
+                  <strong>Especialidad:</strong> {limitWords(agent.specialty, 7)}
                 </p>
               )}
+              
               <p className="text-[11px] text-gray-500">
-                <strong>Negocio:</strong> {agent.business_info || "-"}
+                <strong>Negocio:</strong> {limitWords(agent.business_info, 7)}
               </p>
+
               <p className="text-[11px] text-gray-500">
-                <strong>Mensaje:</strong> {agent.additional_msg || "-"}
+                <strong>Mensaje:</strong> {limitWords(agent.additional_msg, 7)}
               </p>
             </div>
 
-            {/* Iconos */}
             <div className="mt-3 flex space-x-3 justify-center">
               <Plus
                 className="w-5 h-5 cursor-pointer text-green-500 hover:text-green-700 transition-all duration-200"
-                title="Ver detalles del agente"
                 onClick={() => openAgentModal(agent)}
               />
               <Play
                 className="w-5 h-5 cursor-pointer text-black hover:text-green-600 transition-all duration-200"
-                title="Ejecutar agente"
                 onClick={() => handlePlayClick(agent)}
               />
             </div>
@@ -145,7 +190,6 @@ export default function AgentsGrid() {
         ))}
       </div>
 
-      {/* Ver más */}
       {visibleCount < agents.length && (
         <div className="flex justify-center mt-6 mb-4">
           <button
@@ -157,7 +201,7 @@ export default function AgentsGrid() {
         </div>
       )}
 
-      {/* Modal de API KEY */}
+      {/* MODAL API KEY */}
       <AnimatePresence>
         {apiKeyModal && (
           <motion.div
@@ -198,9 +242,7 @@ export default function AgentsGrid() {
                 onClick={handleSaveToSupabase}
                 disabled={saving}
                 className={`w-full py-2 rounded-lg text-sm font-semibold transition-all ${
-                  saving
-                    ? "bg-gray-400 text-white"
-                    : "bg-black hover:bg-gray-800 text-white"
+                  saving ? "bg-gray-400 text-white" : "bg-black hover:bg-gray-800 text-white"
                 }`}
               >
                 {saving ? "Guardando..." : "Guardar y ejecutar agente"}
@@ -210,7 +252,7 @@ export default function AgentsGrid() {
         )}
       </AnimatePresence>
 
-      {/* Modal detalles del agente */}
+      {/* MODAL DETALLES AGENTE */}
       <AnimatePresence>
         {selectedAgent && !apiKeyModal && (
           <motion.div
@@ -246,9 +288,7 @@ export default function AgentsGrid() {
               <div className="space-y-2 w-full">
                 <p><strong>Rol:</strong> {selectedAgent.rol || "-"}</p>
                 <p><strong>Objetivo:</strong> {selectedAgent.objective || "-"}</p>
-                {selectedAgent.specialty && (
-                  <p><strong>Especialidad:</strong> {selectedAgent.specialty}</p>
-                )}
+                {selectedAgent.specialty && <p><strong>Especialidad:</strong> {selectedAgent.specialty}</p>}
                 <p><strong>Negocio:</strong> {selectedAgent.business_info || "-"}</p>
                 <p><strong>Mensaje:</strong> {selectedAgent.additional_msg || "-"}</p>
               </div>
