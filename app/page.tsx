@@ -3,12 +3,11 @@
 import { useRef, useEffect } from 'react';
 import { motion, useAnimation, useInView } from 'framer-motion';
 import Head from 'next/head';
-import Header from './components/header'
+import Header from './components/header';
 import Main1 from './components/main1';
 import Main2 from './components/main2';
 import Main4 from './components/main5';
 import Footer from './components/footer';
-
 import { Inter } from 'next/font/google';
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
@@ -24,9 +23,7 @@ function AnimatedSection({
   const inView = useInView(ref, { once: true, margin: '0px 0px -100px 0px' });
 
   useEffect(() => {
-    if (inView) {
-      controls.start('visible');
-    }
+    if (inView) controls.start('visible');
   }, [inView, controls]);
 
   return (
@@ -36,17 +33,8 @@ function AnimatedSection({
       animate={controls}
       variants={{
         hidden: { opacity: 0, y: 60 },
-        visible: {
-          opacity: 1,
-          y: 0,
-          transition: {
-            duration: 0.8,
-            ease: 'easeOut',
-          },
-        },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: 'easeOut' } },
       }}
-
-      // ❌ Snap removido
       className={`${className} relative`}
     >
       {children}
@@ -58,61 +46,118 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>GLYNNE – Desarrollo de Agentes IA Personalizados para Empresas</title>
+        {/* Título principal optimizado */}
+        <title>GLYNNE – Agentes IA Personalizados y Automatización Empresarial B2B</title>
 
+        {/* Meta description para SEO */}
         <meta
           name="description"
-          content="GLYNNE desarrolla agentes de inteligencia artificial ultra personalizados para empresas, capaces de automatizar procesos complejos, integrarse a sistemas existentes y exportarse para su uso en cualquier flujo de trabajo. Optimiza operaciones con IA a medida."
+          content="GLYNNE desarrolla agentes de inteligencia artificial personalizados para empresas B2B. Automatizamos procesos complejos, integramos sistemas existentes y entregamos agentes exportables listos para operar. Optimiza operaciones, ventas y gestión interna con IA avanzada."
         />
+        
+        {/* Keywords estratégicas */}
         <meta
           name="keywords"
-          content="GLYNNE, agentes IA personalizados, desarrollo de IA, inteligencia artificial empresarial, automatización avanzada, exportación de agentes, integración de APIs, LangChain, RPA, arquitecturas escalables, Next.js, Supabase, no-code, low-code"
+          content="GLYNNE, agentes IA empresariales, inteligencia artificial B2B, automatización de procesos, integración de APIs, LangChain, RPA, arquitecturas escalables, Next.js, Supabase, no-code, low-code, agentes inteligentes, automatización de ventas, IA para empresas"
         />
+        
         <meta name="author" content="GLYNNE Tech" />
         <meta name="robots" content="index, follow" />
 
+        {/* Open Graph para compartir en buscadores y previsualización */}
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="GLYNNE – Agentes IA Ultra Personalizados para Empresas" />
+        <meta property="og:title" content="GLYNNE – Agentes IA Personalizados para Empresas B2B" />
         <meta
           property="og:description"
-          content="Creamos agentes IA totalmente adaptados a cada empresa: personalizables, exportables y listos para integrarse en tus procesos operativos. Automatización avanzada con inteligencia artificial hecha a tu medida."
+          content="GLYNNE ofrece desarrollo de agentes de inteligencia artificial 100% adaptados a cada empresa: personalizables, exportables y listos para integrarse en cualquier flujo de trabajo empresarial."
         />
-        <meta property="og:image" content="https://glynne-ia-6rjd.vercel.app/meta-banner.jpg" />
-        <meta property="og:url" content="https://glynne-ia-6rjd.vercel.app/" />
+        <meta property="og:image" content="https://glynneai.com/meta-banner.jpg" />
+        <meta property="og:url" content="https://glynneai.com/" />
         <meta property="og:site_name" content="GLYNNE" />
 
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="GLYNNE – Agentes IA Ultra Personalizados" />
-        <meta
-          name="twitter:description"
-          content="GLYNNE ofrece desarrollo de agentes de IA a medida para empresas, optimizando procesos, integraciones y exportación de agentes listos para operar en cualquier flujo de trabajo."
-        />
-        <meta name="twitter:image" content="https://glynne-ia-6rjd.vercel.app/meta-banner.jpg" />
-
-        <link rel="canonical" href="https://glynne-ia-6rjd.vercel.app/" />
+        {/* Canonical */}
+        <link rel="canonical" href="https://glynneai.com/" />
         <link rel="icon" href="/favicon.ico" />
+
+        {/* Structured Data JSON-LD avanzado */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "GLYNNE",
+              "url": "https://glynneai.com/",
+              "logo": "https://glynneai.com/favicon.ico",
+              "description": "GLYNNE desarrolla agentes IA personalizados y automatización avanzada para empresas B2B, integrando sistemas y optimizando procesos internos, ventas y operaciones.",
+              "founder": {
+                "@type": "Person",
+                "name": "Alexander Quiroga"
+              },
+              "foundingDate": "2023-01-01",
+              "contactPoint": [
+                {
+                  "@type": "ContactPoint",
+                  "telephone": "+57-312-345-5328",
+                  "contactType": "sales",
+                  "areaServed": "CO",
+                  "availableLanguage": "es"
+                }
+              ],
+              "potentialAction": [
+                {
+                  "@type": "ViewAction",
+                  "target": [
+                    "https://glynneai.com/appInfo",
+                    "https://glynneai.com/politicas"
+                  ],
+                  "name": "Conoce más sobre nuestra plataforma y políticas"
+                }
+              ],
+              "sameAs": [
+                "https://www.linkedin.com/in/alexander-quiroga-a992452b4/"
+              ]
+            })
+          }}
+        />
       </Head>
 
-      {/* ❌ Snap removido del contenedor principal */}
-      <div
-        className={`${inter.variable} font-sans min-h-screen w-full bg-white text-black overflow-y-auto`}
-      >
+      <div className={`${inter.variable} font-sans min-h-screen w-full bg-white text-black overflow-y-auto`}>
         <Header />
-        <AnimatedSection className="min-h-screen flex items-center justify-center">
+
+        {/* H1 visible para SEO en la primera sección */}
+        <AnimatedSection className="min-h-screen flex flex-col items-center justify-center">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-center">
+            GLYNNE – Agentes de IA Personalizados para Empresas B2B
+          </h1>
+          <p className="text-lg md:text-2xl text-center max-w-3xl">
+            Automatizamos procesos complejos, integramos tus sistemas existentes y entregamos agentes IA exportables listos para optimizar operaciones, ventas y gestión interna.
+          </p>
           <Main1 />
         </AnimatedSection>
 
-        <AnimatedSection className="min-h-screen flex items-center justify-center">
+        {/* H2s para mejorar SEO por secciones */}
+        <AnimatedSection className="min-h-screen flex flex-col items-center justify-center">
+          <h2 className="text-3xl md:text-5xl font-semibold mb-4 text-center">
+            Funcionalidades Clave de GLYNNE
+          </h2>
+          <p className="text-lg md:text-xl text-center max-w-3xl mb-6">
+            Descubre cómo nuestros agentes IA pueden mejorar cada área de tu empresa: ventas, soporte, operaciones y finanzas.
+          </p>
           <Main2 />
         </AnimatedSection>
 
-        <AnimatedSection className="min-h-screen flex items-center justify-center">
+        <AnimatedSection className="min-h-screen flex flex-col items-center justify-center">
+          <h2 className="text-3xl md:text-5xl font-semibold mb-4 text-center">
+            Arquitectura Escalable y Automatización Avanzada
+          </h2>
+          <p className="text-lg md:text-xl text-center max-w-3xl mb-6">
+            GLYNNE combina arquitecturas escalables, integración de APIs y herramientas no-code para entregar soluciones personalizadas de automatización empresarial.
+          </p>
           <Main4 />
         </AnimatedSection>
 
-        <div className="w-full bg-white">
-          <Footer />
-        </div>
+        <Footer />
       </div>
     </>
   );
