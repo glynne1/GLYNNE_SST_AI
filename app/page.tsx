@@ -115,7 +115,10 @@ export default function Home() {
                 }
               ],
               "sameAs": [
-                "https://www.linkedin.com/in/alexander-quiroga-a992452b4/"
+                "https://www.linkedin.com/in/alexander-quiroga-a992452b4/",
+                'https://www.instagram.com/axglynne/',
+                'https://www.youtube.com/@AXGLYNNE',
+
               ]
             })
           }}
