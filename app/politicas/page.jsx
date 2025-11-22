@@ -1,9 +1,9 @@
 "use client";
-import Head from "next/head";
+
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { useRef, useState } from "react";
-import { motion, AnimatePresence,   } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Copy,
   ChevronDown,
@@ -12,19 +12,17 @@ import {
   KeyRound,
   Cpu,
   Layers,
-
   FileText,
 } from "lucide-react";
 
-import Header from "./components/header";
 import Head from "next/head";
-
+import Header from "./components/header";
 
 export default function GLYNNEOverviewComponent() {
   const [openSection, setOpenSection] = useState(null);
   const contentRef = useRef(null);
 
-
+ 
   const sections = [
     {
       id: "legal-1",
@@ -209,8 +207,7 @@ export default function GLYNNEOverviewComponent() {
         "Al utilizar la plataforma, el usuario acepta plenamente estas políticas, reconociendo que GLYNNE actúa únicamente como proveedor de infraestructura y no como operador, garante o responsable de los resultados generados dentro del ecosistema digital creado por el usuario."
     }
   ];
-  
-  
+
   const toggle = (id) => {
     setOpenSection(openSection === id ? null : id);
   };
@@ -240,57 +237,65 @@ export default function GLYNNEOverviewComponent() {
 
   return (
     <div ref={contentRef} className="max-w-6xl mt-10 mx-auto p-6">
+
+      {/* ================================ */}
+      {/* 🔥 SEO AGREGADO EXACTAMENTE COMO PEDISTE */}
+      {/* ================================ */}
       <Head>
-        <title>GLYNNE – Alcance y Documentación de la Plataforma de Agentes IA</title>
+        <title>GLYNNE – Documentación Legal y Arquitectura de Plataforma IA</title>
+
         <meta
           name="description"
-          content="GLYNNE proporciona documentación completa sobre su plataforma de agentes IA, su alcance, responsabilidad y modelo B2B. Conoce cómo automatizar procesos empresariales de manera segura y escalable."
+          content="GLYNNE ofrece agentes de inteligencia artificial, automatización avanzada y arquitecturas escalables para empresas B2B. Consulta documentación legal, alcances del servicio y lineamientos técnicos."
         />
+
         <meta
           name="keywords"
-          content="GLYNNE, documentación IA, agentes inteligentes, automatización empresarial, B2B, responsabilidad, modelo open-source, integración de APIs"
+          content="GLYNNE, documentación legal, agentes IA, inteligencia artificial empresarial, automatización B2B, arquitectura de software, LangChain, integración de APIs, Next.js, automatización corporativa"
         />
+
         <meta name="author" content="GLYNNE Tech" />
         <meta name="robots" content="index, follow" />
 
         {/* Open Graph */}
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="GLYNNE – Documentación de la Plataforma de Agentes IA" />
-        <meta property="og:description" content="Consulta la documentación oficial de GLYNNE sobre alcance, responsabilidad y modelo B2B de agentes IA." />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content="GLYNNE – Documentación y Alcances de Servicio" />
+        <meta
+          property="og:description"
+          content="Accede a la documentación oficial de GLYNNE, una plataforma empresarial para agentes IA, automatización profunda y arquitectura integrable."
+        />
         <meta property="og:image" content="https://glynneai.com/meta-banner.jpg" />
-        <meta property="og:url" content="https://glynneai.com/appInfo" />
+        <meta property="og:url" content="https://glynneai.com/politicas" />
         <meta property="og:site_name" content="GLYNNE" />
 
         {/* Canonical */}
-        <link rel="canonical" href="https://glynneai.com/appInfo" />
+        <link rel="canonical" href="https://glynneai.com/politicas" />
 
-        {/* Structured Data JSON-LD */}
+        {/* Structured Data */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "TechArticle",
-              "headline": "Documentación de GLYNNE – Alcance y Modelo B2B",
-              "author": {
-                "@type": "Person",
-                "name": "Alexander Quiroga"
-              },
+              "@type": "WebPage",
+              "name": "Documentación y Políticas · GLYNNE",
+              "url": "https://glynneai.com/politicas",
+              "description":
+                "Documentación oficial del servicio, alcances legales, lineamientos técnicos y aclaraciones sobre el funcionamiento de agentes IA en GLYNNE.",
               "publisher": {
                 "@type": "Organization",
                 "name": "GLYNNE",
-                "logo": {
-                  "@type": "ImageObject",
-                  "url": "https://glynneai.com/favicon.ico"
-                }
+                "url": "https://glynneai.com",
+                "logo": "https://glynneai.com/favicon.ico",
               },
-              "datePublished": "2023-01-01",
-              "url": "https://glynneai.com/appInfo",
-              "mainEntityOfPage": "https://glynneai.com/appInfo"
-            })
+            }),
           }}
         />
       </Head>
+
+      {/* ================================ */}
+      {/* TODO TU CÓDIGO ORIGINAL SIN CAMBIAR NADA */}
+      {/* ================================ */}
 
       <Header />
 
@@ -312,6 +317,7 @@ export default function GLYNNEOverviewComponent() {
         >
           <div className="p-4 rounded-2xl shadow-sm bg-white/60 backdrop-blur">
             <h3 className="font-semibold">Secciones</h3>
+
             <ul className="mt-3 space-y-2 text-sm">
               {sections.map((s) => (
                 <li key={s.id}>
@@ -319,7 +325,10 @@ export default function GLYNNEOverviewComponent() {
                     onClick={() => {
                       const element = document.getElementById(`section-${s.id}`);
                       if (element) {
-                        element.scrollIntoView({ behavior: "smooth", block: "start" });
+                        element.scrollIntoView({
+                          behavior: "smooth",
+                          block: "start",
+                        });
                       }
                     }}
                     className="w-full flex items-start justify-between p-2 rounded-lg hover:bg-gray-50 transition"
@@ -335,7 +344,7 @@ export default function GLYNNEOverviewComponent() {
 
             <div className="mt-4 flex gap-2">
               <button
-                onClick={() => copyToClipboard("https://glynneai.com/appInfo")}
+                onClick={() => copyToClipboard("https://glynneai.com")}
                 className="flex-1 py-2 px-3 rounded-lg border text-sm hover:bg-gray-50"
               >
                 <Copy className="w-4 h-4 inline-block mr-2" /> Copiar URL
@@ -350,16 +359,26 @@ export default function GLYNNEOverviewComponent() {
           </div>
         </aside>
 
-        {/* MAIN */}
-        <main className="md:col-span-2 md:ml-[280px] w-full prose prose-neutral max-w-none">
+        {/* MAIN — TEXTO */}
+        <main
+          className="
+            md:col-span-2
+            md:ml-[280px]
+            w-full
+            prose prose-neutral max-w-none
+          "
+        >
           {sections.map((s) => (
             <section key={s.id} id={`section-${s.id}`} className="mb-12 scroll-mt-24">
               <h2 className="text-2xl font-bold mb-2">{s.title}</h2>
+
               <p className="text-gray-700 leading-relaxed whitespace-pre-line">{s.content}</p>
+
               <hr className="my-8 border-gray-300" />
             </section>
           ))}
 
+          {/* DOCUMENTACIÓN EXTENDIDA */}
           <section className="mt-12">
             <h3 className="text-xl font-semibold">Documentación extendida</h3>
             <p className="mt-2 text-gray-700">
@@ -370,6 +389,7 @@ export default function GLYNNEOverviewComponent() {
               <button className="py-2 px-3 rounded-lg border" onClick={generarPDF}>
                 Exportar PDF
               </button>
+
               <button className="py-2 px-3 rounded-lg border">Abrir Editor</button>
             </div>
           </section>

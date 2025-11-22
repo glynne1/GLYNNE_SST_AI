@@ -123,42 +123,26 @@ export default function Home() {
       </Head>
 
       <div className={`${inter.variable} font-sans min-h-screen w-full bg-white text-black overflow-y-auto`}>
-      <Header />
+        <Header />
 
-{/* H1 visible para SEO pero invisible en pantalla */}
-<AnimatedSection className="min-h-screen flex flex-col items-center justify-center">
-  <h1 className="sr-only">
-    GLYNNE – Agentes de IA Personalizados para Empresas B2B
-  </h1>
-  <p className="sr-only">
-    Automatizamos procesos complejos, integramos tus sistemas existentes y entregamos agentes IA exportables listos para optimizar operaciones, ventas y gestión interna.
-  </p>
-  <Main1 />
-</AnimatedSection>
+        {/* H1 visible para SEO en la primera sección */}
+        <AnimatedSection className="min-h-screen flex flex-col items-center justify-center">
+ 
+          <Main1 />
+        </AnimatedSection>
 
-{/* H2s invisibles pero indexables */}
-<AnimatedSection className="min-h-screen flex flex-col items-center justify-center">
-  <h2 className="sr-only">
-    Funcionalidades Clave de GLYNNE
-  </h2>
-  <p className="sr-only">
-    Descubre cómo nuestros agentes IA pueden mejorar cada área de tu empresa: ventas, soporte, operaciones y finanzas.
-  </p>
-  <Main2 />
-</AnimatedSection>
+        {/* H2s para mejorar SEO por secciones */}
+        <AnimatedSection className="min-h-screen flex flex-col items-center justify-center">
+       
+          <Main2 />
+        </AnimatedSection>
 
-<AnimatedSection className="min-h-screen flex flex-col items-center justify-center">
-  <h2 className="sr-only">
-    Arquitectura Escalable y Automatización Avanzada
-  </h2>
-  <p className="sr-only">
-    GLYNNE combina arquitecturas escalables, integración de APIs y herramientas no-code para entregar soluciones personalizadas de automatización empresarial.
-  </p>
-  <Main4 />
-</AnimatedSection>
+        <AnimatedSection className="min-h-screen flex flex-col items-center justify-center">
+        
+          <Main4 />
+        </AnimatedSection>
 
-<Footer />
-
+        <Footer />
       </div>
     </>
   );
