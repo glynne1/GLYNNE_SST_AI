@@ -12,6 +12,9 @@ export default function Diagnostico() {
   const [loading, setLoading] = useState(true); 
   const [showModal, setShowModal] = useState(false);
 
+  // 👉 Nuevo modal para pantallas pequeñas
+  const [showMobileModal, setShowMobileModal] = useState(false);
+
   useEffect(() => {
     const modalShown = sessionStorage.getItem('modalInicioShown');
     if (!modalShown) {
@@ -30,6 +33,11 @@ export default function Diagnostico() {
         console.error('❌ Error al despertar servidores:', error);
       } finally {
         setLoading(false);
+
+        // 👉 Detecta pantalla menor a 800px SOLO cuando ya cargó todo
+        if (window.innerWidth < 800) {
+          setShowMobileModal(true);
+        }
       }
     };
 
@@ -46,6 +54,37 @@ export default function Diagnostico() {
 
   return (
     <div className="relative h-screen bg-white flex text-black">
+
+      {/* 👉 Modal bloqueo móvil */}
+      <AnimatePresence>
+        {showMobileModal && (
+          <motion.div
+            className="fixed inset-0 flex items-center justify-center z-50 bg-white p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            <motion.div
+              className="bg-white w-[85vw] max-w-md rounded-2xl p-6 text-center shadow-lg border border-gray-300"
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <h2 className="text-xl font-bold text-black">
+                Esta plataforma solo está disponible para escritorio
+              </h2>
+
+              <p className="mt-3 text-gray-700">
+                Estamos trabajando en nuestra app móvil.  
+                ¡Gracias por ver el video!
+              </p>
+
+              <Image src="/logo2.png" alt="GLYNNE Logo" width={60} height={60} className="mx-auto mt-4" />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Overlay Loader */}
       <AnimatePresence>
         {loading && (
@@ -72,12 +111,12 @@ export default function Diagnostico() {
               </motion.h2>
 
               <Image src="/logo2.png" alt="GLYNNE Logo" width={70} height={70} className="mt-2" />
-
               <p className="text-center text-gray-800 max-w-[70ch] mt-4 text-sm sm:text-base leading-relaxed">
-  Actualmente estamos construyendo y optimizando nuestros procesos de desarrollo para brindarte la mejor experiencia. 
-  Este paso inicial puede tardar un minuto mientras aseguramos que todos los servicios de <strong>inteligencia artificial</strong> y procesamiento de manera rápida y confiable.
-
+  Estamos trabajando en nuestra aplicación móvil para ofrecerte una experiencia aún más completa. 
+  Por ahora, esta plataforma está disponible únicamente en versión desktop. 
+  Gracias por tu paciencia — muy pronto lanzarás tus agentes de inteligencia artificial también desde tu dispositivo móvil.
 </p>
+
 
               <p className="text-gray-600 mt-2 text-sm">Puede tardar un minuto...</p>
 
