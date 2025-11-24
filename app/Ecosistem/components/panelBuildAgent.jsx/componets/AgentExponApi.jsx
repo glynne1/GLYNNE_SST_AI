@@ -17,6 +17,25 @@ export default function AgentPanel() {
     setShowKey((prev) => ({ ...prev, [index]: !prev[index] }));
   };
 
+  const formatToEnvJson = (agent) => {
+    return {
+      "_comment":
+        "Este JSON representa un ejemplo de cómo se configuran las variables de entorno para un proyecto que consume modelos exportados desde GLYNNE AI. Cuando un usuario crea un modelo en el panel de desarrollo de GLYNNE AI y lo exporta, la plataforma genera un JSON similar a este. Este JSON contiene toda la información necesaria para que el agente funcione correctamente en el frontend del proyecto, incluyendo rol, modelo, objetivo, especialidad, nombre, información de negocio y mensajes adicionales.",
+
+      "NEXT_PUBLIC_AGENT_ROLE": agent.rol || "",
+      "NEXT_PUBLIC_AGENT_MODEL": agent.model || "",
+      "NEXT_PUBLIC_AGENT_API_KEY": agent.api_key || "",
+      "NEXT_PUBLIC_AGENT_OBJECTIVE": agent.objective || "",
+      "NEXT_PUBLIC_AGENT_SPECIALTY": agent.specialty || "",
+      "NEXT_PUBLIC_AGENT_NAME": agent.agent_name || "",
+      "NEXT_PUBLIC_AGENT_BUSINESS_INFO": agent.business_info || "",
+      "NEXT_PUBLIC_AGENT_ADDITIONAL_MSG": agent.additional_msg || "",
+
+      "_usage":
+        "Para integrar este modelo en un proyecto, copia cada valor y pégalo en un archivo `.env.local` ubicado en la raíz del proyecto Next.js que vas a crear. De esta manera, el componente del agente podrá leer directamente estas variables y conectarse al modelo exportado sin necesidad de manejar infraestructura compleja.",
+    };
+  };
+
   const fetchAgents = async () => {
     try {
       setLoading(true);
@@ -31,9 +50,13 @@ export default function AgentPanel() {
       if (error) throw error;
 
       const formattedAgents =
-        data?.map((item) => ({
-          ...item.user_config,
-        })) || [];
+        data?.map((item) => {
+          const raw = item.user_config || {};
+          return {
+            ...raw,
+            env_json: formatToEnvJson(raw), // aquí acomodamos TODO EXACTO como pediste
+          };
+        }) || [];
 
       setAgents(formattedAgents);
     } catch (err) {

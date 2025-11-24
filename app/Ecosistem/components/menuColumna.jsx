@@ -10,6 +10,7 @@ import News from '../components/panelBuildAgent.jsx/page';
 import DocsSection from './FW_section/page';
 import DocumentacionOff from '../components/DocumentacionOff';
 import MercadoPagoButton from '../components/MercadoPagoButton';
+import AppCreate from './PanelConstruirApp/page'
 
 export default function PlusMenu({ onRefresh }) {
   const [popupOpen, setPopupOpen] = useState(false);
@@ -93,8 +94,12 @@ export default function PlusMenu({ onRefresh }) {
       icon: '/yoAvatar.png'
     },
     {
+      type: 'app',
+      title: 'Crea tu app para los modelos que creaste aqui!',
+    },
+    {
       type: 'docs',
-      title: 'Explora e instala nuestro Framework aqui!',
+      title: 'Explora e instala nuestro Framework de IA aqui!',
     },
   ];
 
@@ -243,6 +248,12 @@ export default function PlusMenu({ onRefresh }) {
                   <News />
                 </motion.div>
               )}
+
+{showContent && contentType === 'app' && (
+  <motion.div className="absolute inset-0 overflow-auto p-10">
+    <AppCreate />
+  </motion.div>
+)}
 
               {showContent && contentType === 'docs' && (
                 <motion.div className="absolute inset-0 overflow-auto p-10">
