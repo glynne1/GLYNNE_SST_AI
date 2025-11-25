@@ -94,12 +94,12 @@ export default function PlusMenu({ onRefresh }) {
       icon: '/yoAvatar.png'
     },
     {
-      type: 'app',
-      title: 'Crea tu app para los modelos que creaste aqui!',
-    },
-    {
       type: 'docs',
       title: 'Explora e instala nuestro Framework de IA aqui!',
+    },
+    {
+      type: 'app',
+      title: 'Crea tu app para los modelos que creaste aqui!',
     },
   ];
 
