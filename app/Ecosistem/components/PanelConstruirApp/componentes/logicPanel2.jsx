@@ -11,18 +11,29 @@ export default function GlynnePromo() {
           backgroundImage: "url('/NEXTAPPGLYNNE.png')",
         }}
       >
-        <div className="absolute inset-0" />
+        {/* OSCURECER FONDO */}
+        <div className="absolute inset-0 bg-black/60" />
 
-        <div className="absolute bottom-6 right-6 text-right max-w-sm">
-          <h1 className="text-6xl font-extrabold leading-tight drop-shadow-lg text-black">
+        <div className="absolute bottom-6 right-6 text-right max-w-sm z-10">
+          <h1 className="text-6xl font-extrabold leading-tight drop-shadow-lg text-white">
             NEXTJS + GLYNNE IA
           </h1>
 
-          <p className="text-sm mt-2 text-gray-400">
+          <p className="text-sm mt-2 text-gray-200">
             Te entregamos un proyecto base completamente preconfigurado para que
             empieces a construir tus propias aplicaciones y conectes los modelos
             de IA que hayas creado dentro de la plataforma GLYNNE.
           </p>
+
+          {/* BOTÓN */}
+          <a
+            href="https://glynne-fornt1.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block mt-4 px-5 py-2 bg-white text-black font-semibold rounded-lg shadow-lg hover:bg-gray-200 transition"
+          >
+            Ver aplicacion base
+          </a>
         </div>
       </section>
 
@@ -39,7 +50,6 @@ export default function GlynnePromo() {
         </p>
 
         <Card />
-  
       </section>
     </>
   );
