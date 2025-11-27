@@ -241,32 +241,48 @@ export default function GLYNNEOverviewComponent() {
       {/* ================================ */}
       {/* 🔥 SEO AGREGADO EXACTAMENTE COMO PEDISTE */}
       {/* ================================ */}
+      {/* ================================ */}
+      {/* 🔥 SEO AVANZADO */}
+      {/* ================================ */}
       <Head>
-        <title>GLYNNE – Documentación Legal y Arquitectura de Plataforma IA</title>
-
+        <title>GLYNNE AI – Documentación Legal y Arquitectura de Agentes IA</title>
         <meta
           name="description"
-          content="GLYNNE ofrece agentes de inteligencia artificial, automatización avanzada y arquitecturas escalables para empresas B2B. Consulta documentación legal, alcances del servicio y lineamientos técnicos."
+          content="GLYNNE AI ofrece agentes de inteligencia artificial sin código, automatización avanzada y arquitecturas escalables para empresas B2B en Colombia y Latinoamérica. Consulta documentación legal, lineamientos técnicos y alcances del servicio."
         />
-
         <meta
           name="keywords"
-          content="GLYNNE, documentación legal, agentes IA, inteligencia artificial empresarial, automatización B2B, arquitectura de software, LangChain, integración de APIs, Next.js, automatización corporativa"
+          content="GLYNNE, inteligencia artificial, agentes IA, automatización sin código, arquitectura de software, B2B, Colombia, Latinoamérica, LangChain, Next.js, integraciones API, automatización empresarial"
         />
-
         <meta name="author" content="GLYNNE Tech" />
         <meta name="robots" content="index, follow" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        {/* Geolocalización */}
+        <meta name="geo.region" content="CO" />
+        <meta name="geo.placename" content="Colombia" />
+        <meta name="geo.position" content="4.5709;-74.2973" />
+        <meta name="ICBM" content="4.5709, -74.2973" />
 
         {/* Open Graph */}
         <meta property="og:type" content="article" />
-        <meta property="og:title" content="GLYNNE – Documentación y Alcances de Servicio" />
+        <meta property="og:title" content="GLYNNE AI – Documentación Legal y Arquitectura de Agentes IA" />
         <meta
           property="og:description"
-          content="Accede a la documentación oficial de GLYNNE, una plataforma empresarial para agentes IA, automatización profunda y arquitectura integrable."
+          content="Accede a la documentación oficial de GLYNNE, plataforma empresarial para agentes IA, automatización profunda y arquitectura integrable."
         />
         <meta property="og:image" content="https://glynneai.com/meta-banner.jpg" />
         <meta property="og:url" content="https://glynneai.com/politicas" />
-        <meta property="og:site_name" content="GLYNNE" />
+        <meta property="og:site_name" content="GLYNNE AI" />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="GLYNNE AI – Documentación Legal y Arquitectura de Agentes IA" />
+        <meta
+          name="twitter:description"
+          content="GLYNNE AI ofrece agentes de inteligencia artificial sin código y automatización empresarial avanzada para empresas B2B en Colombia y Latinoamérica."
+        />
+        <meta name="twitter:image" content="https://glynneai.com/meta-banner.jpg" />
 
         {/* Canonical */}
         <link rel="canonical" href="https://glynneai.com/politicas" />
@@ -278,16 +294,32 @@ export default function GLYNNEOverviewComponent() {
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebPage",
-              "name": "Documentación y Políticas · GLYNNE",
+              "name": "Documentación y Políticas · GLYNNE AI",
               "url": "https://glynneai.com/politicas",
-              "description":
-                "Documentación oficial del servicio, alcances legales, lineamientos técnicos y aclaraciones sobre el funcionamiento de agentes IA en GLYNNE.",
+              "description": "Documentación oficial del servicio, alcances legales, lineamientos técnicos y aclaraciones sobre el funcionamiento de agentes IA en GLYNNE.",
               "publisher": {
                 "@type": "Organization",
-                "name": "GLYNNE",
+                "name": "GLYNNE AI",
                 "url": "https://glynneai.com",
                 "logo": "https://glynneai.com/favicon.ico",
               },
+              "breadcrumb": {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                  {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Inicio",
+                    "item": "https://glynneai.com"
+                  },
+                  {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Políticas",
+                    "item": "https://glynneai.com/politicas"
+                  }
+                ]
+              }
             }),
           }}
         />
