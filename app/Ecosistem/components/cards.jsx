@@ -7,64 +7,58 @@ import { useState } from 'react';
 const services = [
   {
     icon: <FaBrain />,
-    title: 'Quiénes Somos',
-    description: 'GLYNNE redefine cómo las empresas entienden y aplican la inteligencia artificial.',
+    title: 'Automatización Real, Sin Código',
+    description: 'Tu equipo pierde horas en tareas repetitivas. Conviértelas en agentes IA que sincronizan datos, responden clientes y actualizan sistemas 24/7, sin escribir una línea de código.',
     content: (
       <>
-        <h3 className="text-lg font-semibold mb-3">Un nuevo estándar en inteligencia artificial aplicada</h3>
+        <h3 className="text-lg font-semibold mb-3">De la idea a la automatización en 7 días</h3>
         <p className="mb-3">
-          En GLYNNE desarrollamos un ecosistema de inteligencia artificial diseñado para adaptarse a las empresas, 
-          no al revés. Nuestro propósito es crear una IA que no solo responda, sino que razone, se adapte y 
-          evolucione junto a quienes la usan.
+          Conectamos directamente a tus herramientas (WhatsApp Business, Gmail, ERP, base de datos). 
+          Nuestro motor mapea el proceso, crea el agente y lo pone a trabajar. No necesitas documentación técnica ni un equipo de desarrollo.
         </p>
         <p className="mb-3">
-          No somos un proveedor de herramientas; somos una arquitectura viva de automatización, 
-          impulsada por agentes inteligentes, razonamiento contextual y datos accionables.
+          Resultado: procesos que antes demoraban 3 horas diarias ahora se ejecutan en 3 minutos, sin errores humanos.
         </p>
       </>
     ),
   },
   {
     icon: <FaNetworkWired />,
-    title: 'Nuestro Framework',
-    description: 'El corazón que conecta inteligencia, datos y automatización en un mismo flujo.',
+    title: 'Cómo Funciona: De Tu Proceso a Tu Agente',
+    description: 'En 3 pasos: 1) Nuestro auditor IA entrevista a tu equipo (2h), 2) Genera un plan técnico automatizado, 3) Desplegamos agentes listos para producción.',
     content: (
       <>
-        <h3 className="text-lg font-semibold mb-3">Framework de Orquestación Inteligente</h3>
+        <h3 className="text-lg font-semibold mb-3">No empezamos desde cero, empezamos desde tu operación</h3>
         <p className="mb-3">
-          El <strong>Framework GLYNNE</strong> permite construir sistemas que piensan y se comunican entre sí.  
-          Cada agente tiene un rol, una memoria y una función dentro de una arquitectura modular capaz de auditar, 
-          automatizar y mejorar cualquier proceso empresarial.
+          El auditor GLY-IA se conecta a tus sistemas, revisa logs, entrevista a clave en lenguaje natural y 
+          produce un JSON que nuestro despliegue automatiza en minutos.
         </p>
         <p className="mb-3">
-          Los agentes analizan información, detectan ineficiencias y proponen soluciones sin necesidad de intervención humana, 
-          aprendiendo de cada interacción para evolucionar continuamente.
+          Cada agente es un microservicio: escalable, con trazabilidad completa y validación de seguridad automática.
+          Si algo falla, el sistema te avisa con contexto para que decidas, sin sorpresas.
         </p>
       </>
     ),
   },
   {
     icon: <FaChartLine />,
-    title: 'Auditoría Inteligente',
-    description: 'El razonamiento de GLYNNE permite entender los procesos empresariales desde dentro.',
+    title: 'Resultados Medibles en 30 Días',
+    description: 'Reduce tiempos de respuesta 70%, elimina errores de sincronización y libera a tu equipo para tareas de valor. Monitorea todo en un dashboard con métricas de negocio, no técnicas.',
     content: (
       <>
-        <h3 className="text-lg font-semibold mb-3">Auditorías Basadas en Razonamiento Contextual</h3>
+        <h3 className="text-lg font-semibold mb-3">De la auditoría al ROI en un mes</h3>
         <p className="mb-3">
-          Nuestra IA no audita desde fuera: se integra en los flujos de trabajo y los analiza desde la raíz.
-          GLYNNE interpreta datos operativos, estratégicos y humanos para comprender los puntos críticos y 
-          optimizar procesos en tiempo real.
+          Nuestro sistema no solo audita: implementa, ejecuta y mide. Ves cuánto tiempo se ahorra, cuántos errores se eliminan 
+          y cuánto dinero ahorras, por proceso automatizado.
         </p>
         <p className="mb-3">
-          <strong>Modo de razonamiento:</strong>  
-          El sistema cruza contexto, intención y patrones históricos para emitir diagnósticos precisos, 
-          no sugerencias genéricas.
+          Clientes miden: -40% en costos operativos, -80% en tiempo de onboarding de procesos, +99% de precisión en sincronización de datos.
+          La auditoría es solo el inicio; la métrica de negocio es el resultado final.
         </p>
       </>
     ),
   },
 ];
-
 const containerVariants = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.15 } },

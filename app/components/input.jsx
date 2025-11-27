@@ -148,8 +148,7 @@ export default function VoiceInput() {
   transition={{ delay: 0.4, duration: 0.6 }}
   className="max-w-2xl text-gray-400 text-[0.75rem] sm:text-sm leading-snug mt-3 lowercase tracking-wide"
 >
-  el problema de las ia actuales es el sobrecontexto: no conocen tu dolor y ya están dándote mil soluciones,
-  aquí <span className="font-semibold text-gray-600">gly-ia</span> es quien hace las preguntas y conoce lo que necesitas.
+Explicar tu negocio a una IA es lento y frustrante. Nuestros agentes entienden tu operación en minutos, hacen las preguntas correctas y ejecutan tareas autónomas. <span className="font-semibold text-gray-600"> Automatización que funciona desde el día uno</span>  sin código, sin sorpresas.
 </motion.p>
 
 
