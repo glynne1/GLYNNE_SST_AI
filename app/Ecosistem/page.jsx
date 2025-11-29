@@ -71,7 +71,7 @@ export default function Diagnostico() {
               transition={{ duration: 0.3 }}
             >
               <h2 className="text-xl font-bold text-black">
-                Esta plataforma solo está disponible para escritorio por temas de optimizacio
+                Esta plataforma solo está disponible para escritorio por temas de optimizacion
               </h2>
 
               <p className="mt-3 text-gray-700">
@@ -112,10 +112,10 @@ export default function Diagnostico() {
 
               <Image src="/logo2.png" alt="GLYNNE Logo" width={70} height={70} className="mt-2" />
               <p className="text-center text-gray-800 max-w-[70ch] mt-4 text-sm sm:text-base leading-relaxed">
-  Estamos trabajando en nuestra aplicación móvil para ofrecerte una experiencia aún más completa. 
-  Por ahora, esta plataforma está disponible únicamente en versión desktop. 
-  Gracias por tu paciencia — muy pronto lanzarás tus agentes de inteligencia artificial también desde tu dispositivo móvil.
+  Estamos preparando los servicios de la plataforma para ofrecerte una experiencia rápida y sin complicaciones.  
+  Gracias por acompañarnos — pronto podrás gestionar y crear tus agentes de inteligencia artificial.
 </p>
+
 
 
               <p className="text-gray-600 mt-2 text-sm">Puede tardar un minuto...</p>
