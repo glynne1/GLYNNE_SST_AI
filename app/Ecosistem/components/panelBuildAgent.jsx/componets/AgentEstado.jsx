@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Send, Mic, Trash2 } from "lucide-react"; // 👈 SE AGREGÓ TRASH2
+import { Send, Mic, Trash2 } from "lucide-react";
 import { supabase, getCurrentUser } from "../../../../lib/supabaseClient";
 import { marked } from "marked";
 
@@ -86,9 +86,15 @@ export default function AgentsChatStyled({ agent }) {
     if (error || !data) return console.error("No se encontró el agente en Supabase");
 
     const currentConfig = data.user_config;
-    const updatedConversation = [...(currentConfig.conversation || []), newMessage];
+    const updatedConversation = [
+      ...(currentConfig.conversation || []),
+      newMessage,
+    ];
 
-    const updatedConfig = { ...currentConfig, conversation: updatedConversation };
+    const updatedConfig = {
+      ...currentConfig,
+      conversation: updatedConversation,
+    };
 
     const { error: updateError } = await supabase
       .from("auditorias")
@@ -99,12 +105,11 @@ export default function AgentsChatStyled({ agent }) {
       console.error("Error guardando mensaje en Supabase:", updateError);
   }
 
-  // ✅ FUNCIÓN PARA BORRAR SOLO EL CHAT
   async function clearConversation() {
     const user = await getCurrentUser();
     if (!user || !selectedAgent) return;
 
-    setMessages([]); // limpiar local
+    setMessages([]);
 
     const { data, error } = await supabase
       .from("auditorias")
@@ -123,17 +128,16 @@ export default function AgentsChatStyled({ agent }) {
       .eq("id", data.id);
   }
 
-  // ✅ AVISO CADA 20 MENSAJES DEL USUARIO
-  const userMessageCount = messages.filter(m => m.from === "user").length;
+  const userMessageCount = messages.filter((m) => m.from === "user").length;
 
   useEffect(() => {
     if (userMessageCount > 0 && userMessageCount % 20 === 0) {
-      setMessages(prev => [
+      setMessages((prev) => [
         ...prev,
         {
           from: "bot",
-          text: "🧹 Has enviado 20 mensajes. Podrías borrar el chat si quieres mantenerlo limpio."
-        }
+          text: "🧹 Has enviado 20 mensajes. Podrías borrar el chat si quieres mantenerlo limpio.",
+        },
       ]);
     }
   }, [userMessageCount]);
@@ -145,6 +149,7 @@ export default function AgentsChatStyled({ agent }) {
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsLoading(true);
+
     saveMessageToSupabase(userMessage);
 
     try {
@@ -158,6 +163,7 @@ export default function AgentsChatStyled({ agent }) {
       });
 
       const data = await res.json();
+
       const botMessage = {
         from: "bot",
         text: data?.reply || "No recibí respuesta",
@@ -193,71 +199,79 @@ export default function AgentsChatStyled({ agent }) {
   return (
     <div className="w-full mt-33 flex flex-col bg-white overflow-hidden">
       {messages.length === 0 ? (
-        <div className="flex-1 flex flex-col items-center justify-center text-center px-4 relative">
-          <p className="text-xs md:text-base text-gray-600 mb-6 leading-relaxed">
-            Hola, <span className="font-semibold">{userInfo.nombre}</span>.<br />
-            Soy <span className="font-semibold">{selectedAgent.agent_name}</span>, tu{" "}
-            {selectedAgent.rol?.toLowerCase() || "asistente"}.
-            <br />
-            ¿En qué puedo ayudarte hoy?
-          </p>
+        <>
+          {/* UI cuando no hay mensajes (input centrado) */}
+          <div className="flex-1 flex flex-col items-center justify-center text-center px-4 relative">
+            <p className="text-xs md:text-base text-gray-600 mb-6 leading-relaxed">
+              Hola, <span className="font-semibold">{userInfo.nombre}</span>.
+              <br />
+              Soy{" "}
+              <span className="font-semibold">{selectedAgent.agent_name}</span>,{" "}
+              tu {selectedAgent.rol?.toLowerCase() || "asistente"}. <br />
+              ¿En qué puedo ayudarte hoy?
+            </p>
 
-          <div className="w-full max-w-2xl relative flex items-center mt-0 justify-center">
-            <div className="relative flex-1">
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Escribe tu mensaje..."
-                disabled={isLoading}
-                className="w-full px-4 py-3 rounded-full text-base bg-white outline-none relative z-10"
-                style={{
-                  border: "2px solid transparent",
-                  backgroundClip: "padding-box",
-                }}
-              />
-              <span
-                className="absolute inset-0 rounded-full pointer-events-none"
-                style={{
-                  background:
-                    "linear-gradient(90deg, #0f172a, #312e81, #ffffff, #2563eb, #0891b2, #064e3b)",
-                  backgroundSize: "300% 300%",
-                  animation: "shine 2.5s linear infinite",
-                  borderRadius: "9999px",
-                  padding: "2px",
-                  zIndex: 0,
-                }}
-              />
-              {input.trim() ? (
-                <motion.button
-                  whileTap={{ scale: 0.9 }}
-                  whileHover={{ scale: 1.05 }}
-                  onClick={sendMessage}
+            <div className="w-full max-w-2xl relative flex items-center mt-0 justify-center">
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Escribe tu mensaje..."
                   disabled={isLoading}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 bg-black text-white rounded-full 
-                    w-9 h-9 flex items-center justify-center shadow-md z-20"
-                >
-                  <Send size={16} />
-                </motion.button>
-              ) : (
-                <motion.button
-                  whileTap={{ scale: 0.9 }}
-                  whileHover={{ scale: 1.05 }}
-                  onClick={toggleRecording}
-                  disabled={isLoading}
-                  className={`absolute right-3 top-1/2 -translate-y-1/2 rounded-full 
-                    w-9 h-9 flex items-center justify-center shadow-md z-20
-                    ${isRecording ? "bg-red-600 text-white" : "bg-black text-white"}`}
-                >
-                  <Mic size={16} />
-                </motion.button>
-              )}
+                  className="w-full px-4 py-3 rounded-full text-base bg-white outline-none relative z-10"
+                  style={{
+                    border: "2px solid transparent",
+                    backgroundClip: "padding-box",
+                  }}
+                />
+
+                <span
+                  className="absolute inset-0 rounded-full pointer-events-none"
+                  style={{
+                    background:
+                      "linear-gradient(90deg, #0f172a, #312e81, #ffffff, #2563eb, #0891b2, #064e3b)",
+                    backgroundSize: "300% 300%",
+                    animation: "shine 2.5s linear infinite",
+                    borderRadius: "9999px",
+                    padding: "2px",
+                    zIndex: 0,
+                  }}
+                />
+
+                {input.trim() ? (
+                  <motion.button
+                    whileTap={{ scale: 0.9 }}
+                    whileHover={{ scale: 1.05 }}
+                    onClick={sendMessage}
+                    disabled={isLoading}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 bg-black text-white rounded-full w-9 h-9 flex items-center justify-center shadow-md z-20"
+                  >
+                    <Send size={16} />
+                  </motion.button>
+                ) : (
+                  <motion.button
+                    whileTap={{ scale: 0.9 }}
+                    whileHover={{ scale: 1.05 }}
+                    onClick={toggleRecording}
+                    disabled={isLoading}
+                    className={`absolute right-3 top-1/2 -translate-y-1/2 rounded-full w-9 h-9 flex items-center justify-center shadow-md z-20 ${
+                      isRecording
+                        ? "bg-red-600 text-white"
+                        : "bg-black text-white"
+                    }`}
+                  >
+                    <Mic size={16} />
+                  </motion.button>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        </>
       ) : (
         <>
+          {/* Chat cuando sí hay mensajes */}
           <div
             ref={messagesContainerRef}
             className="flex flex-col px-4 py-2 space-y-2 overflow-y-auto"
@@ -270,7 +284,9 @@ export default function AgentsChatStyled({ agent }) {
             {messages.map((msg, idx) => (
               <div
                 key={idx}
-                className={`flex ${msg.from === "user" ? "justify-end" : "justify-start"}`}
+                className={`flex ${
+                  msg.from === "user" ? "justify-end" : "justify-start"
+                }`}
               >
                 <div
                   className={`px-4 py-3 rounded-2xl max-w-[80%] break-words whitespace-pre-wrap ${
@@ -290,27 +306,19 @@ export default function AgentsChatStyled({ agent }) {
                 </div>
               </div>
             ))}
+
             {isLoading && (
-              <div className="text-gray-400 text-sm px-2">Escribiendo.....</div>
+              <div className="text-gray-400 text-sm px-2">
+                Escribiendo.....
+              </div>
             )}
+
             <div ref={messagesEndRef} />
           </div>
 
-          {/* ✅ BOTÓN DE BORRAR CONVERSACIÓN + INPUT (no se elimina nada) */}
+          {/* 🔻 INPUT FIJO ABAJO + BOTÓN DE BORRAR A LA DERECHA DEL BOTÓN ENVIAR */}
           <div className="w-full px-4 py-4 flex justify-center sticky bottom-0 bg-white">
             <div className="flex w-[70%] relative items-center gap-2">
-
-              {/* 🧹 BOTÓN BORRAR CHAT */}
-              <motion.button
-                whileTap={{ scale: 0.9 }}
-                whileHover={{ scale: 1.1 }}
-                onClick={clearConversation}
-                className="bg-red-600 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-md"
-                title="Borrar conversación"
-              >
-                <Trash2 size={20} />
-              </motion.button>
-
               <div className="relative flex-1">
                 <input
                   type="text"
@@ -318,13 +326,14 @@ export default function AgentsChatStyled({ agent }) {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Escribe tu mensaje..."
-                  className="w-full px-4 py-4 rounded-full text-lg bg-white outline-none relative z-10 pr-14"
+                  className="w-full px-4 py-4 rounded-full text-lg bg-white outline-none relative z-10 pr-28"
                   style={{
                     border: "2px solid transparent",
                     backgroundClip: "padding-box",
                   }}
                   disabled={isLoading}
                 />
+
                 <span
                   className="absolute inset-0 rounded-full pointer-events-none"
                   style={{
@@ -337,15 +346,27 @@ export default function AgentsChatStyled({ agent }) {
                     zIndex: 0,
                   }}
                 />
+
+                {/* 🚀 SEND */}
                 <motion.button
                   whileTap={{ scale: 0.9 }}
                   whileHover={{ scale: 1.05 }}
                   onClick={sendMessage}
                   disabled={isLoading}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 
-                    bg-black text-white rounded-full w-10 h-10 flex items-center justify-center shadow-md z-20"
+                  className="absolute right-14 top-1/2 -translate-y-1/2 bg-black text-white rounded-full w-10 h-10 flex items-center justify-center shadow-md z-20"
                 >
                   <Send size={18} />
+                </motion.button>
+
+                {/* 🧹 BOTÓN DE BORRAR → AHORA AL LADO DEL BOTÓN DE ENVIAR */}
+                <motion.button
+                  whileTap={{ scale: 0.9 }}
+                  whileHover={{ scale: 1.1 }}
+                  onClick={clearConversation}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 bg-red-600 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-md z-20"
+                  title="Borrar conversación"
+                >
+                  <Trash2 size={20} />
                 </motion.button>
               </div>
             </div>
