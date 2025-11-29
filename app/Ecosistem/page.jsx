@@ -71,12 +71,12 @@ export default function Diagnostico() {
               transition={{ duration: 0.3 }}
             >
               <h2 className="text-xl font-bold text-black">
-                Esta plataforma solo está disponible para escritorio
+                Esta plataforma solo está disponible para escritorio por temas de optimizacio
               </h2>
 
               <p className="mt-3 text-gray-700">
                 Estamos trabajando en nuestra app móvil.  
-                ¡Gracias por ver el video!
+                ¡visita nuestra plataforma web, te espramos!
               </p>
 
               <Image src="/logo2.png" alt="GLYNNE Logo" width={60} height={60} className="mx-auto mt-4" />

@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     siteName: "GLYNNE AI",
     images: [
       {
-        url: "/og-image.png",
+        url: "/DRAVEN.png",
         width: 1200,
         height: 630,
         alt: "GLYNNE AI - Automatización con agentes inteligentes",
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     title: "GLYNNE AI - Agentes de IA sin código",
     description:
       "Crea agentes inteligentes, automatiza procesos y escala tu negocio con GLYNNE AI, la plataforma líder en Colombia y Latinoamérica.",
-    images: ["/og-image.png"],
+    images: ["/DRAVEN.png"],
     site: "@GlynneAI", // Si tienes cuenta oficial de Twitter
     creator: "@GlynneAI",
   },

@@ -52,6 +52,16 @@ export default function Header() {
         Políticas
       </span>
 
+      {/* NUEVO BOTÓN: HERRAMIENTAS */}
+      <span
+        onClick={() => { setMenuOpen(false); router.push('/muroRed'); }}
+        className={`cursor-pointer text-sm font-medium transition-all 
+          ${scrolled ? 'text-black/80 hover:text-black' : 'text-white hover:text-gray-200'}`
+        }
+      >
+        Nuestra red
+      </span>
+
       <button
         onClick={() => { setMenuOpen(false); localStorage.removeItem('glyiaChatClosed'); setShowLoginModal(true); }}
         className={`px-4 py-1.5 text-sm font-semibold rounded-lg transition-all duration-300
@@ -68,12 +78,10 @@ export default function Header() {
 
   return (
     <>
-      {/* === HEADER === */}
       <header
         className={`fixed top-0 left-0 w-full z-50 backdrop-blur-md transition-all duration-500 px-4 md:px-6 py-2 flex items-center justify-between h-14
           ${scrolled ? 'bg-white/10 shadow-sm' : 'bg-transparent'}`}
       >
-        {/* LOGO */}
         <img
           src={currentLogo}
           alt="Logo"
@@ -81,12 +89,10 @@ export default function Header() {
           onClick={() => router.push('/')}
         />
 
-        {/* NAV LINKS DESKTOP */}
         <div className="hidden md:flex items-center gap-6">
           {navLinks}
         </div>
 
-        {/* HAMBURGUESA MOBILE */}
         {isMobile && (
           <button
             onClick={() => setMenuOpen(!menuOpen)}
@@ -97,17 +103,15 @@ export default function Header() {
         )}
       </header>
 
-      {/* === MENÚ HAMBURGUESA DESPLEGABLE MOBILE === */}
       {menuOpen && isMobile && (
-  <div
-    className={`fixed top-14 left-0 w-full z-10000 flex flex-col items-center gap-4 backdrop-blur-md rounded-b-2xl transition-all duration-500
-      ${scrolled ? 'bg-white/10 shadow-sm' : 'bg-transparent'}`}
-  >
-    {navLinks}
-  </div>
-)}
+        <div
+          className={`fixed top-14 left-0 w-full z-10000 flex flex-col items-center gap-4 backdrop-blur-md rounded-b-2xl transition-all duration-500
+            ${scrolled ? 'bg-white/10 shadow-sm' : 'bg-transparent'}`}
+        >
+          {navLinks}
+        </div>
+      )}
 
-      {/* === MODAL LOGIN === */}
       <LoginPopup
         visible={showLoginModal}
         onClose={() => setShowLoginModal(false)}
