@@ -138,14 +138,17 @@ export default function AppCards() {
         h-[90vh] flex flex-col
       "
     >
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">
-        Herramientas de Desarrollo
-      </h2>
+     <h2 className="text-2xl font-bold text-gray-900 mb-2">
+  Tecnologías que adaptamos a tu arquitectura inteligente
+</h2>
 
-      <p className="text-sm text-gray-600 mb-4">
-        Estas son las tecnologías que pueden integrarse con nuestro motor <strong>GLYNNE Dynamic Cognitive System</strong>.
-      </p>
-
+<p className="text-sm text-gray-600 mb-4">
+  Estas tecnologías no se usan como herramientas sueltas: forman parte de la arquitectura 
+  que diseñamos para tu empresa tras la auditoría de procesos. Nuestro motor 
+  <strong> GLYNNE Dynamic Cognitive System </strong> las integra, conecta y orquesta 
+  para crear sistemas de gestión autónoma que funcionan sobre tu infraestructura 
+  sin reemplazarla ni exponer tus datos a terceros.
+</p>
       <div className="flex-1 overflow-y-auto pr-2">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
 

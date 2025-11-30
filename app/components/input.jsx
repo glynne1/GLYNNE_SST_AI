@@ -148,7 +148,7 @@ export default function VoiceInput() {
   transition={{ delay: 0.4, duration: 0.6 }}
   className="max-w-2xl text-gray-400 text-[0.75rem] sm:text-sm leading-snug mt-3 lowercase tracking-wide"
 >
-Explicar tu negocio a una IA es lento y frustrante. Nuestros agentes entienden tu operación en minutos, hacen las preguntas correctas y ejecutan tareas autónomas. <span className="font-semibold text-gray-600"> Automatización que funciona desde el día uno</span>  sin código, sin sorpresas.
+Explicar tu negocio a cualquier software puede ser complicado. En nuestra empresa desarrollamos sistemas B2B personalizados que comprenden tus operaciones en minutos, se adaptan a tu infraestructura actual y ofrecen soluciones modulables para distintos niveles y servicios. <span className="font-semibold text-gray-600"> Software a la medida que inicia su impacto desde el primer día</span> con múltiples capas de personalización, sin fricciones y totalmente escalable.
 </motion.p>
 
 

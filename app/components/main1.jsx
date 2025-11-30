@@ -36,7 +36,7 @@ export default function Main1() {
       <div className="absolute top-0 left-0 w-full h-full">
         <img
           src={bgImage}
-          alt="Fondo GLYNNE"
+          alt="Fondo GLYNNE - Arquitectura de software B2B"
           className="w-full h-full object-cover transition-all duration-700 ease-in-out"
         />
       </div>
@@ -56,10 +56,10 @@ export default function Main1() {
                 showLogo ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
               }`}
             />
-            <h2 className="text-2xl sm:text-3xl font-semibold mt-2 uppercase">
-              CONSTRUYE TU IA.{' '}
+            <h2 className="text-xl sm:text-2xl font-semibold mt-2 uppercase">
+              SOLUCIONES B2B PARA EMPRESAS{' '}
               <span className={isMobile ? 'text-white' : 'text-red-500'}>
-                MOLDEA TU FUTURO.
+                SOFTWARE A MEDIDA
               </span>
             </h2>
 
@@ -71,18 +71,18 @@ export default function Main1() {
               className="relative mt-3 px-6 py-2 text-sm font-semibold bg-white text-black rounded-lg group overflow-hidden transition-all hover:scale-105 z-[9999]"
             >
               <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-black/10 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
-              <span className="relative z-10">EXPLORAR GLYNNE FRAMEWORK</span>
+              <span className="relative z-10">DESCUBRE NUESTROS SERVICIOS</span>
             </button>
           </div>
         ) : (
           // 🔹 VERSIÓN DESKTOP
           <div className="w-full h-full flex flex-col sm:flex-row items-center justify-between">
             {/* TEXTO PRINCIPAL */}
-            <div className="w-full sm:w-1/2 text-left text-white space-y-6">
-              <h2 className="text-5xl sm:text-6xl font-bold leading-tight mt-6 ">
-              CONSTRUYE TU IA CON NUESTRO LLM ENGINE:{' '}
+            <div className="w-full sm:w-1/2 text-left text-white space-y-4">
+              <h2 className="text-3xl sm:text-4xl font-bold leading-snug mt-6">
+                COMPLEMENTA EL SOFTWARE DE TU EMPRESA CON IA:{' '}
                 <span className={isMobile ? 'text-purple-500' : 'text-red-800'}>
-                   Corre, Decide, ACTUA!
+                  Procesos de inteligencia artificial a la medida de tu negocio
                 </span>
               </h2>
 
@@ -94,7 +94,7 @@ export default function Main1() {
                 className="relative mt-4 px-6 py-2 text-sm font-semibold bg-white text-black rounded-lg group overflow-hidden transition-all hover:scale-105 z-[9999]"
               >
                 <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-black/10 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
-                <span className="relative z-10">Explora GLYNNE</span>
+                <span className="relative z-10">Explora GLYNNE Framework</span>
               </button>
             </div>
 
@@ -102,7 +102,7 @@ export default function Main1() {
             <div className="hidden sm:flex w-full sm:w-1/2 justify-center items-center">
               <img
                 src="/mokup.png"
-                alt="Imagen lateral GLYNNE"
+                alt="Imagen lateral GLYNNE - Soluciones de software B2B"
                 className="w-full h-auto object-contain"
               />
             </div>

@@ -8,37 +8,31 @@ const services = [
   {
     icon: <FaBrain />,
     title: 'Quiénes Somos',
-    description: 'GLYNNE redefine cómo las empresas entienden y aplican la inteligencia artificial.',
+    description: 'GLYNNE crea arquitecturas de software B2B adaptadas a cada empresa.',
     content: (
       <>
-        <h3 className="text-lg font-semibold mb-3">Un nuevo estándar en inteligencia artificial aplicada</h3>
+        <h3 className="text-lg font-semibold mb-3">Gestión integral de sistemas empresariales</h3>
         <p className="mb-3">
-          En GLYNNE desarrollamos un ecosistema de inteligencia artificial diseñado para adaptarse a las empresas, 
-          no al revés. Nuestro propósito es crear una IA que no solo responda, sino que razone, se adapte y 
-          evolucione junto a quienes la usan.
+          En GLYNNE diseñamos, implementamos y gestionamos arquitecturas de software que integran Inteligencia Artificial en todos los niveles de la empresa. No entregamos herramientas genéricas: construimos sistemas que se ajustan a la infraestructura existente, conectando procesos y equipos en una solución completa.
         </p>
         <p className="mb-3">
-          No somos un proveedor de herramientas; somos una arquitectura viva de automatización, 
-          impulsada por agentes inteligentes, razonamiento contextual y datos accionables.
+          Cada proyecto es personalizado, modular y escalable, asegurando que la IA pueda supervisar, optimizar y automatizar flujos sin necesidad de modificar toda la plataforma ni depender de terceros.
         </p>
       </>
     ),
   },
   {
     icon: <FaNetworkWired />,
-    title: 'Nuestro Framework',
-    description: 'El corazón que conecta inteligencia, datos y automatización en un mismo flujo.',
+    title: 'Arquitectura Integrada',
+    description: 'Creamos estructuras de software adaptables, que interconectan todos los procesos de tu empresa.',
     content: (
       <>
-        <h3 className="text-lg font-semibold mb-3">Framework de Orquestación Inteligente</h3>
+        <h3 className="text-lg font-semibold mb-3">Sistemas modulares gestionados con IA</h3>
         <p className="mb-3">
-          El <strong>Framework GLYNNE</strong> permite construir sistemas que piensan y se comunican entre sí.  
-          Cada agente tiene un rol, una memoria y una función dentro de una arquitectura modular capaz de auditar, 
-          automatizar y mejorar cualquier proceso empresarial.
+          GLYNNE desarrolla arquitecturas de software que actúan como un motor central de gestión, capaz de supervisar todos los procesos de la empresa. Cada módulo se integra, se comunica y se adapta a los sistemas existentes, permitiendo automatización y análisis sin interferir con la operación actual.
         </p>
         <p className="mb-3">
-          Los agentes analizan información, detectan ineficiencias y proponen soluciones sin necesidad de intervención humana, 
-          aprendiendo de cada interacción para evolucionar continuamente.
+          Nuestra aproximación asegura soluciones transversales: se pueden crear distintos niveles de gestión según la complejidad de los procesos que la empresa quiera supervisar, optimizar o automatizar con IA.
         </p>
       </>
     ),
@@ -46,37 +40,31 @@ const services = [
   {
     icon: <FaChartLine />,
     title: 'Auditoría Inteligente',
-    description: 'El razonamiento de GLYNNE permite entender los procesos empresariales desde dentro.',
+    description: 'Analizamos cada flujo y proceso para construir sistemas de software efectivos y adaptados.',
     content: (
       <>
-        <h3 className="text-lg font-semibold mb-3">Auditorías Basadas en Razonamiento Contextual</h3>
+        <h3 className="text-lg font-semibold mb-3">Auditoría y diagnóstico integral de procesos</h3>
         <p className="mb-3">
-          Nuestra IA no audita desde fuera: se integra en los flujos de trabajo y los analiza desde la raíz.
-          GLYNNE interpreta datos operativos, estratégicos y humanos para comprender los puntos críticos y 
-          optimizar procesos en tiempo real.
+          Antes de diseñar cualquier arquitectura, GLYNNE realiza auditorías profundas de los procesos empresariales, entendiendo cómo interactúan equipos, sistemas y datos. Esta evaluación permite crear soluciones de software que encajan perfectamente en la operación actual.
         </p>
         <p className="mb-3">
-          <strong>Modo de razonamiento:</strong>  
-          El sistema cruza contexto, intención y patrones históricos para emitir diagnósticos precisos, 
-          no sugerencias genéricas.
+          Con la IA, cada diagnóstico se convierte en un plan de acción automatizado y adaptativo que optimiza flujos, detecta ineficiencias y genera una estructura de software capaz de evolucionar con la empresa.
         </p>
       </>
     ),
   },
   {
     icon: <FaUserFriends />,
-    title: 'Razonamiento Humano + IA',
-    description: 'Nuestro modelo combina empatía y datos para entender a las personas detrás de cada empresa.',
+    title: 'Procesos y Adaptación',
+    description: 'Personalizamos la arquitectura de software según los niveles, áreas y metas de tu empresa.',
     content: (
       <>
-        <h3 className="text-lg font-semibold mb-3">Comprendemos a las personas antes que los procesos</h3>
+        <h3 className="text-lg font-semibold mb-3">Adaptación inteligente a tu operación</h3>
         <p className="mb-3">
-          GLYNNE implementa un <strong>modo de razonamiento humano</strong> que analiza los perfiles, decisiones y 
-          comportamientos de los equipos para adaptar las recomendaciones de IA a la cultura de cada organización.
+          GLYNNE entiende que cada empresa tiene sus particularidades. Por eso, diseñamos sistemas que se adaptan a distintos niveles de gestión, departamentos y objetivos, integrando la Inteligencia Artificial para supervisar y mejorar procesos específicos sin alterar la infraestructura existente.
         </p>
         <p className="mb-3">
-          La IA no solo automatiza, sino que <strong>personaliza</strong>: entiende el estilo de trabajo, las metas y 
-          los desafíos reales de cada usuario, creando una experiencia de mejora continua que siente natural.
+          La solución no es genérica: se personaliza según la cultura, las necesidades y los flujos de trabajo, creando un sistema de gestión transversal y escalable.
         </p>
       </>
     ),
@@ -84,35 +72,31 @@ const services = [
   {
     icon: <FaDatabase />,
     title: 'Inteligencia de Datos',
-    description: 'Organizamos la información y la convertimos en decisiones accionables.',
+    description: 'Transformamos la información de tu empresa en decisiones automáticas y accionables.',
     content: (
       <>
-        <h3 className="text-lg font-semibold mb-3">Análisis Multidimensional y Visualización</h3>
+        <h3 className="text-lg font-semibold mb-3">Conexión de datos y automatización estratégica</h3>
         <p className="mb-3">
-          GLYNNE analiza bases de datos empresariales y genera 7 tipos de gráficas dinámicas que representan 
-          comportamiento operativo, eficiencia, costos, proyecciones y correlaciones entre variables clave.
+          GLYNNE organiza y analiza los datos operativos, estratégicos y humanos para integrarlos en la arquitectura de software. La Inteligencia Artificial genera insights y recomendaciones que permiten tomar decisiones rápidas y precisas sin depender de herramientas externas.
         </p>
         <p className="mb-3">
-          Cada insight visual está conectado con agentes que pueden <strong>responder cualquier pregunta</strong> 
-          basada en los datos: desde "¿qué área tiene más ineficiencias?" hasta "¿qué pasará si duplicamos la demanda?".
+          Cada análisis se vincula con los agentes del sistema, que ejecutan acciones automáticas, optimizan procesos y mantienen la coherencia del flujo empresarial en tiempo real.
         </p>
       </>
     ),
   },
   {
     icon: <FaRobot />,
-    title: 'Respuestas Autónomas',
-    description: 'Agentes que analizan, razonan y actúan sin intervención humana.',
+    title: 'Automatización Total',
+    description: 'Agentes que supervisan, gestionan y optimizan todos los procesos sin intervención externa.',
     content: (
       <>
-        <h3 className="text-lg font-semibold mb-3">Agentes Inteligentes Adaptativos</h3>
+        <h3 className="text-lg font-semibold mb-3">Motor de gestión autónomo con IA</h3>
         <p className="mb-3">
-          Los agentes del Framework GLYNNE son autónomos, con capacidades de razonamiento local y global.
-          Detectan cambios en los datos, recalculan estrategias y ejecutan acciones sin necesidad de supervisión.
+          Los agentes de GLYNNE ejecutan tareas de supervisión, análisis y optimización en todos los niveles de la empresa. La arquitectura se encarga de que cada acción sea consistente, coherente y ajustada a la operación existente.
         </p>
         <p className="mb-3">
-          Cada agente está conectado al núcleo cognitivo de GLYNNE, lo que le permite aprender de otros agentes y 
-          evolucionar a medida que el sistema crece.
+          Esta integración permite que la empresa tenga un sistema completo, modular y escalable, capaz de evolucionar sin depender de proveedores externos ni herramientas genéricas.
         </p>
       </>
     ),
@@ -196,7 +180,7 @@ export default function ServiceCards() {
                   ×
                 </button>
 
-                {/* ÍCONO EN GRIS — AQUÍ ESTÁ EL CAMBIO */}
+                {/* ÍCONO EN GRIS */}
                 <div className="flex flex-col items-center text-center mb-6">
                   <div className="text-5xl text-gray-600 mb-3">{activeService.icon}</div>
                   <h2 className="text-2xl font-bold mb-2">{activeService.title}</h2>
