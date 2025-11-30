@@ -52,7 +52,6 @@ export default function Header() {
         Políticas
       </span>
 
-      {/* NUEVO BOTÓN: HERRAMIENTAS */}
       <span
         onClick={() => { setMenuOpen(false); router.push('/muroRed'); }}
         className={`cursor-pointer text-sm font-medium transition-all 
@@ -60,6 +59,16 @@ export default function Header() {
         }
       >
         Nuestra red
+      </span>
+
+      {/* ⭐ NUEVA SECCIÓN: TUTORIAL ⭐ */}
+      <span
+        onClick={() => { setMenuOpen(false); router.push('/tutorial'); }}
+        className={`cursor-pointer text-sm font-medium transition-all 
+          ${scrolled ? 'text-black/80 hover:text-black' : 'text-white hover:text-gray-200'}`
+        }
+      >
+        Tutorial
       </span>
 
       <button
