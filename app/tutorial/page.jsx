@@ -5,6 +5,7 @@ import Header from "./components/header";
 import ContactHero from "./components/mainn1";
 import Pub1 from './components/pub1'
 import Card from './components/cards'
+import TutorialSection from './components/seeTutoriarSection'
 export default function Page() {
   return (
     <main className="w-full min-h-screen flex flex-col bg-white">
@@ -48,6 +49,9 @@ export default function Page() {
 </section>
 
 
+<section className="w-full max-w-[1600px] py-10 md:py-16">
+          <TutorialSection />
+        </section>
       <section className="w-full max-w-[1800px] py-10 md:py-16">
           <Pub1 />
         </section>

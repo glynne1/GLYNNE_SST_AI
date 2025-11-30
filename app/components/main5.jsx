@@ -25,12 +25,12 @@ export default function VideoBackground2() {
       </video>
 
       {/* Overlay oscuro */}
-      <div className="absolute inset-0 bg-black/10 z-10" />
+      <div className="absolute inset-0 bg-black/80 z-10" />
 
       {/* Contenido encima del video */}
       <div className="relative z-20 flex items-center justify-center h-full mt-[0px]">
         <img
-          src="/logo3.png"
+          src="/logo.png"
           alt="Logo"
           className={`w-40 sm:w-22 md:w-64 lg:w-72 xl:w-30 transition-opacity transition-transform duration-700 ease-out
             ${showLogo ? 'opacity-100 scale-100' : 'opacity-0 scale-75'}`}
