@@ -58,7 +58,7 @@ export default function Header() {
           ${scrolled ? 'text-black/80 hover:text-black' : 'text-white hover:text-gray-200'}`
         }
       >
-        Nuestra red
+       Contactanos por...
       </span>
 
       {/* ⭐ NUEVA SECCIÓN: TUTORIAL ⭐ */}

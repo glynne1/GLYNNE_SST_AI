@@ -53,7 +53,7 @@ export default function Page() {
           >
             <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
             <span className="relative z-10 font-medium">
-              Recursos y tutoriales del ecosistema GLYNNE
+              CONTACTANOS
             </span>
           </motion.button>
 
@@ -64,7 +64,7 @@ export default function Page() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.6 }}
           >
-            Aprende, construye y domina tus herramientas
+             ¡¡¡Conversa con uno de nuestros talentos HUMANOS!!!
           </motion.p>
         </motion.div>
       </div>
